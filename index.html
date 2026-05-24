@@ -1,635 +1,1499 @@
-.sv{font-family:'Sora',sans-serif;font-size:1.4rem;font-weight:800;color:var(--g);}
-.sc.r .sv{color:var(--re);}
-.ss{font-size:.71rem;color:var(--mu);}
-.pb{margin-top:4px;background:#e0ede6;border-radius:6px;height:6px;overflow:hidden;}
-.pbi{height:100%;border-radius:6px;background:linear-gradient(90deg,var(--g),var(--gl));}
-.pl{font-size:.65rem;color:var(--mu);margin-top:2px;}
-.tip{font-size:.6rem;color:var(--mu);margin-top:4px;opacity:.75;}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>Okpu Orba - Community Payment Tracker</title>
+<meta name="description" content="Okpu Orba Community Payment Tracker">
+<meta name="theme-color" content="#0f5233">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Okpu Orba">
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700;800&family=DM+Sans:wght@400;500&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'DM Sans',sans-serif;background:#f2f7f4;color:#0d2b1a;min-height:100vh}
+:root{--g:#1a7a4a;--gl:#26a86a;--gd:#0f5233;--gold:#e8a020;--red:#d03030;--bo:#c6dece;--mu:#5a7a66;--sh:0 4px 24px rgba(26,122,74,.10)}
+header{background:linear-gradient(135deg,#0f5233,#1a7a4a,#26a86a);color:#fff;padding:22px 18px 0;text-align:center;position:relative}
+.hb{display:inline-block;background:#e8a020;color:#fff;font-family:'Sora',sans-serif;font-size:.68rem;font-weight:700;letter-spacing:1px;text-transform:uppercase;padding:3px 12px;border-radius:20px;margin-bottom:7px}
+header h1{font-family:'Sora',sans-serif;font-size:1.7rem;font-weight:800}
+header p{font-size:.82rem;opacity:.8;margin-top:3px}
+.hs{margin:13px auto 0;max-width:420px;position:relative;padding-bottom:16px}
+.hsl{font-size:.68rem;color:rgba(255,255,255,.75);margin-bottom:5px;text-transform:uppercase;letter-spacing:.8px;font-weight:600}
+.hs input{width:100%;padding:11px 40px 11px 14px;border:2px solid rgba(255,255,255,.5);border-radius:30px;font-size:.9rem;background:rgba(255,255,255,.15);color:#fff;outline:none}
+.hs input::placeholder{color:rgba(255,255,255,.7)}
+.hs input:focus{background:rgba(255,255,255,.25);border-color:#fff}
+.hsi{position:absolute;right:12px;top:34px;opacity:.8}
+.hsr{background:#fff;border-radius:14px;max-height:220px;overflow-y:auto;margin-top:5px;box-shadow:0 8px 32px rgba(0,0,0,.18);display:none;text-align:left}
+.hsr.vis{display:block}
+.tabs{display:flex;background:#0f5233;overflow-x:auto}
+.tab{flex:1;min-width:60px;padding:11px 4px;background:none;border:none;color:rgba(255,255,255,.55);font-family:'Sora',sans-serif;font-size:.72rem;font-weight:600;cursor:pointer;white-space:nowrap}
+.tab.on{color:#fff;background:#1a7a4a;border-bottom:3px solid #e8a020}
+main{padding:14px 13px 60px;max-width:700px;margin:0 auto}
+.pg{display:none}
+.pg.on{display:block}
+/* SUMMARY */
+.sg{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px}
+.sc{background:#fff;border-radius:14px;padding:13px 11px;box-shadow:var(--sh);border-left:4px solid var(--gl);cursor:pointer;transition:all .18s}
+.sc:hover{transform:translateY(-2px)}
+.sc.red{border-left-color:var(--red)}
+.scl{font-size:.66rem;color:var(--mu);text-transform:uppercase;letter-spacing:.8px;font-weight:600}
+.scv{font-family:'Sora',sans-serif;font-size:1.4rem;font-weight:800;color:var(--g)}
+.sc.red .scv{color:var(--red)}
+.scs{font-size:.71rem;color:var(--mu)}
+.pbw{margin-top:4px;background:#e0ede6;border-radius:6px;height:6px;overflow:hidden}
+.pb{height:100%;border-radius:6px;background:linear-gradient(90deg,#1a7a4a,#26a86a);transition:width .5s}
+.tap{font-size:.6rem;color:var(--mu);margin-top:4px;opacity:.75}
 /* SEARCH */
-.sw{position:relative;margin-bottom:12px;}
-.sw input{width:100%;padding:12px 42px 12px 14px;border:2px solid var(--bo);border-radius:12px;font-size:.9rem;font-family:'DM Sans',sans-serif;background:#fff;color:var(--tx);outline:none;}
-.sw input:focus{border-color:var(--gl);}
-.si{position:absolute;right:12px;top:50%;transform:translateY(-50%);color:var(--mu);pointer-events:none;}
-.sr{background:#fff;border:2px solid var(--bo);border-radius:12px;max-height:220px;overflow-y:auto;margin-top:-7px;margin-bottom:10px;box-shadow:0 4px 16px rgba(0,0,0,.08);display:none;}
-.sr.vis{display:block;}
-.ri{padding:10px 14px;cursor:pointer;border-bottom:1px solid #f0f5f2;display:flex;align-items:center;gap:9px;}
-.ri:last-child{border-bottom:none;}
-.ri:hover{background:#f0faf5;}
-.av{width:33px;height:33px;border-radius:50%;background:linear-gradient(135deg,var(--g),var(--gl));color:#fff;font-family:'Sora',sans-serif;font-weight:700;font-size:.78rem;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.sw{position:relative;margin-bottom:12px}
+.sw input{width:100%;padding:12px 40px 12px 14px;border:2px solid var(--bo);border-radius:12px;font-size:.9rem;background:#fff;outline:none}
+.sw input:focus{border-color:var(--gl)}
+.sr{background:#fff;border:2px solid var(--bo);border-radius:12px;max-height:220px;overflow-y:auto;margin-top:-7px;margin-bottom:10px;box-shadow:var(--sh);display:none}
+.sr.vis{display:block}
+.sri{padding:10px 14px;cursor:pointer;border-bottom:1px solid #f0f5f2;display:flex;align-items:center;gap:9px}
+.sri:hover{background:#f0faf5}
+.sri:last-child{border-bottom:none}
+.av{width:33px;height:33px;border-radius:50%;background:linear-gradient(135deg,#1a7a4a,#26a86a);color:#fff;font-family:'Sora',sans-serif;font-weight:700;font-size:.78rem;display:flex;align-items:center;justify-content:center;flex-shrink:0}
 /* MEMBER CARD */
-.mc{background:var(--ca);border-radius:16px;padding:15px;box-shadow:0 4px 20px rgba(26,122,74,.1);margin-bottom:14px;display:none;}
-.mc.vis{display:block;}
-.mct{display:flex;align-items:center;gap:11px;margin-bottom:13px;}
-.avl{width:46px;height:46px;border-radius:50%;background:linear-gradient(135deg,var(--gd),var(--gl));color:#fff;font-family:'Sora',sans-serif;font-weight:800;font-size:1rem;display:flex;align-items:center;justify-content:center;}
-.mn{font-family:'Sora',sans-serif;font-weight:700;font-size:1rem;}
-.mi{font-size:.7rem;color:var(--mu);}
-.bs{background:#f4faf7;border-radius:12px;padding:12px;margin-bottom:10px;}
-.bsh{display:flex;justify-content:space-between;align-items:center;margin-bottom:9px;}
-.bst{font-weight:700;font-size:.86rem;}
-.bsr{font-size:.72rem;color:var(--mu);}
-.pmt{font-size:.68rem;color:var(--mu);font-weight:600;text-transform:uppercase;margin-bottom:5px;}
-.pmc{display:flex;flex-wrap:wrap;gap:4px;}
-.pmch{background:#d4f0e3;color:#157a45;padding:3px 8px;border-radius:20px;font-size:.65rem;font-weight:700;}
-.nom{font-size:.75rem;color:var(--re);font-weight:600;}
-.dv{height:1px;background:#d8ecdf;margin:9px 0;}
-.sl2{font-size:.68rem;color:var(--mu);font-weight:600;text-transform:uppercase;margin-bottom:5px;}
-.mg{display:grid;grid-template-columns:repeat(4,1fr);gap:5px;margin-bottom:8px;}
-.ch{padding:7px 2px;text-align:center;border-radius:8px;font-size:.69rem;font-weight:600;cursor:pointer;border:1.5px solid var(--bo);background:#fff;color:var(--mu);transition:all .15s;user-select:none;}
-.ch.sel{background:var(--g);color:#fff;border-color:var(--g);}
-.ch.dn{background:#d4f0e3;color:#157a45;border-color:#a8dfc4;font-weight:700;}
-.rr{display:flex;gap:5px;align-items:center;margin-bottom:8px;flex-wrap:wrap;}
-.rr select{flex:1;min-width:90px;padding:7px;border:1.5px solid var(--bo);border-radius:8px;font-size:.76rem;font-family:'DM Sans',sans-serif;background:#fff;color:var(--tx);outline:none;}
-.ra{padding:7px 11px;background:var(--gd);color:#fff;border:none;border-radius:8px;font-size:.74rem;font-weight:700;cursor:pointer;font-family:'Sora',sans-serif;white-space:nowrap;}
-.fyb{width:100%;padding:8px;background:#fff3dc;color:#9a6200;border:1.5px solid #f5c048;border-radius:8px;font-size:.77rem;font-weight:700;cursor:pointer;font-family:'Sora',sans-serif;margin-bottom:8px;}
-.bt{display:flex;justify-content:space-between;align-items:center;background:#fff;border-radius:8px;padding:10px 11px;margin-bottom:8px;border:1.5px solid var(--bo);}
-.btl{font-size:.77rem;color:var(--mu);}
-.bta{font-family:'Sora',sans-serif;font-weight:800;font-size:1.05rem;color:var(--g);}
-.cpb{width:100%;padding:11px;background:var(--g);color:#fff;border:none;border-radius:10px;font-family:'Sora',sans-serif;font-weight:700;font-size:.86rem;cursor:pointer;}
-.cpb:disabled{background:#b0cfc0;cursor:not-allowed;}
-.clb{background:none;border:1px solid var(--bo);color:var(--mu);padding:7px 15px;border-radius:20px;font-size:.74rem;cursor:pointer;margin-top:7px;}
-/* MEMBER LIST */
-.stit{font-family:'Sora',sans-serif;font-weight:700;font-size:.88rem;margin-bottom:8px;color:var(--gd);}
-.fr{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px;}
-.fb{padding:5px 11px;border-radius:20px;border:1.5px solid var(--bo);background:#fff;font-size:.72rem;font-weight:600;cursor:pointer;color:var(--mu);}
-.fb.on{background:var(--g);color:#fff;border-color:var(--g);}
-.ml{display:flex;flex-direction:column;gap:7px;}
-.mr{background:var(--ca);border-radius:12px;padding:11px 13px;display:flex;align-items:center;gap:10px;box-shadow:0 2px 8px rgba(0,0,0,.05);cursor:pointer;}
-.mr:hover{box-shadow:0 4px 16px rgba(26,122,74,.13);transform:translateY(-1px);}
-.mri{flex:1;}
-.mrn{font-weight:600;font-size:.86rem;}
-.bd{display:flex;gap:4px;margin-top:3px;align-items:center;}
-.dot{width:9px;height:9px;border-radius:50%;display:inline-block;}
-.dot.p{background:var(--gl);}
-.dot.x{background:#e8a020;}
-.dot.u{background:#ddd;}
-.dl{font-size:.63rem;color:var(--mu);}
+.mc{background:#fff;border-radius:16px;padding:16px;box-shadow:var(--sh);margin-bottom:14px;display:none}
+.mc.vis{display:block}
+.mct{display:flex;align-items:center;gap:11px;margin-bottom:13px}
+.avl{width:46px;height:46px;border-radius:50%;background:linear-gradient(135deg,#0f5233,#26a86a);color:#fff;font-family:'Sora',sans-serif;font-weight:800;font-size:1rem;display:flex;align-items:center;justify-content:center}
+.mn{font-family:'Sora',sans-serif;font-weight:700;font-size:1rem}
+.mi{font-size:.7rem;color:var(--mu)}
+.bs{background:#f4faf7;border-radius:12px;padding:13px;margin-bottom:10px}
+.bsh{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px}
+.bst{font-weight:700;font-size:.86rem}
+.bsr{font-size:.72rem;color:var(--mu)}
+.pmt{font-size:.68rem;color:var(--mu);font-weight:600;text-transform:uppercase;letter-spacing:.4px;margin-bottom:5px}
+.pmc{display:flex;flex-wrap:wrap;gap:4px}
+.pch{background:#d4f0e3;color:#157a45;padding:3px 8px;border-radius:20px;font-size:.65rem;font-weight:700}
+.nom{font-size:.75rem;color:var(--red);font-weight:600}
+.div{height:1px;background:#d8ecdf;margin:9px 0}
+.sl{font-size:.68rem;color:var(--mu);font-weight:600;text-transform:uppercase;letter-spacing:.4px;margin-bottom:5px}
+.mgr{display:grid;grid-template-columns:repeat(4,1fr);gap:5px;margin-bottom:8px}
+.mch{padding:7px 2px;text-align:center;border-radius:8px;font-size:.69rem;font-weight:600;cursor:pointer;border:1.5px solid var(--bo);background:#fff;color:var(--mu);transition:all .15s;user-select:none;position:relative}
+.mch.sel{background:var(--g);color:#fff;border-color:var(--g)}
+.mch.done{background:#d4f0e3;color:#157a45;border-color:#a8dfc4;cursor:pointer;font-weight:700}
+.mch.done.sel{background:#157a45;color:#fff}
+.rr{display:flex;gap:5px;align-items:center;margin-bottom:8px;flex-wrap:wrap}
+.rr select{flex:1;min-width:90px;padding:7px;border:1.5px solid var(--bo);border-radius:8px;font-size:.76rem;background:#fff;outline:none}
+.ra{padding:7px 11px;background:#0f5233;color:#fff;border:none;border-radius:8px;font-size:.74rem;font-weight:700;cursor:pointer}
+.fyb{width:100%;padding:8px;background:#fff3dc;color:#9a6200;border:1.5px solid #f5c048;border-radius:8px;font-size:.77rem;font-weight:700;cursor:pointer;margin-bottom:8px}
+.bt{display:flex;justify-content:space-between;align-items:center;background:#fff;border-radius:8px;padding:10px 11px;margin-bottom:8px;border:1.5px solid var(--bo)}
+.btl{font-size:.77rem;color:var(--mu)}
+.bta{font-family:'Sora',sans-serif;font-weight:800;font-size:1.05rem;color:var(--g)}
+.cpb{width:100%;padding:11px;background:var(--g);color:#fff;border:none;border-radius:10px;font-family:'Sora',sans-serif;font-weight:700;font-size:.86rem;cursor:pointer}
+.cpb:disabled{background:#b0cfc0;cursor:not-allowed}
+.clb{background:none;border:1px solid var(--bo);color:var(--mu);padding:7px 15px;border-radius:20px;font-size:.74rem;cursor:pointer;margin-top:7px}
+/* LISTS */
+.stit{font-family:'Sora',sans-serif;font-weight:700;font-size:.9rem;margin-bottom:8px;color:#0f5233}
+.ml{display:flex;flex-direction:column;gap:7px}
+.mr{background:#fff;border-radius:12px;padding:11px 13px;display:flex;align-items:center;gap:10px;box-shadow:0 2px 8px rgba(0,0,0,.05);cursor:pointer}
+.mr:hover{box-shadow:0 4px 16px rgba(26,122,74,.13);transform:translateY(-1px)}
+.mri{flex:1}
+.mrn{font-weight:600;font-size:.86rem}
+.bd{display:flex;gap:4px;margin-top:3px;align-items:center;flex-wrap:wrap}
+.dot{width:9px;height:9px;border-radius:50%;display:inline-block;flex-shrink:0}
+.dot.paid{background:var(--gl)}
+.dot.part{background:var(--gold)}
+.dot.unp{background:#ddd}
+.dl{font-size:.63rem;color:var(--mu)}
+.fr{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px}
+.fb{padding:5px 11px;border-radius:20px;border:1.5px solid var(--bo);background:#fff;font-size:.72rem;font-weight:600;cursor:pointer;color:var(--mu)}
+.fb.on{background:var(--g);color:#fff;border-color:var(--g)}
+.es{text-align:center;color:var(--mu);font-size:.83rem;padding:26px 0}
+/* CARD */
+.card{background:#fff;border-radius:14px;padding:15px;box-shadow:var(--sh);margin-bottom:14px}
+.card input,.card textarea,.card select{width:100%;padding:10px 12px;border:2px solid var(--bo);border-radius:9px;font-size:.86rem;font-family:'DM Sans',sans-serif;background:#f9fbfa;outline:none;margin-bottom:9px}
+.card input:focus,.card textarea:focus{border-color:var(--gl);background:#fff}
+.card textarea{min-height:80px;resize:vertical}
+.gbtn{width:100%;padding:12px;background:var(--g);color:#fff;border:none;border-radius:11px;font-family:'Sora',sans-serif;font-weight:700;font-size:.88rem;cursor:pointer;margin-bottom:6px}
+.gbtn:hover{background:var(--gl)}
 /* NEWS */
-.nc{background:#fff;border-radius:14px;padding:14px;box-shadow:0 3px 16px rgba(26,122,74,.1);margin-bottom:12px;}
-.ntitle{font-family:'Sora',sans-serif;font-weight:800;font-size:.95rem;color:var(--gd);margin-bottom:5px;}
-.nbody{font-size:.82rem;color:var(--tx);line-height:1.6;margin-bottom:8px;}
-.nmeta{font-size:.69rem;color:var(--mu);display:flex;align-items:center;gap:6px;}
-.nbadge{background:#e8f7ef;color:var(--g);font-size:.62rem;font-weight:700;padding:2px 8px;border-radius:20px;}
-.nform input,.nform textarea{width:100%;padding:10px 12px;border:2px solid var(--bo);border-radius:9px;font-size:.85rem;font-family:'DM Sans',sans-serif;background:#f9fbfa;color:var(--tx);outline:none;margin-bottom:8px;}
-.nform textarea{min-height:90px;resize:vertical;}
-.nform input:focus,.nform textarea:focus{border-color:var(--gl);}
-.npb{width:100%;padding:11px;background:var(--g);color:#fff;border:none;border-radius:10px;font-family:'Sora',sans-serif;font-weight:700;font-size:.86rem;cursor:pointer;}
-.nlk{background:#fff8e6;border-left:4px solid var(--go);border-radius:10px;padding:12px;font-size:.79rem;color:#6b4c00;margin-bottom:12px;}
+.nc{background:#fff;border:1.5px solid var(--bo);border-radius:12px;padding:14px;margin-bottom:10px}
+.nc img{width:100%;border-radius:8px;margin-bottom:10px;max-height:220px;object-fit:cover}
+.nt{font-family:'Sora',sans-serif;font-weight:800;font-size:.95rem;color:#0f5233;margin-bottom:5px}
+.nb{font-size:.82rem;line-height:1.6;margin-bottom:8px}
+.nm{font-size:.69rem;color:var(--mu);display:flex;align-items:center;gap:6px}
+.nbg{background:#e8f7ef;color:#157a45;font-size:.62rem;font-weight:700;padding:2px 8px;border-radius:20px}
+.nlock{background:#fff8e6;border-left:4px solid var(--gold);border-radius:10px;padding:12px;font-size:.78rem;color:#6b4c00;margin-bottom:12px}
 /* DONATE */
-.dc{background:#fff;border-radius:14px;padding:16px;box-shadow:0 3px 16px rgba(124,58,237,.1);margin-bottom:12px;}
-.dag{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:12px;}
-.da{padding:11px 4px;text-align:center;border-radius:10px;border:2px solid #e9d5ff;background:#faf5ff;cursor:pointer;font-family:'Sora',sans-serif;font-weight:700;font-size:.86rem;color:#6d28d9;transition:all .15s;}
-.da:hover,.da.on{background:#7c3aed;color:#fff;border-color:#7c3aed;}
-.dinw{position:relative;margin-bottom:12px;}
-.dinw input{width:100%;padding:12px 14px 12px 26px;border:2px solid #e9d5ff;border-radius:11px;font-size:.93rem;font-family:'Sora',sans-serif;font-weight:700;background:#faf5ff;color:#5b21b6;outline:none;}
-.dinw input:focus{border-color:#7c3aed;}
-.dpfx{position:absolute;left:10px;top:50%;transform:translateY(-50%);font-weight:800;color:#7c3aed;font-size:.93rem;}
-.danb{background:#f3e8ff;border-radius:10px;padding:10px 12px;font-size:.76rem;color:#6d28d9;margin-bottom:12px;line-height:1.6;}
-.dbn{width:100%;padding:13px;background:linear-gradient(135deg,#7c3aed,#a855f7);color:#fff;border:none;border-radius:13px;font-family:'Sora',sans-serif;font-weight:800;font-size:.95rem;cursor:pointer;}
-.dbn:disabled{background:#ccc;cursor:not-allowed;}
-.dtc{background:linear-gradient(135deg,#5b21b6,#7c3aed);border-radius:14px;padding:16px;color:#fff;text-align:center;margin-bottom:12px;}
-.dtl{font-size:.72rem;opacity:.8;text-transform:uppercase;letter-spacing:.8px;margin-bottom:4px;}
-.dtv{font-family:'Sora',sans-serif;font-weight:800;font-size:2rem;}
-.dle{background:#faf5ff;border-left:3px solid #a855f7;border-radius:0 8px 8px 0;padding:9px 12px;margin-bottom:7px;}
-.dla{font-family:'Sora',sans-serif;font-weight:800;font-size:.93rem;color:#6d28d9;}
-.dlm{font-size:.7rem;color:var(--mu);margin-top:2px;}
-/* OFFLINE */
-.ow{background:var(--ca);border-radius:14px;padding:14px;box-shadow:0 3px 16px rgba(26,122,74,.1);margin-bottom:12px;}
-.oi{background:#fff8e6;border-left:4px solid var(--go);border-radius:8px;padding:9px 12px;font-size:.76rem;color:#6b4c00;margin-bottom:11px;line-height:1.5;}
-.or{background:#fff;border:1.5px solid var(--bo);border-radius:10px;max-height:200px;overflow-y:auto;margin-bottom:8px;display:none;}
-.or.vis{display:block;}
-.ori{padding:9px 13px;cursor:pointer;border-bottom:1px solid #f0f5f2;display:flex;align-items:center;gap:9px;}
-.ori:last-child{border-bottom:none;}
-.ori:hover{background:#f0faf5;}
-.smb{background:#e8f7ef;border-radius:10px;padding:10px 12px;margin-bottom:10px;display:flex;align-items:center;gap:10px;}
-.smbn{font-weight:700;font-size:.86rem;}
-.smbs{font-size:.71rem;color:var(--mu);}
-.obb{background:#f9fbfa;border:1.5px solid var(--bo);border-radius:10px;padding:11px;margin-bottom:9px;}
-.obbt{font-weight:700;font-size:.82rem;margin-bottom:7px;}
-.omg{display:grid;grid-template-columns:repeat(4,1fr);gap:4px;margin-bottom:7px;}
-.omc{padding:6px 2px;text-align:center;border-radius:7px;font-size:.68rem;font-weight:600;cursor:pointer;border:1.5px solid var(--bo);background:#fff;color:var(--mu);transition:all .15s;user-select:none;}
-.omc.os{background:var(--go);color:#fff;border-color:var(--go);}
-.omc.od{background:#d4f0e3;color:#157a45;border-color:#a8dfc4;cursor:default;}
-.ofy{width:100%;padding:7px;background:#fff3dc;color:#9a6200;border:1.5px solid #f5c048;border-radius:7px;font-size:.75rem;font-weight:700;cursor:pointer;font-family:'Sora',sans-serif;margin-bottom:7px;}
-.osb{width:100%;padding:11px;background:var(--go);color:#fff;border:none;border-radius:11px;font-family:'Sora',sans-serif;font-weight:700;font-size:.86rem;cursor:pointer;}
-.osb:disabled{background:#ccc;cursor:not-allowed;}
-.ole{background:#fff8e6;border-left:4px solid var(--go);border-radius:8px;padding:8px 11px;margin-bottom:6px;font-size:.78rem;}
-/* BULK */
-.bw{background:var(--ca);border-radius:14px;padding:14px;box-shadow:0 3px 16px rgba(26,122,74,.1);margin-bottom:12px;}
-.bdz{border:2.5px dashed var(--bo);border-radius:12px;padding:24px 14px;text-align:center;cursor:pointer;background:#f9fbfa;margin-bottom:10px;}
-.bdz:hover{border-color:var(--gl);background:#f0faf5;}
-.bpa{width:100%;min-height:100px;padding:10px 12px;border:2px solid var(--bo);border-radius:10px;font-size:.83rem;font-family:'DM Sans',sans-serif;background:#f9fbfa;color:var(--tx);outline:none;resize:vertical;margin-bottom:8px;}
-.bpa:focus{border-color:var(--gl);}
-.bpb{width:100%;padding:11px;background:var(--gd);color:#fff;border:none;border-radius:10px;font-family:'Sora',sans-serif;font-weight:700;font-size:.85rem;cursor:pointer;margin-bottom:6px;}
-.bcb{width:100%;padding:12px;background:var(--g);color:#fff;border:none;border-radius:12px;font-family:'Sora',sans-serif;font-weight:700;font-size:.88rem;cursor:pointer;display:none;margin-bottom:6px;}
-.btmpl{width:100%;padding:9px;background:#fff;color:var(--gd);border:1.5px solid var(--bo);border-radius:10px;font-family:'Sora',sans-serif;font-weight:700;font-size:.78rem;cursor:pointer;}
-/* ADD */
-.aw{background:var(--ca);border-radius:14px;padding:14px;box-shadow:0 3px 16px rgba(26,122,74,.1);margin-bottom:12px;}
-.aw input{width:100%;padding:11px 12px;border:2px solid var(--bo);border-radius:10px;font-size:.86rem;font-family:'DM Sans',sans-serif;background:#f9fbfa;color:var(--tx);outline:none;margin-bottom:9px;}
-.aw input:focus{border-color:var(--gl);}
-.ab{width:100%;padding:12px;background:var(--g);color:#fff;border:none;border-radius:12px;font-family:'Sora',sans-serif;font-weight:700;font-size:.88rem;cursor:pointer;}
+.dc{background:#fff;border-radius:16px;padding:16px;box-shadow:var(--sh);margin-bottom:14px}
+.dag{display:grid;grid-template-columns:repeat(3,1fr);gap:7px;margin-bottom:12px}
+.da{padding:11px 4px;text-align:center;border-radius:10px;border:2px solid #e9d5ff;background:#faf5ff;cursor:pointer;font-family:'Sora',sans-serif;font-weight:700;font-size:.86rem;color:#6d28d9}
+.da.sel,.da:hover{background:#7c3aed;color:#fff;border-color:#7c3aed}
+.danb{background:#f3e8ff;border-radius:10px;padding:10px;font-size:.75rem;color:#6d28d9;margin-bottom:12px}
+.dtc{background:linear-gradient(135deg,#5b21b6,#7c3aed);border-radius:14px;padding:14px;color:#fff;text-align:center;margin-bottom:12px}
+.dtl{font-size:.72rem;opacity:.8;text-transform:uppercase;letter-spacing:.5px;margin-bottom:3px}
+.dtv{font-family:'Sora',sans-serif;font-weight:800;font-size:1.8rem}
+.dpbtn{width:100%;padding:13px;background:linear-gradient(135deg,#7c3aed,#a855f7);color:#fff;border:none;border-radius:12px;font-family:'Sora',sans-serif;font-weight:800;font-size:.95rem;cursor:pointer}
+.dpbtn:disabled{background:#ccc;cursor:not-allowed}
+.dlog{margin-top:12px}
+.de{background:#faf5ff;border-left:3px solid #a855f7;border-radius:0 8px 8px 0;padding:9px 12px;margin-bottom:7px}
+.dea{font-family:'Sora',sans-serif;font-weight:800;font-size:.93rem;color:#6d28d9}
+.dem{font-size:.7rem;color:var(--mu);margin-top:2px}
+/* MONTHLY REPORT */
+.rep{background:#fff;border-radius:14px;padding:14px;box-shadow:var(--sh);margin-top:16px;margin-bottom:14px}
+.rtabs{display:flex;border:1.5px solid var(--bo);border-radius:10px;overflow:hidden;margin-bottom:12px}
+.rtab{flex:1;padding:9px 5px;text-align:center;font-size:.74rem;font-weight:700;font-family:'Sora',sans-serif;cursor:pointer;background:#fff;color:var(--mu);border:none}
+.rtab.on{background:var(--g);color:#fff}
+.rmts{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:12px}
+.rmt{padding:6px 11px;border-radius:20px;border:1.5px solid var(--bo);background:#fff;font-size:.71rem;font-weight:700;cursor:pointer;color:var(--mu);font-family:'Sora',sans-serif}
+.rmt.on{background:var(--g);color:#fff;border-color:var(--g)}
+.rsg{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px}
+.rs{border-radius:12px;padding:13px;text-align:center;color:#fff}
+.rs.ng{background:linear-gradient(135deg,#1a7a4a,#26a86a)}
+.rs.rd{background:linear-gradient(135deg,#b91c1c,#d03030)}
+.rsn{font-family:'Sora',sans-serif;font-weight:800;font-size:1.5rem}
+.rsl{font-size:.67rem;opacity:.85;text-transform:uppercase;letter-spacing:.5px;margin-top:2px}
+.rrow{display:flex;align-items:center;gap:9px;padding:8px 0;border-bottom:1px solid #f0f5f2}
+.rrow:last-child{border-bottom:none}
+/* VERIFICATION */
+.ver{background:#fff;border-radius:14px;padding:14px;box-shadow:var(--sh);margin-top:16px;margin-bottom:14px;border-top:4px solid #7c3aed}
+.vert{font-family:'Sora',sans-serif;font-weight:800;font-size:.97rem;color:#5b21b6;margin-bottom:4px}
+.vers{font-size:.76rem;color:var(--mu);margin-bottom:12px;line-height:1.5}
+.vw{position:relative;margin-bottom:10px}
+.vw input{width:100%;padding:12px 40px 12px 14px;border:2px solid #e9d5ff;border-radius:11px;font-size:.9rem;background:#faf5ff;outline:none}
+.vw input:focus{border-color:#7c3aed;background:#fff}
+.vcard{border-radius:12px;padding:13px;margin-bottom:10px;border:2px solid #e9d5ff;background:#faf5ff}
+.vname{font-family:'Sora',sans-serif;font-weight:800;font-size:.95rem;color:#5b21b6;margin-bottom:10px;display:flex;align-items:center;gap:8px}
+.vrow{display:flex;align-items:flex-start;gap:8px;padding:7px 0;border-bottom:1px solid #f0e8ff}
+.vrow:last-child{border-bottom:none}
+.vbill{font-size:.79rem;font-weight:700;min-width:85px}
+.vmths{flex:1;display:flex;flex-wrap:wrap;gap:3px}
+.von{background:#d4f0e3;color:#157a45;padding:3px 8px;border-radius:20px;font-size:.64rem;font-weight:700}
+.voff{background:#fff3dc;color:#9a6200;padding:3px 8px;border-radius:20px;font-size:.64rem;font-weight:700}
+.vnp{font-size:.78rem;color:var(--red);font-weight:600}
 /* ADMIN */
-.al{position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:200;display:flex;align-items:center;justify-content:center;padding:20px;}
-.alb{background:#fff;border-radius:20px;padding:26px 20px;width:100%;max-width:380px;}
-.ali{width:100%;padding:11px 13px;border:2px solid var(--bo);border-radius:10px;font-size:.9rem;font-family:'DM Sans',sans-serif;background:#f9fbfa;color:var(--tx);outline:none;margin-bottom:9px;}
-.ali:focus{border-color:var(--gl);}
-.albt{width:100%;padding:12px;background:var(--g);color:#fff;border:none;border-radius:12px;font-family:'Sora',sans-serif;font-weight:700;font-size:.9rem;cursor:pointer;margin-bottom:8px;}
-.alc{width:100%;padding:10px;background:none;border:1.5px solid var(--bo);border-radius:12px;font-family:'Sora',sans-serif;font-weight:600;font-size:.84rem;cursor:pointer;color:var(--mu);}
-.abar{background:var(--gd);color:#fff;padding:7px 13px;display:flex;align-items:center;justify-content:space-between;font-size:.74rem;}
-.abarn{font-weight:700;font-family:'Sora',sans-serif;}
-.alo{background:rgba(255,255,255,.15);border:none;color:#fff;padding:5px 12px;border-radius:20px;font-size:.7rem;font-weight:700;cursor:pointer;font-family:'Sora',sans-serif;}
-.aerr{background:#ffeaea;color:var(--re);border-radius:8px;padding:8px 11px;font-size:.78rem;font-weight:600;margin-bottom:9px;display:none;}
-/* REPORT */
-.rep{background:var(--ca);border-radius:14px;padding:14px;box-shadow:0 3px 16px rgba(26,122,74,.1);margin-top:16px;}
-.rtabs{display:flex;border:1.5px solid var(--bo);border-radius:10px;overflow:hidden;margin-bottom:11px;}
-.rtab{flex:1;padding:9px 4px;text-align:center;font-size:.74rem;font-weight:700;font-family:'Sora',sans-serif;cursor:pointer;background:#fff;color:var(--mu);border:none;}
-.rtab.on{background:var(--g);color:#fff;}
-.rmts{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:12px;}
-.rmt{padding:6px 10px;border-radius:20px;border:1.5px solid var(--bo);background:#fff;font-size:.71rem;font-weight:700;cursor:pointer;color:var(--mu);font-family:'Sora',sans-serif;}
-.rmt.on{background:var(--g);color:#fff;border-color:var(--g);}
-.rsg{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-bottom:12px;}
-.rst{border-radius:12px;padding:13px 11px;text-align:center;}
-.rst.n{background:linear-gradient(135deg,#1a7a4a,#26a86a);color:#fff;}
-.rst.s{background:linear-gradient(135deg,#0f5233,#1a7a4a);color:#fff;}
-.rsn{font-family:'Sora',sans-serif;font-weight:800;font-size:1.55rem;}
-.rsl{font-size:.67rem;opacity:.85;text-transform:uppercase;letter-spacing:.5px;margin-top:2px;}
+.alock{position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:500;display:flex;align-items:center;justify-content:center;padding:20px;display:none}
+.abox{background:#fff;border-radius:20px;padding:26px 20px;width:100%;max-width:380px}
+.alogo{text-align:center;margin-bottom:16px}
+.afl{display:block;font-size:.74rem;font-weight:700;color:#0f5233;margin-bottom:4px;text-transform:uppercase;letter-spacing:.5px}
+.afi{width:100%;padding:11px 13px;border:2px solid var(--bo);border-radius:10px;font-size:.9rem;background:#f9fbfa;outline:none;margin-bottom:10px}
+.afi:focus{border-color:var(--gl)}
+.aerr{background:#ffeaea;color:var(--red);border-radius:8px;padding:8px 11px;font-size:.78rem;font-weight:600;margin-bottom:10px;display:none;text-align:center}
+.abar{background:#0f5233;color:#fff;padding:7px 14px;display:flex;align-items:center;justify-content:space-between;font-size:.75rem;display:none}
+.alob{background:rgba(255,255,255,.15);border:none;color:#fff;padding:5px 11px;border-radius:20px;font-size:.71rem;font-weight:700;cursor:pointer}
+/* OFFLINE */
+.oinfo{background:#fff8e6;border-left:4px solid var(--gold);border-radius:8px;padding:9px 12px;font-size:.76rem;color:#6b4c00;margin-bottom:11px;line-height:1.5}
+.osmb{background:#e8f7ef;border-radius:10px;padding:10px 12px;margin-bottom:10px;display:flex;align-items:center;gap:10px}
+.omg{display:grid;grid-template-columns:repeat(4,1fr);gap:4px;margin-bottom:7px}
+.omc{padding:6px 2px;text-align:center;border-radius:7px;font-size:.68rem;font-weight:600;cursor:pointer;border:1.5px solid var(--bo);background:#fff;color:var(--mu);transition:all .15s;user-select:none;position:relative}
+.omc.sel{background:var(--gold);color:#fff;border-color:var(--gold)}
+.omc.done{background:#d4f0e3;color:#157a45;border-color:#a8dfc4;cursor:pointer}
+.ofy{width:100%;padding:7px;background:#fff3dc;color:#9a6200;border:1.5px solid #f5c048;border-radius:7px;font-size:.76rem;font-weight:700;cursor:pointer;margin-bottom:7px}
+.osub{width:100%;padding:11px;background:var(--gold);color:#fff;border:none;border-radius:11px;font-family:'Sora',sans-serif;font-weight:700;font-size:.86rem;cursor:pointer;margin-top:4px}
+.osub:disabled{background:#ccc;cursor:not-allowed}
+.olog{margin-top:12px}
+.ole{background:#fff8e6;border-left:4px solid var(--gold);border-radius:8px;padding:8px 11px;margin-bottom:6px;font-size:.78rem}
+.oln{font-weight:700;font-size:.83rem}
+.olb{display:inline-block;background:var(--gold);color:#fff;font-size:.6rem;font-weight:700;padding:1px 7px;border-radius:20px;vertical-align:middle;margin-left:4px}
+/* BULK */
+.buw{background:#fff;border-radius:14px;padding:15px;box-shadow:var(--sh);margin-bottom:14px}
+.budz{border:2.5px dashed var(--bo);border-radius:12px;padding:24px 14px;text-align:center;cursor:pointer;background:#f9fbfa;margin-bottom:10px}
+.budz:hover{border-color:var(--gl);background:#f0faf5}
+.bupv{background:#f4faf7;border-radius:10px;padding:11px;margin-bottom:9px;display:none}
+.bupvl{max-height:140px;overflow-y:auto}
+.bupvr{font-size:.76rem;padding:3px 0;border-bottom:1px solid #e0edea}
+.bupvr:last-child{border-bottom:none}
+.bucb{width:100%;padding:12px;background:var(--g);color:#fff;border:none;border-radius:12px;font-family:'Sora',sans-serif;font-weight:700;font-size:.86rem;cursor:pointer;display:none;margin-bottom:6px}
+/* ADMIN PANEL */
+.sarow{display:flex;align-items:center;justify-content:space-between;padding:9px 0;border-bottom:1px solid var(--bo)}
+.sarow:last-child{border-bottom:none}
+.sadel{background:#ffeaea;color:var(--red);border:none;padding:5px 11px;border-radius:20px;font-size:.71rem;font-weight:700;cursor:pointer}
 /* MODAL */
-.mov{position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:200;display:flex;align-items:flex-end;justify-content:center;}
-.msh{background:#fff;border-radius:20px 20px 0 0;width:100%;max-width:700px;max-height:80vh;display:flex;flex-direction:column;}
-.mhd{padding:14px 16px 10px;border-bottom:1px solid var(--bo);display:flex;align-items:center;justify-content:space-between;flex-shrink:0;}
-.mti{font-family:'Sora',sans-serif;font-weight:800;font-size:.95rem;}
-.mco{font-size:.73rem;color:var(--mu);margin-top:2px;}
-.mcl{background:#f0f5f2;border:none;border-radius:50%;width:30px;height:30px;font-size:.9rem;cursor:pointer;}
-.mbd{overflow-y:auto;padding:12px 16px 6px;flex:1;}
-.mmr{display:flex;align-items:center;gap:10px;padding:9px 0;border-bottom:1px solid #f0f5f2;}
-.mmr:last-child{border-bottom:none;}
-.mft{padding:11px 16px 18px;flex-shrink:0;border-top:1px solid var(--bo);}
-.prb{width:100%;padding:12px;background:var(--gd);color:#fff;border:none;border-radius:12px;font-family:'Sora',sans-serif;font-weight:700;font-size:.87rem;cursor:pointer;}
-.sa{background:var(--ca);border-radius:14px;padding:14px;box-shadow:0 3px 16px rgba(26,122,74,.1);margin-bottom:12px;}
-.sar{display:flex;align-items:center;justify-content:space-between;padding:9px 0;border-bottom:1px solid var(--bo);}
-.sar:last-child{border-bottom:none;}
-.sarn{font-weight:600;font-size:.85rem;}
-.sarr{font-size:.7rem;color:var(--mu);}
-.sad{background:#ffeaea;color:var(--re);border:none;padding:5px 11px;border-radius:20px;font-size:.7rem;font-weight:700;cursor:pointer;}
-.saf{display:flex;flex-direction:column;gap:8px;margin-top:12px;}
-.saf input,.saf select{padding:10px 12px;border:2px solid var(--bo);border-radius:9px;font-size:.84rem;font-family:'DM Sans',sans-serif;background:#f9fbfa;outline:none;}
-.saf input:focus,.saf select:focus{border-color:var(--gl);}
-.sab{padding:11px;background:var(--g);color:#fff;border:none;border-radius:10px;font-family:'Sora',sans-serif;font-weight:700;font-size:.85rem;cursor:pointer;}
-.es{text-align:center;color:var(--mu);font-size:.83rem;padding:24px 0;}
-.toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:var(--gd);color:#fff;padding:11px 20px;border-radius:50px;font-size:.82rem;font-weight:600;box-shadow:0 6px 20px rgba(0,0,0,.2);opacity:0;pointer-events:none;transition:opacity .3s;z-index:999;white-space:nowrap;}
-.toast.sh{opacity:1;}
+.mov{position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:200;display:flex;align-items:flex-end;justify-content:center}
+.msh{background:#fff;border-radius:20px 20px 0 0;width:100%;max-width:700px;max-height:82vh;display:flex;flex-direction:column}
+.mhd{padding:14px 16px 10px;border-bottom:1px solid var(--bo);display:flex;align-items:center;justify-content:space-between;flex-shrink:0}
+.mtit{font-family:'Sora',sans-serif;font-weight:800;font-size:.96rem}
+.mbd{overflow-y:auto;padding:12px 16px 6px;flex:1}
+.mft{padding:11px 16px 16px;flex-shrink:0;border-top:1px solid var(--bo)}
+.prb{width:100%;padding:12px;background:#0f5233;color:#fff;border:none;border-radius:12px;font-family:'Sora',sans-serif;font-weight:700;font-size:.86rem;cursor:pointer;margin-bottom:8px}
+.pdb{width:100%;padding:12px;background:#0066cc;color:#fff;border:none;border-radius:12px;font-family:'Sora',sans-serif;font-weight:700;font-size:.86rem;cursor:pointer}
+.mrow{display:flex;align-items:center;gap:10px;padding:9px 0;border-bottom:1px solid #f0f5f2}
+.mrow:last-child{border-bottom:none}
+/* TOAST */
+.toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:#0f5233;color:#fff;padding:11px 20px;border-radius:50px;font-size:.82rem;font-weight:600;box-shadow:0 6px 20px rgba(0,0,0,.2);opacity:0;pointer-events:none;transition:opacity .3s;z-index:999;white-space:nowrap}
+.toast.show{opacity:1}
+/* PRINT */
+#PA{display:none}
+/* PWA INSTALL BANNER */
+.pwa-banner{position:fixed;bottom:0;left:0;right:0;background:linear-gradient(135deg,var(--gd),var(--g));color:#fff;padding:14px 16px;z-index:300;display:flex;align-items:center;gap:12px;box-shadow:0 -4px 20px rgba(0,0,0,.2);transform:translateY(100%);transition:transform .4s ease;}
+.pwa-banner.show{transform:translateY(0);}
+.pwa-banner-icon{font-size:2rem;flex-shrink:0;}
+.pwa-banner-text{flex:1;}
+.pwa-banner-title{font-family:'Sora',sans-serif;font-weight:800;font-size:.9rem;}
+.pwa-banner-sub{font-size:.73rem;opacity:.85;margin-top:2px;}
+.pwa-install-btn{background:#fff;color:var(--gd);border:none;padding:8px 16px;border-radius:20px;font-family:'Sora',sans-serif;font-weight:800;font-size:.78rem;cursor:pointer;white-space:nowrap;}
+.pwa-dismiss{background:none;border:none;color:rgba(255,255,255,.7);font-size:1.2rem;cursor:pointer;padding:4px;flex-shrink:0;}
+/* YEAR SELECTOR */
+.yr-row{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px;align-items:center;}
+.yr-label{font-size:.75rem;font-weight:700;color:var(--gd);text-transform:uppercase;letter-spacing:.5px;}
+.yr-btn{padding:6px 13px;border-radius:20px;border:1.5px solid var(--bo);background:#fff;font-size:.75rem;font-weight:700;cursor:pointer;color:var(--mu);font-family:'Sora',sans-serif;transition:all .15s;}
+.yr-btn.active{background:var(--g);color:#fff;border-color:var(--g);}
+.hcard{background:#fff;border-radius:12px;padding:13px;border:1.5px solid var(--bo);margin-bottom:8px;}
+.hyr{font-family:'Sora',sans-serif;font-weight:800;font-size:.9rem;color:var(--gd);margin-bottom:8px;padding-bottom:6px;border-bottom:2px solid #f0f5f2;}
+.hbrow{display:flex;align-items:flex-start;gap:8px;padding:6px 0;border-bottom:1px solid #f0f5f2;}
+.hbrow:last-child{border-bottom:none;}
+.hbn{font-size:.78rem;font-weight:700;min-width:90px;}
+.hms{display:flex;flex-wrap:wrap;gap:3px;flex:1;}
+.hon{background:#d4f0e3;color:#157a45;padding:2px 7px;border-radius:20px;font-size:.64rem;font-weight:700;}
+.hoff{background:#fff3dc;color:#9a6200;padding:2px 7px;border-radius:20px;font-size:.64rem;font-weight:700;}
+.hnone{font-size:.75rem;color:var(--re);font-weight:600;}
 @media print{
-body *{visibility:hidden;}
-#PA,#PA *{visibility:visible;}
-#PA{position:fixed;inset:0;background:#fff;padding:26px;font-family:Arial,sans-serif;}
-.ph{text-align:center;margin-bottom:16px;}
-.ph h2{font-size:1.2rem;font-weight:bold;}
-.ph p{font-size:.8rem;color:#555;margin-top:3px;}
-.pt{width:100%;border-collapse:collapse;margin-top:10px;}
-.pt th{background:#0f5233;color:#fff;padding:8px 10px;text-align:left;font-size:.8rem;}
-.pt td{padding:7px 10px;border-bottom:1px solid #ddd;font-size:.79rem;}
-.pt tr:nth-child(even) td{background:#f5faf7;}
-.pf{margin-top:12px;font-size:.7rem;color:#888;text-align:center;}
+body *{visibility:hidden!important}
+#PA,#PA *{visibility:visible!important}
+#PA{position:fixed!important;top:0!important;left:0!important;width:100%!important;background:#fff!important;padding:24px!important;font-family:Arial,sans-serif!important;z-index:99999!important;display:block!important}
+.ph h2{font-size:1.2rem;font-weight:bold;margin-bottom:4px}
+.ph p{font-size:.8rem;color:#555;margin-bottom:14px}
+.pt{width:100%;border-collapse:collapse}
+.pt th{background:#0f5233;color:#fff;padding:8px 10px;text-align:left;font-size:.8rem}
+.pt td{padding:7px 10px;border-bottom:1px solid #ddd;font-size:.78rem}
+.pt tr:nth-child(even) td{background:#f5faf7}
+.pf{margin-top:14px;font-size:.72rem;color:#888;text-align:center}
 }
 </style>
 </head>
 <body>
-<div id="abar" class="abar" style="display:none">
-  <div class="abarn" id="abarN">Admin</div>
-  <button class="alo" onclick="doLogout()">Logout</button>
-</div>
+
+<div id="PA"></div>
+
 <header>
-  <div class="hbadge">Okpu Orba</div>
+  <div class="hb">Okpu Orba</div>
   <h1>🌳 Community Payment Tracker</h1>
-  <p>Transparency · Trust · Unity</p>
-  <div class="hlbl">Find yourself &amp; make payment</div>
-  <div class="hsw">
+  <p>Transparency &middot; Trust &middot; Unity</p>
+  <div class="hs">
+    <div class="hsl">Find yourself &amp; make payment</div>
     <input type="text" id="hsi" placeholder="Type your name here..." oninput="onHS()" autocomplete="off">
     <span class="hsi">🔍</span>
-    <div class="hdr" id="hdr"></div>
+    <div class="hsr" id="hsr"></div>
   </div>
 </header>
-<div class="tabs">
-  <button class="tab on" onclick="swT('home',this)">🏠 Home</button>
-  <button class="tab" onclick="swT('members',this)">👥 Members</button>
-  <button class="tab" onclick="swT('news',this)">📰 News</button>
-  <button class="tab" onclick="swT('donate',this)">💜 Donate</button>
-  <button class="tab" onclick="reqA(this)">📵 Admin</button>
+
+<div class="abar" id="abar">
+  <span id="abarN">Admin</span>
+  <button class="alob" onclick="doLogout()">Logout</button>
 </div>
+
+<div class="tabs">
+  <button class="tab on" onclick="swTab('home',this)">🏠 Home</button>
+  <button class="tab" onclick="swTab('members',this)">👥 Members</button>
+  <button class="tab" onclick="swTab('news',this)">📰 News</button>
+  <button class="tab" onclick="swTab('donate',this)">💜 Donate</button>
+  <button class="tab" onclick="reqAdmin(this)">📵 Admin</button>
+</div>
+
 <main>
-  <div class="pg on" id="pg-home">
-    <div id="sumSec"></div>
-    <div class="sw"><input type="text" id="si" placeholder="Type your name to find yourself..." oninput="onS()" autocomplete="off"><span class="si">🔍</span></div>
-    <div class="sr" id="sr"></div>
-    <div class="mc" id="mc">
-      <div class="mct"><div class="avl" id="cav"></div><div><div class="mn" id="cnm"></div><div class="mi" id="cid"></div></div></div>
-      <div id="cbills"></div>
-      <button class="clb" onclick="closeCard()">✕ Close</button>
-    </div>
-    <div id="newsPrev"></div>
-    <div class="stit" style="margin-bottom:8px">📋 Recent Payments</div>
-    <div class="ml" id="recL"></div>
-    <div class="rep">
-      <div class="stit" style="margin-bottom:8px">📊 Monthly Payment Report</div>
-      <p style="font-size:.77rem;color:var(--mu);margin-bottom:10px">Select a month to see who paid.</p>
-      <div class="rtabs"><button class="rtab on" onclick="rSwitch('n',this)">⚡ NEPA Bill</button><button class="rtab" onclick="rSwitch('s',this)">🔒 Security Levy</button></div>
-      <div class="rmts" id="rmts"></div>
-      <div class="rsg" id="rsg"></div>
-      <div id="rlist"></div>
-    </div>
+<!-- HOME -->
+<div class="pg on" id="pg-home">
+  <div id="sumSec"></div>
+  <div class="sw">
+    <input type="text" id="si" placeholder="Type your name to find yourself..." oninput="onS()" autocomplete="off">
   </div>
-  <div class="pg" id="pg-members">
-    <div class="fr">
-      <button class="fb on" onclick="filM('all',this)">All</button>
-      <button class="fb" onclick="filM('nu',this)">NEPA Owing</button>
-      <button class="fb" onclick="filM('su',this)">Security Owing</button>
-      <button class="fb" onclick="filM('fp',this)">Fully Paid ✅</button>
+  <div class="sr" id="sr"></div>
+  <div class="mc" id="mc">
+    <div class="mct">
+      <div class="avl" id="cav"></div>
+      <div><div class="mn" id="cnm"></div><div class="mi" id="cid"></div></div>
     </div>
-    <div class="stit">👥 All Members</div>
-    <div class="ml" id="mlist"></div>
+    <div id="cbills"></div>
+    <button class="clb" onclick="closeCard()">Close</button>
   </div>
-  <div class="pg" id="pg-news">
-    <div id="nCompose"></div>
-    <div class="stit" style="margin-bottom:8px">📰 Community News</div>
-    <div id="nFeed"></div>
-  </div>
-  <div class="pg" id="pg-donate">
-    <div class="dc">
-      <div style="text-align:center;margin-bottom:14px">
-        <div style="font-size:2.2rem;margin-bottom:6px">💜</div>
-        <div style="font-family:'Sora',sans-serif;font-weight:800;font-size:1.05rem;color:#5b21b6">Free-Will Donation</div>
-        <div style="font-size:.79rem;color:var(--mu);margin-top:4px">Support Okpu Orba community anonymously</div>
-        <div style="display:inline-block;background:#f3e8ff;color:#7c3aed;font-size:.67rem;font-weight:700;padding:3px 10px;border-radius:20px;margin-top:6px">🔒 100% Anonymous</div>
-      </div>
-      <div class="dtc"><div class="dtl">Total Donations Raised</div><div class="dtv" id="dtv">₦0</div><div style="font-size:.71rem;opacity:.75;margin-top:3px" id="dtc2">0 donations</div></div>
-      <div id="dSucc" style="display:none;background:#f3e8ff;border-radius:12px;padding:16px;text-align:center;margin-bottom:12px"><div style="font-size:2rem;margin-bottom:5px">🙏</div><div style="font-family:'Sora',sans-serif;font-weight:700;font-size:.93rem;color:#5b21b6">Thank you for donating!</div><div style="font-size:.77rem;color:var(--mu);margin-top:3px">Recorded anonymously</div></div>
-      <div class="danb">🔒 Your identity is completely hidden. Only the amount and time is recorded.</div>
-      <div style="font-family:'Sora',sans-serif;font-weight:700;font-size:.78rem;color:#5b21b6;margin-bottom:8px;text-transform:uppercase;letter-spacing:.5px">Choose amount:</div>
-      <div class="dag">
-        <div class="da" onclick="selA(500,this)">₦500</div>
-        <div class="da" onclick="selA(1000,this)">₦1,000</div>
-        <div class="da" onclick="selA(2000,this)">₦2,000</div>
-        <div class="da" onclick="selA(5000,this)">₦5,000</div>
-        <div class="da" onclick="selA(10000,this)">₦10,000</div>
-        <div class="da" onclick="selA(0,this)">Custom</div>
-      </div>
-      <div class="dinw"><span class="dpfx">₦</span><input type="number" id="damt" placeholder="Enter amount" min="1" oninput="onDA()" inputmode="numeric"></div>
-      <button class="dbn" id="dbn" onclick="subDon()" disabled>💜 Donate Anonymously</button>
-      <div id="dlog" style="margin-top:12px"></div>
+  <div id="newsPrev"></div>
+  <div class="stit" style="margin-bottom:8px">📋 Recent Payments</div>
+  <div class="ml" id="recL"></div>
+  <!-- MONTHLY REPORT -->
+  <div class="rep">
+    <div class="stit" style="margin-bottom:6px">📊 Monthly Payment Report</div>
+    <p style="font-size:.76rem;color:var(--mu);margin-bottom:10px">Select a month to see who paid and total count.</p>
+    <div class="yr-row" id="repYrRow"></div>
+    <div class="rtabs">
+      <button class="rtab on" onclick="rSw('n',this)">⚡ NEPA Bill</button>
+      <button class="rtab" onclick="rSw('s',this)">🔒 Security Levy</button>
     </div>
+    <div class="rmts" id="rmts"></div>
+    <div class="rsg" id="rsg"></div>
+    <div id="rlist"></div>
   </div>
-  <div class="pg" id="pg-admin">
-    <div class="sa" id="saPanel"></div>
-    <div class="ow">
-      <div class="stit" style="margin-bottom:8px">📵 Record Offline Payment</div>
-      <div class="oi">👴 For elders without smartphones — search their name, pick months paid in cash, then record.</div>
-      <div class="sw"><input type="text" id="ofsi" placeholder="Search member name..." oninput="onOFS()" autocomplete="off"></div>
-      <div class="or" id="ofR"></div>
-      <div id="ofSB"></div>
-      <div id="ofNB" style="display:none" class="obb">
-        <div class="obbt">⚡ NEPA Bill — months paid in cash:</div>
-        <button class="ofy" onclick="ofFY('n')">⭐ All Remaining</button>
+  <!-- PAYMENT VERIFICATION -->
+  <div class="ver">
+    <div class="vert">🔍 Payment Verification</div>
+    <div class="vers">Type any member's name to verify payment status. Shows if paid online or offline, and which admin approved cash payments.</div>
+    <div class="vw">
+      <input type="text" id="verI" placeholder="Type member name to verify..." oninput="onVer()" autocomplete="off">
+    </div>
+    <div id="verR"></div>
+  </div>
+</div>
+
+<!-- MEMBERS -->
+<div class="pg" id="pg-members">
+  <div class="fr">
+    <button class="fb on" onclick="filM('all',this)">All</button>
+    <button class="fb" onclick="filM('nu',this)">NEPA Owing</button>
+    <button class="fb" onclick="filM('su',this)">Security Owing</button>
+    <button class="fb" onclick="filM('fp',this)">Fully Paid</button>
+  </div>
+  <div class="stit">👥 All Members</div>
+  <div class="ml" id="mlist"></div>
+</div>
+
+<!-- NEWS -->
+<div class="pg" id="pg-news">
+  <div id="nCompose"></div>
+  <div class="stit" style="margin-bottom:8px">📰 Community News</div>
+  <div id="nFeed"></div>
+</div>
+
+<!-- DONATE -->
+<div class="pg" id="pg-donate">
+  <div class="dc">
+    <div style="text-align:center;margin-bottom:14px">
+      <div style="font-size:2.2rem;margin-bottom:6px">💜</div>
+      <div style="font-family:'Sora',sans-serif;font-weight:800;font-size:1.05rem;color:#5b21b6">Free-Will Donation</div>
+      <div style="font-size:.78rem;color:var(--mu);margin-top:4px">Support Okpu Orba community anonymously</div>
+      <div style="display:inline-block;background:#f3e8ff;color:#7c3aed;font-size:.66rem;font-weight:700;padding:3px 10px;border-radius:20px;margin-top:6px">100% Anonymous</div>
+    </div>
+    <div class="dtc">
+      <div class="dtl">Total Donations Raised</div>
+      <div class="dtv" id="dtv">0</div>
+      <div style="font-size:.71rem;opacity:.75;margin-top:3px" id="dtc2">0 donations</div>
+    </div>
+    <div id="dSucc" style="display:none;background:#f3e8ff;border-radius:12px;padding:16px;text-align:center;margin-bottom:12px">
+      <div style="font-size:2rem;margin-bottom:5px">🙏</div>
+      <div style="font-family:'Sora',sans-serif;font-weight:700;color:#5b21b6">Thank you for donating!</div>
+      <div style="font-size:.76rem;color:var(--mu);margin-top:3px">Recorded anonymously</div>
+    </div>
+    <div class="danb">Your identity is completely hidden. Only the amount and time is recorded.</div>
+    <div style="font-family:'Sora',sans-serif;font-weight:700;font-size:.78rem;color:#5b21b6;margin-bottom:8px;text-transform:uppercase;letter-spacing:.5px">Choose amount:</div>
+    <div class="dag">
+      <div class="da" onclick="selA(500,this)">500</div>
+      <div class="da" onclick="selA(1000,this)">1,000</div>
+      <div class="da" onclick="selA(2000,this)">2,000</div>
+      <div class="da" onclick="selA(5000,this)">5,000</div>
+      <div class="da" onclick="selA(10000,this)">10,000</div>
+      <div class="da" onclick="selA(0,this)">Custom</div>
+    </div>
+    <div style="position:relative;margin-bottom:12px">
+      <span style="position:absolute;left:12px;top:50%;transform:translateY(-50%);font-weight:800;color:#7c3aed">N</span>
+      <input type="number" id="dAmt" id="damt" placeholder="Enter amount" oninput="onDonInput()" min="1" oninput="onDI()" inputmode="numeric" style="width:100%;padding:12px 14px 12px 26px;border:2px solid #e9d5ff;border-radius:11px;font-size:.93rem;background:#faf5ff;outline:none">
+    </div>
+    <button class="dpbtn" id="dpbtn" onclick="submitD()" disabled>Donate Anonymously</button>
+    <div class="dlog" id="dlog"></div>
+  </div>
+</div>
+
+<!-- ADMIN -->
+<div class="pg" id="pg-admin">
+  <div id="saPanel"></div>
+  <!-- OFFLINE -->
+  <div class="card">
+    <div class="stit" style="margin-bottom:8px">Record Offline Payment</div>
+    <div class="oinfo">For elders without smartphones - search their name, pick months paid in cash, then tap Record.</div>
+    <div style="position:relative;margin-bottom:8px">
+      <input type="text" id="ofSI" placeholder="Search member name..." oninput="onOfS()" autocomplete="off" style="width:100%;padding:11px 12px;border:2px solid var(--bo);border-radius:10px;font-size:.86rem;background:#f9fbfa;outline:none">
+    </div>
+    <div class="sr" id="ofR"></div>
+    <div id="ofSelB"></div>
+    <div class="yr-row" id="ofYrRow" style="display:none;margin-bottom:8px"></div>
+    <div id="ofNB" style="display:none">
+      <div style="background:#f4faf7;border-radius:10px;padding:11px;margin-bottom:9px">
+        <div style="font-weight:700;font-size:.82rem;margin-bottom:6px">NEPA Bill - Select months paid in cash:</div>
+        <button class="ofy" onclick="ofFY('n')">All Remaining Months</button>
         <div class="omg" id="ofNG"></div>
       </div>
-      <div id="ofSBB" style="display:none" class="obb">
-        <div class="obbt">🔒 Security Levy — months paid in cash:</div>
-        <button class="ofy" onclick="ofFY('s')">⭐ All Remaining</button>
+    </div>
+    <div id="ofSB" style="display:none">
+      <div style="background:#f4faf7;border-radius:10px;padding:11px;margin-bottom:9px">
+        <div style="font-weight:700;font-size:.82rem;margin-bottom:6px">Security Levy - Select months paid in cash:</div>
+        <button class="ofy" onclick="ofFY('s')">All Remaining Months</button>
         <div class="omg" id="ofSG"></div>
       </div>
-      <button class="osb" id="ofSub" onclick="recOff()" disabled>📝 Record Offline Payment</button>
-      <div id="ofLog" style="margin-top:12px"></div>
     </div>
-    <div class="bw">
-      <div class="stit" style="margin-bottom:8px">📋 Bulk Add Members</div>
-      <div class="bpa" id="bpaste" placeholder="Paste names here, one per line:&#10;&#10;Emeka Okonkwo&#10;Ngozi Adaeze&#10;..."></div>
-      <button class="bpb" onclick="buPaste()">➕ Preview Names</button>
-      <div id="bprev" style="display:none;background:#f4faf7;border-radius:10px;padding:11px;margin-bottom:9px">
-        <div id="bprevT" style="font-weight:700;font-size:.82rem;margin-bottom:5px"></div>
-        <div id="bprevL" style="max-height:140px;overflow-y:auto;font-size:.77rem"></div>
-      </div>
-      <button class="bcb" id="bcb" onclick="buConf()">✅ Add All Members</button>
-      <button class="btmpl" onclick="buTmpl()">⬇️ Download CSV Template</button>
-    </div>
-    <div class="aw">
-      <div class="stit" style="margin-bottom:8px">➕ Add Single Member</div>
-      <input type="text" id="newN" placeholder="Full Name">
-      <input type="text" id="newA" placeholder="Address (optional)">
-      <button class="ab" onclick="addOne()">Register Member</button>
-    </div>
-    <div class="aw">
-      <div class="stit" style="margin-bottom:8px">💰 Monthly Bill Rates</div>
-      <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--bo)"><span style="font-size:.85rem;font-weight:600">⚡ NEPA Bill / month</span><span style="font-family:'Sora',sans-serif;font-weight:800;color:var(--g)">₦2,000</span></div>
-      <div style="display:flex;justify-content:space-between;padding:8px 0"><span style="font-size:.85rem;font-weight:600">🔒 Security Levy / month</span><span style="font-family:'Sora',sans-serif;font-weight:800;color:var(--g)">₦1,500</span></div>
-    </div>
+    <button class="osub" id="ofSub" onclick="recOff()" disabled>Record Offline Payment</button>
+    <div class="olog" id="oLog"></div>
   </div>
-</main>
-<div class="toast" id="tst"></div>
-<div id="PA" style="display:none"></div>
-<div class="al" id="adminLock" style="display:none">
-  <div class="alb">
-    <div style="text-align:center;margin-bottom:16px"><div style="font-size:2rem;margin-bottom:5px">🔐</div><div style="font-family:'Sora',sans-serif;font-weight:800;font-size:1.05rem;color:var(--gd)">Admin Login</div><div style="font-size:.77rem;color:var(--mu);margin-top:3px">Okpu Orba Community</div></div>
-    <div class="aerr" id="aerr">Incorrect email or password</div>
-    <label style="font-size:.74rem;font-weight:700;color:var(--gd);display:block;margin-bottom:5px;text-transform:uppercase;letter-spacing:.5px">Email</label>
-    <input class="ali" type="email" id="aEmail" placeholder="Admin email" autocomplete="off">
-    <label style="font-size:.74rem;font-weight:700;color:var(--gd);display:block;margin-bottom:5px;text-transform:uppercase;letter-spacing:.5px">Password</label>
-    <input class="ali" type="password" id="aPass" placeholder="Password">
-    <button class="albt" onclick="doLogin()">🔓 Login</button>
-    <button class="alc" onclick="cancelLogin()">Cancel</button>
+  <!-- BULK UPLOAD -->
+  <div class="buw">
+    <div class="stit" style="margin-bottom:8px">Bulk Upload Members</div>
+    <div class="oinfo">Upload Excel/CSV or paste names to add many members at once.</div>
+    <div style="display:flex;border:1.5px solid var(--bo);border-radius:10px;overflow:hidden;margin-bottom:12px">
+      <button style="flex:1;padding:9px 5px;text-align:center;font-size:.73rem;font-weight:700;background:#1a7a4a;color:#fff;border:none;cursor:pointer" onclick="swBT('file',this)" id="btF">Upload File</button>
+      <button style="flex:1;padding:9px 5px;text-align:center;font-size:.73rem;font-weight:700;background:#fff;color:var(--mu);border:none;cursor:pointer" onclick="swBT('paste',this)" id="btP">Paste Names</button>
+    </div>
+    <div id="buFS">
+      <div class="budz" onclick="document.getElementById('buFI').click()">
+        <div style="font-size:2rem;margin-bottom:6px">📂</div>
+        <div style="font-family:'Sora',sans-serif;font-weight:700;font-size:.86rem;color:#0f5233">Tap to choose file</div>
+        <div style="font-size:.72rem;color:var(--mu);margin-top:3px">Accepts .xlsx or .csv - Column A: Name, Column B: Address</div>
+      </div>
+      <input type="file" id="buFI" style="display:none" accept=".csv,.xlsx,.xls" onchange="buFile(this.files[0])">
+      <button onclick="buTpl()" style="width:100%;padding:9px;background:#fff;color:#0f5233;border:1.5px solid var(--bo);border-radius:10px;font-family:'Sora',sans-serif;font-weight:700;font-size:.76rem;cursor:pointer">Download Sample Template</button>
+    </div>
+    <div id="buPS" style="display:none">
+      <textarea id="buPA" style="width:100%;min-height:90px;padding:10px;border:2px solid var(--bo);border-radius:10px;font-size:.82rem;background:#f9fbfa;outline:none;resize:vertical;margin-bottom:8px" placeholder="Paste names here, one per line..."></textarea>
+      <button onclick="buPaste()" style="width:100%;padding:11px;background:#0f5233;color:#fff;border:none;border-radius:10px;font-family:'Sora',sans-serif;font-weight:700;font-size:.84rem;cursor:pointer">Preview Names</button>
+    </div>
+    <div class="bupv" id="buPV">
+      <div style="font-weight:700;font-size:.82rem;margin-bottom:5px;color:#0f5233" id="buPVT"></div>
+      <div class="bupvl" id="buPVL"></div>
+      <div style="font-size:.71rem;color:var(--mu);margin-top:3px" id="buMore"></div>
+    </div>
+    <button class="bucb" id="buCB" onclick="buConfirm()">Add All Members</button>
+  </div>
+  <!-- ADD SINGLE -->
+  <div class="card">
+    <div class="stit" style="margin-bottom:8px">Register Single Member</div>
+    <input type="text" id="newN" placeholder="Full Name">
+    <input type="text" id="newA" placeholder="House / Address (optional)">
+      <div style="margin-bottom:9px">
+        <label style="font-size:.75rem;font-weight:700;color:var(--gd);display:block;margin-bottom:5px;text-transform:uppercase;letter-spacing:.5px">Gender</label>
+        <div style="display:flex;gap:10px">
+          <label style="display:flex;align-items:center;gap:6px;font-size:.86rem;cursor:pointer">
+            <input type="radio" name="newGender" id="newGM" value="m" checked onchange="document.getElementById('newG').value='m'"> Male (₦2,000 Security)
+          </label>
+          <label style="display:flex;align-items:center;gap:6px;font-size:.86rem;cursor:pointer">
+            <input type="radio" name="newGender" id="newGF" value="f" onchange="document.getElementById('newG').value='f'"> Female (₦1,000 Security)
+          </label>
+        </div>
+        <input type="hidden" id="newG" value="m">
+      </div>
+    <button class="gbtn" onclick="addOne()">Register Member</button>
+  </div>
+  <!-- RATES -->
+  <div class="card">
+    <div class="stit" style="margin-bottom:8px">Monthly Bill Rates</div>
+    <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--bo)">
+      <span style="font-size:.84rem;font-weight:600">NEPA Bill (per month)</span>
+      <span style="font-family:'Sora',sans-serif;font-weight:800;color:var(--g)">N2,000</span>
+    </div>
+    <div style="display:flex;justify-content:space-between;padding:8px 0">
+      <span style="font-size:.84rem;font-weight:600">Security Levy (per month)</span>
+      <span style="font-family:'Sora',sans-serif;font-weight:800;color:var(--g)">N1,500</span>
+    </div>
   </div>
 </div>
+</main>
+
+<!-- ADMIN LOGIN -->
+<div class="alock" id="alock">
+  <div class="abox">
+    <div class="alogo">
+      <div style="font-size:2.2rem;margin-bottom:6px">🔐</div>
+      <div style="font-family:'Sora',sans-serif;font-weight:800;font-size:1.05rem;color:#0f5233">Admin Login</div>
+      <div style="font-size:.76rem;color:var(--mu);margin-top:3px">Okpu Orba - Authorised Access Only</div>
+    </div>
+    <div class="aerr" id="aerr">Incorrect email or password</div>
+    <label class="afl">Email Address</label>
+    <input class="afi" type="email" id="aEmail" placeholder="Your admin email" autocomplete="off">
+    <label class="afl">Password</label>
+    <input class="afi" type="password" id="aPass" placeholder="Your password">
+    <button class="gbtn" onclick="doLogin()">Login to Admin</button>
+    <button onclick="cancelLogin()" style="width:100%;padding:10px;background:none;border:1.5px solid var(--bo);border-radius:11px;font-size:.82rem;cursor:pointer;color:var(--mu)">Cancel</button>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
 <script>
+var selDAmt=0;
+var CY=new Date().getFullYear();
+var selYr=CY;
+var repYr=CY;
+// Default year is always current year
 var MO=['January','February','March','April','May','June','July','August','September','October','November','December'];
-var NR=2000,SR=1500,KEY='okpu_v6',NK='okpu_news',DK='okpu_don',AK='okpu_adm';
-var DEF=[
-{id:'M001',name:'Adeyemi Bello',addr:'No.1 Palm Street',nm:[0,1,2],sm:[0,1]},
-{id:'M002',name:'Fatimah Adesola',addr:'No.3 River Road',nm:[0,1,2,3,4,5,6,7,8,9,10,11],sm:[0,1,2,3,4,5,6,7,8,9,10,11]},
-{id:'M003',name:'Chukwuemeka Obi',addr:'No.7 Central Ave',nm:[0,1,2,3],sm:[]},
-{id:'M004',name:'Amina Garba',addr:'Block B Unit 2',nm:[],sm:[0,1,2]},
-{id:'M005',name:'Taiwo Olawale',addr:'No.12 Market Lane',nm:[],sm:[]},
-{id:'M006',name:'Blessing Nwosu',addr:'House 5 East End',nm:[0,1,2,3,4],sm:[0,1,2,3,4]},
-{id:'M0007',name:'Asogwa Ekene',addr:'',nm:[],sm:[]},
-{id:'M0008',name:'Odo Chibuzo',addr:'',nm:[],sm:[]},
-{id:'M0009',name:'Ugwuanyi Ogechukwu',addr:'',nm:[],sm:[]},
-{id:'M0010',name:'Christian Ejiofor Ugwueze',addr:'',nm:[],sm:[]},
-{id:'M0011',name:'Eze Benjamin C.',addr:'',nm:[],sm:[]},
-{id:'M0012',name:'Barr. Peter Mba',addr:'',nm:[],sm:[]},
-{id:'M0013',name:'Mba Amos Freedom',addr:'',nm:[],sm:[]},
-{id:'M0014',name:'Ugwuaba Stephen Osita',addr:'',nm:[],sm:[]},
-{id:'M0015',name:'Abonyi Kenneth O.',addr:'',nm:[],sm:[]},
-{id:'M0016',name:'Dr. Valentine Ogochukwu Ogbu',addr:'',nm:[],sm:[]},
-{id:'M0017',name:'Rev. Engr. Ejike Asogwa',addr:'',nm:[],sm:[]},
-{id:'M0018',name:'Emeka Eze (Protocol)',addr:'',nm:[],sm:[]},
-{id:'M0019',name:'Ojobor Christian',addr:'',nm:[],sm:[]},
-{id:'M0020',name:'Odo Amos Nwabueze (Emeodi)',addr:'',nm:[],sm:[]},
-{id:'M0021',name:'Mbaeze Ikenna',addr:'',nm:[],sm:[]},
-{id:'M0022',name:'Abonyi Christian Adimoramma',addr:'',nm:[],sm:[]},
-{id:'M0023',name:'Odo Ugochukwu (FineBoy)',addr:'',nm:[],sm:[]},
-{id:'M0024',name:'Asogwa Chijioke',addr:'',nm:[],sm:[]},
-{id:'M0025',name:'Ndubuisi Asogwa',addr:'',nm:[],sm:[]},
-{id:'M0026',name:'Odoh Daniel Chukwuemeka',addr:'',nm:[],sm:[]},
-{id:'M0027',name:'Dr. Frank Chukwuemeka Odo',addr:'',nm:[],sm:[]},
-{id:'M0028',name:'Mkpozi Chidi',addr:'',nm:[],sm:[]},
-{id:'M0029',name:'Okolie Samson',addr:'',nm:[],sm:[]},
-{id:'M0030',name:'Ekwueme Jude',addr:'',nm:[],sm:[]},
-{id:'M0031',name:'Ezeumuokorobia',addr:'',nm:[],sm:[]},
-{id:'M0032',name:'Ugwuoke Okwudili',addr:'',nm:[],sm:[]},
-{id:'M0033',name:'Ugwu Sunday',addr:'',nm:[],sm:[]},
-{id:'M0034',name:'Agbo Uchenna (Urchman)',addr:'',nm:[],sm:[]},
-{id:'M0035',name:'Ekwueme Fimba',addr:'',nm:[],sm:[]},
-{id:'M0036',name:'Nnadi Sopulu',addr:'',nm:[],sm:[]},
-{id:'M0037',name:'Ugwu Kingsley',addr:'',nm:[],sm:[]},
-{id:'M0038',name:'Odoh Desmond Iyke',addr:'',nm:[],sm:[]},
-{id:'M0039',name:'Odoh Chidi',addr:'',nm:[],sm:[]},
-{id:'M0040',name:'Asogwa Victor',addr:'',nm:[],sm:[]},
-{id:'M0041',name:'Ezugwu Sunday',addr:'',nm:[],sm:[]},
-{id:'M0042',name:'Chinedu',addr:'',nm:[],sm:[]},
-{id:'M0043',name:'Onu Chukwuebuka',addr:'',nm:[],sm:[]},
-{id:'M0044',name:'Ogbu Casmir Chika',addr:'',nm:[],sm:[]},
-{id:'M0045',name:'Eze Udoka',addr:'',nm:[],sm:[]},
-{id:'M0046',name:'Odumba',addr:'',nm:[],sm:[]},
-{id:'M0047',name:'Elochukwu James Okwor',addr:'',nm:[],sm:[]},
-{id:'M0048',name:'Ebuka Franklin Okwor',addr:'',nm:[],sm:[]},
-{id:'M0049',name:'Ugwu Friday Amaechi',addr:'',nm:[],sm:[]},
-{id:'M0050',name:'Obeta Remigius (Onwa)',addr:'',nm:[],sm:[]},
-{id:'M0051',name:'Eze Kingsley Ejike (Ololoeze)',addr:'',nm:[],sm:[]},
-{id:'M0052',name:'Nwodo Chidera',addr:'',nm:[],sm:[]},
-{id:'M0053',name:'Nnadi Romanus',addr:'',nm:[],sm:[]},
-{id:'M0054',name:'Eze Chinedu (Pope)',addr:'',nm:[],sm:[]},
-{id:'M0055',name:'Ezugwu Abel Chinonso',addr:'',nm:[],sm:[]},
-{id:'M0056',name:'Eneje Kelechi',addr:'',nm:[],sm:[]},
-{id:'M0057',name:'Ugwuagbo Kenneth',addr:'',nm:[],sm:[]}
+var NR=3000,SR=2000,KEY='okpu_v7',NK='okpu_news_v2',DK='okpu_don_v2',AK='okpu_adm_v2';
+
+var DEF_MEMBERS=[
+{id:'M0001',name:'Adeyemi Bello',addr:'No.1 Palm Street',nmY:{},smY:{},nmOffY:{},smOffY:{}},
+{id:'M0002',name:'Fatimah Adesola',addr:'No.3 River Road',nmY:{},smY:{},nmOffY:{},smOffY:{}},
+{id:'M0003',name:'Chukwuemeka Obi',addr:'No.7 Central Ave',nmY:{},smY:{},nmOffY:{},smOffY:{}},
+{id:'M0004',name:'Amina Garba',addr:'Block B Unit 2',nmY:{},smY:{},nmOffY:{},smOffY:{}},
+{id:'M0005',name:'Asogwa Ekene',addr:'',nmY:{},smY:{},nmOffY:{},smOffY:{}},
+{id:'M0006',name:'Odo Chibuzo',addr:'',nmY:{},smY:{},nmOffY:{},smOffY:{}},
+{id:'M0007',name:'Ugwuanyi Ogechukwu',addr:'',nmY:{},smY:{},nmOffY:{},smOffY:{}},
+{id:'M0008',name:'Christian Ejiofor Ugwueze',addr:'',nmY:{},smY:{},nmOffY:{},smOffY:{}},
+{id:'M0009',name:'Eze Benjamin C.',addr:'',nmY:{},smY:{},nmOffY:{},smOffY:{}},
+{id:'M0010',name:'Barr. Peter Mba',addr:'',nmY:{},smY:{},nmOffY:{},smOffY:{}},
+{id:'M0011',name:'Mba Amos Freedom',addr:'',nmY:{},smY:{},nmOffY:{},smOffY:{}},
+{id:'M0012',name:'Ugwuaba Stephen Osita',addr:'',nmY:{},smY:{},nmOffY:{},smOffY:{}},
+{id:'M0013',name:'Abonyi Kenneth O.',addr:'',nmY:{},smY:{},nmOffY:{},smOffY:{}},
+{id:'M0014',name:'Dr. Valentine Ogochukwu Ogbu',addr:'',nmY:{},smY:{},nmOffY:{},smOffY:{}},
+{id:'M0015',name:'Rev. Engr. Ejike Asogwa',addr:'',nmY:{},smY:{},nmOffY:{},smOffY:{}},
+{id:'M0016',name:'Emeka Eze (Protocol)',addr:'',nmY:{},smY:{},nmOffY:{},smOffY:{}},
+{id:'M0017',name:'Ojobor Christian',addr:'',nmY:{},smY:{},nmOffY:{},smOffY:{}},
+{id:'M0018',name:'Odo Amos Nwabueze (Emeodi)',addr:'',nmY:{},smY:{},nmOffY:{},smOffY:{}},
+{id:'M0019',name:'Mbaeze Ikenna',addr:'',nmY:{},smY:{},nmOffY:{},smOffY:{}},
+{id:'M0020',name:'Abonyi Christian Adimoramma',addr:'',nmY:{},smY:{},nmOffY:{},smOffY:{}},
+{id:'M0021',name:'Odo Ugochukwu (FineBoy)',addr:'',nmY:{},smY:{},nmOffY:{},smOffY:{}},
+{id:'M0022',name:'Asogwa Chijioke',addr:'',nmY:{},smY:{},nmOffY:{},smOffY:{}},
+{id:'M0023',name:'Ndubuisi Asogwa',addr:'',nmY:{},smY:{},nmOffY:{},smOffY:{}},
+{id:'M0024',name:'Odoh Daniel Chukwuemeka',addr:'',nmY:{},smY:{},nmOffY:{},smOffY:{}},
+{id:'M0025',name:'Dr. Frank Chukwuemeka Odo',addr:'',nmY:{},smY:{},nmOffY:{},smOffY:{}},
+{id:'M0026',name:'Mkpozi Chidi',addr:'',nmY:{},smY:{},nmOffY:{},smOffY:{}},
+{id:'M0027',name:'Okolie Samson',addr:'',nmY:{},smY:{},nmOffY:{},smOffY:{}},
+{id:'M0028',name:'Ekwueme Jude',addr:'',nmY:{},smY:{},nmOffY:{},smOffY:{}},
+{id:'M0029',name:'Ezeumuokorobia',addr:'',nmY:{},smY:{},nmOffY:{},smOffY:{}},
+{id:'M0030',name:'Ugwuoke Okwudili',addr:'',nmY:{},smY:{},nmOffY:{},smOffY:{}},
+{id:'M0031',name:'Ugwu Sunday',addr:'',nmY:{},smY:{},nmOffY:{},smOffY:{}},
+{id:'M0032',name:'Agbo Uchenna (Urchman)',addr:'',nmY:{},smY:{},nmOffY:{},smOffY:{}},
+{id:'M0033',name:'Ekwueme Fimba',addr:'',nmY:{},smY:{},nmOffY:{},smOffY:{}},
+{id:'M0034',name:'Nnadi Sopulu',addr:'',nmY:{},smY:{},nmOffY:{},smOffY:{}},
+{id:'M0035',name:'Ugwu Kingsley',addr:'',nmY:{},smY:{},nmOffY:{},smOffY:{}},
+{id:'M0036',name:'Odoh Desmond Iyke',addr:'',nmY:{},smY:{},nmOffY:{},smOffY:{}},
+{id:'M0037',name:'Odoh Chidi',addr:'',nmY:{},smY:{},nmOffY:{},smOffY:{}},
+{id:'M0038',name:'Asogwa Victor',addr:'',nmY:{},smY:{},nmOffY:{},smOffY:{}},
+{id:'M0039',name:'Ezugwu Sunday',addr:'',nmY:{},smY:{},nmOffY:{},smOffY:{}},
+{id:'M0040',name:'Chinedu',addr:'',nmY:{},smY:{},nmOffY:{},smOffY:{}},
+{id:'M0041',name:'Onu Chukwuebuka',addr:'',nmY:{},smY:{},nmOffY:{},smOffY:{}},
+{id:'M0042',name:'Ogbu Casmir Chika',addr:'',nmY:{},smY:{},nmOffY:{},smOffY:{}},
+{id:'M0043',name:'Eze Udoka',addr:'',nmY:{},smY:{},nmOffY:{},smOffY:{}},
+{id:'M0044',name:'Odumba',addr:'',nmY:{},smY:{},nmOffY:{},smOffY:{}},
+{id:'M0045',name:'Elochukwu James Okwor',addr:'',nmY:{},smY:{},nmOffY:{},smOffY:{}},
+{id:'M0046',name:'Ebuka Franklin Okwor',addr:'',nmY:{},smY:{},nmOffY:{},smOffY:{}},
+{id:'M0047',name:'Ugwu Friday Amaechi',addr:'',nmY:{},smY:{},nmOffY:{},smOffY:{}},
+{id:'M0048',name:'Obeta Remigius (Onwa)',addr:'',nmY:{},smY:{},nmOffY:{},smOffY:{}},
+{id:'M0049',name:'Eze Kingsley Ejike (Ololoeze)',addr:'',nmY:{},smY:{},nmOffY:{},smOffY:{}},
+{id:'M0050',name:'Nwodo Chidera',addr:'',nmY:{},smY:{},nmOffY:{},smOffY:{}},
+{id:'M0051',name:'Nnadi Romanus',addr:'',nmY:{},smY:{},nmOffY:{},smOffY:{}},
+{id:'M0052',name:'Eze Chinedu (Pope)',addr:'',nmY:{},smY:{},nmOffY:{},smOffY:{}},
+{id:'M0053',name:'Ezugwu Abel Chinonso',addr:'',nmY:{},smY:{},nmOffY:{},smOffY:{}},
+{id:'M0054',name:'Eneje Kelechi',addr:'',nmY:{},smY:{},nmOffY:{},smOffY:{}},
+{id:'M0055',name:'Ugwuagbo Kenneth',addr:'',nmY:{},smY:{},nmOffY:{},smOffY:{}},
+{id:'M0056',name:'Onaheze Eugene',addr:'',gender:'m',nmY:{},smY:{},nmOffY:{},smOffY:{}},
+{id:'M0057',name:'Onaheze Calistar',addr:'',gender:'m',nmY:{},smY:{},nmOffY:{},smOffY:{}},
+{id:'M0058',name:'Eze Juliet Obioma',addr:'',gender:'m',nmY:{},smY:{},nmOffY:{},smOffY:{}},
+{id:'M0059',name:'Onah Chidiebere',addr:'',gender:'m',nmY:{},smY:{},nmOffY:{},smOffY:{}},
+{id:'M0060',name:'Onah Chidimma',addr:'',gender:'m',nmY:{},smY:{},nmOffY:{},smOffY:{}},
+{id:'M0061',name:'Onah Collins Nnamdi',addr:'',gender:'m',nmY:{},smY:{},nmOffY:{},smOffY:{}},
+{id:'M0062',name:'Christian Ede Eze',addr:'',gender:'m',nmY:{},smY:{},nmOffY:{},smOffY:{}},
+{id:'M0063',name:'Emela Oluchi Chris Eze',addr:'',gender:'m',nmY:{},smY:{},nmOffY:{},smOffY:{}},
+{id:'M0064',name:'Asogwa Emmanuel',addr:'',gender:'m',nmY:{},smY:{},nmOffY:{},smOffY:{}},
+{id:'M0065',name:'Asogwa Cordelia',addr:'',gender:'m',nmY:{},smY:{},nmOffY:{},smOffY:{}},
+{id:'M0066',name:'Asogwa Chibueze',addr:'',gender:'m',nmY:{},smY:{},nmOffY:{},smOffY:{}},
+{id:'M0067',name:'Asogwa Nnamdi',addr:'',gender:'m',nmY:{},smY:{},nmOffY:{},smOffY:{}},
+{id:'M0068',name:'The Family of Chief Titus Onah Eze',addr:'',gender:'m',nmY:{},smY:{},nmOffY:{},smOffY:{}},
+{id:'M0069',name:'Abonyi Priscilla',addr:'',gender:'m',nmY:{},smY:{},nmOffY:{},smOffY:{}},
+{id:'M0070',name:'Abonyi Chibuike',addr:'',gender:'m',nmY:{},smY:{},nmOffY:{},smOffY:{}},
+{id:'M0071',name:'Abonyi Christian',addr:'',gender:'m',nmY:{},smY:{},nmOffY:{},smOffY:{}},
+{id:'M0072',name:'Abonyi Nnenna',addr:'',gender:'m',nmY:{},smY:{},nmOffY:{},smOffY:{}},
+{id:'M0073',name:'Abonyi Adaora',addr:'',gender:'m',nmY:{},smY:{},nmOffY:{},smOffY:{}},
+{id:'M0074',name:'Onah Stanislaus',addr:'',gender:'m',nmY:{},smY:{},nmOffY:{},smOffY:{}},
+{id:'M0075',name:'Onah Favour',addr:'',gender:'m',nmY:{},smY:{},nmOffY:{},smOffY:{}},
+{id:'M0076',name:'Ugwu Ifeanyi',addr:'',gender:'m',nmY:{},smY:{},nmOffY:{},smOffY:{}},
+{id:'M0077',name:'Ngwu Ikenna (Bakasi)',addr:'',gender:'m',nmY:{},smY:{},nmOffY:{},smOffY:{}},
+{id:'M0078',name:'Ngwu Jane',addr:'',gender:'m',nmY:{},smY:{},nmOffY:{},smOffY:{}},
+{id:'M0079',name:'Onah Chidozie',addr:'',gender:'m',nmY:{},smY:{},nmOffY:{},smOffY:{}},
+{id:'M0080',name:'Onah Chinaza',addr:'',gender:'m',nmY:{},smY:{},nmOffY:{},smOffY:{}},
+{id:'M0081',name:'Asogwa Ndubuchi',addr:'',gender:'m',nmY:{},smY:{},nmOffY:{},smOffY:{}},
+{id:'M0082',name:'Asogwa Blessing',addr:'',gender:'m',nmY:{},smY:{},nmOffY:{},smOffY:{}},
+{id:'M0083',name:'Ezeh Thaddeus',addr:'',gender:'m',nmY:{},smY:{},nmOffY:{},smOffY:{}},
+{id:'M0084',name:'Ezeh Ebere',addr:'',gender:'m',nmY:{},smY:{},nmOffY:{},smOffY:{}},
+{id:'M0085',name:'Onugwu Chibuzor',addr:'',gender:'m',nmY:{},smY:{},nmOffY:{},smOffY:{}},
+{id:'M0086',name:'Onugwu Ifeanyi',addr:'',gender:'m',nmY:{},smY:{},nmOffY:{},smOffY:{}},
+{id:'M0087',name:'Ifeanyi Ugwuoke',addr:'',gender:'m',nmY:{},smY:{},nmOffY:{},smOffY:{}},
+{id:'M0088',name:'Emeka Ugwuoke',addr:'',gender:'m',nmY:{},smY:{},nmOffY:{},smOffY:{}},
+{id:'M0089',name:'Chinedu Ugwuoke',addr:'',gender:'m',nmY:{},smY:{},nmOffY:{},smOffY:{}},
+{id:'M0090',name:'Helen Ugwuoke',addr:'',gender:'m',nmY:{},smY:{},nmOffY:{},smOffY:{}},
+{id:'M0091',name:'Mary Ugwuoke',addr:'',gender:'m',nmY:{},smY:{},nmOffY:{},smOffY:{}},
+{id:'M0092',name:'Ngozi Ugwuoke',addr:'',gender:'m',nmY:{},smY:{},nmOffY:{},smOffY:{}},
+{id:'M0093',name:'Ugwu Ogechukwu',addr:'',gender:'m',nmY:{},smY:{},nmOffY:{},smOffY:{}},
+{id:'M0094',name:'Chinweuba Asogwa',addr:'',gender:'m',nmY:{},smY:{},nmOffY:{},smOffY:{}},
+{id:'M0095',name:'Chidimma Asogwa',addr:'',gender:'m',nmY:{},smY:{},nmOffY:{},smOffY:{}},
+{id:'M0096',name:'Abonyi Kenneth',addr:'',gender:'m',nmY:{},smY:{},nmOffY:{},smOffY:{}},
+{id:'M0097',name:'Abonyi Angela',addr:'',gender:'m',nmY:{},smY:{},nmOffY:{},smOffY:{}},
+{id:'M0098',name:'Abonyi Nwamaka',addr:'',gender:'m',nmY:{},smY:{},nmOffY:{},smOffY:{}},
+{id:'M0099',name:'Ugwu John',addr:'',gender:'m',nmY:{},smY:{},nmOffY:{},smOffY:{}},
+{id:'M0100',name:'Ugwu Regina',addr:'',gender:'m',nmY:{},smY:{},nmOffY:{},smOffY:{}},
+{id:'M0101',name:'Ugwu Childera',addr:'',gender:'m',nmY:{},smY:{},nmOffY:{},smOffY:{}},
+{id:'M0102',name:'Ugwu Nnaemka',addr:'',gender:'m',nmY:{},smY:{},nmOffY:{},smOffY:{}},
+{id:'M0103',name:'Mr. Osmond O. James Onah',addr:'',gender:'m',nmY:{},smY:{},nmOffY:{},smOffY:{}},
+{id:'M0104',name:'Mrs. Adaeze C. James Onah',addr:'',gender:'m',nmY:{},smY:{},nmOffY:{},smOffY:{}},
+{id:'M0105',name:'Ugwuagbo Maria',addr:'',gender:'m',nmY:{},smY:{},nmOffY:{},smOffY:{}},
+{id:'M0106',name:'Ugwuagbo Ifeoma',addr:'',gender:'m',nmY:{},smY:{},nmOffY:{},smOffY:{}},
+{id:'M0107',name:'Ugwuagbo Onyinyechi',addr:'',gender:'m',nmY:{},smY:{},nmOffY:{},smOffY:{}},
+{id:'M0108',name:'Mr. Hyginus Abonyi',addr:'',gender:'m',nmY:{},smY:{},nmOffY:{},smOffY:{}},
+{id:'M0109',name:'Mrs. Blessing Abonyi',addr:'',gender:'m',nmY:{},smY:{},nmOffY:{},smOffY:{}},
+{id:'M0110',name:'Mr. Chidera Odo',addr:'',gender:'m',nmY:{},smY:{},nmOffY:{},smOffY:{}},
+{id:'M0111',name:'Mrs. Chinenye Odo',addr:'',gender:'m',nmY:{},smY:{},nmOffY:{},smOffY:{}},
+{id:'M0112',name:'Odoh Boniface',addr:'',gender:'m',nmY:{},smY:{},nmOffY:{},smOffY:{}},
+{id:'M0113',name:'Odoh Chukwuemeka',addr:'',gender:'m',nmY:{},smY:{},nmOffY:{},smOffY:{}},
+{id:'M0114',name:'Odoh Uchenna',addr:'',gender:'m',nmY:{},smY:{},nmOffY:{},smOffY:{}},
+{id:'M0115',name:'Odoh Joy',addr:'',gender:'m',nmY:{},smY:{},nmOffY:{},smOffY:{}},
+{id:'M0116',name:'Odoh Chioma',addr:'',gender:'m',nmY:{},smY:{},nmOffY:{},smOffY:{}},
+{id:'M0117',name:'Odoh Favour',addr:'',gender:'m',nmY:{},smY:{},nmOffY:{},smOffY:{}},
+{id:'M0118',name:'Chijioke Asogwa',addr:'',gender:'m',nmY:{},smY:{},nmOffY:{},smOffY:{}},
+{id:'M0119',name:'Chika Asogwa Wife',addr:'',gender:'m',nmY:{},smY:{},nmOffY:{},smOffY:{}},
+{id:'M0120',name:'Agnes Asogwa Mother',addr:'',gender:'m',nmY:{},smY:{},nmOffY:{},smOffY:{}},
+{id:'M0121',name:'Asogwa Ejiofor',addr:'',gender:'m',nmY:{},smY:{},nmOffY:{},smOffY:{}},
+{id:'M0122',name:'Asogwa Accord',addr:'',gender:'m',nmY:{},smY:{},nmOffY:{},smOffY:{}},
+{id:'M0123',name:'Asogwa Ibuchikwu',addr:'',gender:'m',nmY:{},smY:{},nmOffY:{},smOffY:{}},
+{id:'M0124',name:'Asogwa Chinyere',addr:'',gender:'m',nmY:{},smY:{},nmOffY:{},smOffY:{}},
+{id:'M0125',name:'Asogwa Ngozika',addr:'',gender:'m',nmY:{},smY:{},nmOffY:{},smOffY:{}},
+{id:'M0126',name:'Asogwa Nkemdili',addr:'',gender:'m',nmY:{},smY:{},nmOffY:{},smOffY:{}},
+{id:'M0127',name:'Nwabueze Ugwuanyi and Wife',addr:'',gender:'m',nmY:{},smY:{},nmOffY:{},smOffY:{}},
+{id:'M0128',name:'Ogechukwu Ugwuanyi and Wife',addr:'',gender:'m',nmY:{},smY:{},nmOffY:{},smOffY:{}},
+{id:'M0129',name:'Chiedozie Ugwuanyi and Wife',addr:'',gender:'m',nmY:{},smY:{},nmOffY:{},smOffY:{}},
+{id:'M0130',name:'Chinenye Ugwuanyi and Wife',addr:'',gender:'m',nmY:{},smY:{},nmOffY:{},smOffY:{}},
+{id:'M0131',name:'Okolie Amarachi',addr:'',gender:'m',nmY:{},smY:{},nmOffY:{},smOffY:{}},
+{id:'M0132',name:'Mbah Christian Onyemaechi',addr:'',gender:'m',nmY:{},smY:{},nmOffY:{},smOffY:{}},
+{id:'M0133',name:'Mbah Onyinyechi',addr:'',gender:'m',nmY:{},smY:{},nmOffY:{},smOffY:{}},
+{id:'M0134',name:'Odo Venatus Uchechukwu',addr:'',gender:'m',nmY:{},smY:{},nmOffY:{},smOffY:{}},
+{id:'M0135',name:'Uche Mercy Amarachi',addr:'',gender:'m',nmY:{},smY:{},nmOffY:{},smOffY:{}},
+{id:'M0136',name:'Eze Alexander',addr:'',gender:'m',nmY:{},smY:{},nmOffY:{},smOffY:{}},
+{id:'M0137',name:'Eze Catherine',addr:'',gender:'m',nmY:{},smY:{},nmOffY:{},smOffY:{}},
+{id:'M0138',name:'Eze Kingsley',addr:'',gender:'m',nmY:{},smY:{},nmOffY:{},smOffY:{}},
+{id:'M0139',name:'Chinonso Ezugwu',addr:'',gender:'m',nmY:{},smY:{},nmOffY:{},smOffY:{}},
+{id:'M0140',name:'Mr & Mrs Ozioko Joshua',addr:'',gender:'m',nmY:{},smY:{},nmOffY:{},smOffY:{}},
+{id:'M0141',name:'Mr & Mrs Oziok Andrew',addr:'',gender:'m',nmY:{},smY:{},nmOffY:{},smOffY:{}},
+{id:'M0142',name:'Ikechukwu Ogbu',addr:'',gender:'m',nmY:{},smY:{},nmOffY:{},smOffY:{}},
+{id:'M0143',name:'My Mother',addr:'',gender:'m',nmY:{},smY:{},nmOffY:{},smOffY:{}},
+{id:'M0144',name:'Rev. Fr. Nnaemeka Ogbu',addr:'',gender:'m',nmY:{},smY:{},nmOffY:{},smOffY:{}},
+{id:'M0145',name:'Felicia Ogbu',addr:'',gender:'m',nmY:{},smY:{},nmOffY:{},smOffY:{}},
+{id:'M0146',name:'Ifeanyichukwu Ogbu',addr:'',gender:'m',nmY:{},smY:{},nmOffY:{},smOffY:{}},
+{id:'M0147',name:'Tochukwu Ogbu',addr:'',gender:'m',nmY:{},smY:{},nmOffY:{},smOffY:{}},
+{id:'M0148',name:'Izuchukwu Ogbu',addr:'',gender:'m',nmY:{},smY:{},nmOffY:{},smOffY:{}},
+{id:'M0149',name:'Asogwa Friday Chigekwu (Ede Asogwa-Okpu)',addr:'',gender:'m',nmY:{},smY:{},nmOffY:{},smOffY:{}},
+{id:'M0150',name:'Asogwa Jennifer Chidimma (My Wife)',addr:'',gender:'m',nmY:{},smY:{},nmOffY:{},smOffY:{}},
+{id:'M0151',name:'Ifeanyi Ugbogbo Odo and Wife Onyinye',addr:'',gender:'m',nmY:{},smY:{},nmOffY:{},smOffY:{}},
+{id:'M0152',name:'Onaheze James',addr:'',gender:'m',nmY:{},smY:{},nmOffY:{},smOffY:{}},
+{id:'M0153',name:'Ifeanyi Kingsley James Ezeh',addr:'',gender:'m',nmY:{},smY:{},nmOffY:{},smOffY:{}},
+{id:'M0154',name:'Asogwa Philip',addr:'',gender:'m',nmY:{},smY:{},nmOffY:{},smOffY:{}},
+{id:'M0155',name:'Asogwa Amaechi',addr:'',gender:'m',nmY:{},smY:{},nmOffY:{},smOffY:{}},
+{id:'M0156',name:'Asogwa Ugochukwu',addr:'',gender:'m',nmY:{},smY:{},nmOffY:{},smOffY:{}},
+{id:'M0157',name:'Asogwa Ugonna',addr:'',gender:'m',nmY:{},smY:{},nmOffY:{},smOffY:{}},
+{id:'M0158',name:'Asogwa Happiness',addr:'',gender:'m',nmY:{},smY:{},nmOffY:{},smOffY:{}},
+{id:'M0159',name:'Asogwa Cynthia',addr:'',gender:'m',nmY:{},smY:{},nmOffY:{},smOffY:{}},
+{id:'M0160',name:'Asogwa Faith',addr:'',gender:'m',nmY:{},smY:{},nmOffY:{},smOffY:{}},
+{id:'M0161',name:'Asogwa Ogochukwu',addr:'',gender:'m',nmY:{},smY:{},nmOffY:{},smOffY:{}},
+{id:'M0162',name:'Agboeze Jude Ikenna',addr:'',gender:'m',nmY:{},smY:{},nmOffY:{},smOffY:{}},
+{id:'M0163',name:'Ikenna Blessing',addr:'',gender:'m',nmY:{},smY:{},nmOffY:{},smOffY:{}},
+{id:'M0164',name:'Agboeze Amuche',addr:'',gender:'m',nmY:{},smY:{},nmOffY:{},smOffY:{}},
+{id:'M0165',name:'Agboeze Nnaemeka',addr:'',gender:'m',nmY:{},smY:{},nmOffY:{},smOffY:{}},
+{id:'M0166',name:'Agboeze Theresa',addr:'',gender:'m',nmY:{},smY:{},nmOffY:{},smOffY:{}},
+{id:'M0167',name:'Agboeze Paulina',addr:'',gender:'m',nmY:{},smY:{},nmOffY:{},smOffY:{}},
+{id:'M0168',name:'Ugbogbo Ifeanyichukwu',addr:'',gender:'m',nmY:{},smY:{},nmOffY:{},smOffY:{}},
+{id:'M0169',name:'Ugbogbo Nnena',addr:'',gender:'m',nmY:{},smY:{},nmOffY:{},smOffY:{}},
+{id:'M0170',name:'Ugbogbo Theresa',addr:'',gender:'m',nmY:{},smY:{},nmOffY:{},smOffY:{}},
+{id:'M0171',name:'Ugwoke Chibueze',addr:'',gender:'m',nmY:{},smY:{},nmOffY:{},smOffY:{}},
+{id:'M0172',name:'Ugwoke Ebuka',addr:'',gender:'m',nmY:{},smY:{},nmOffY:{},smOffY:{}},
+{id:'M0173',name:'Mazi Ozuru-Igbo',addr:'',gender:'m',nmY:{},smY:{},nmOffY:{},smOffY:{}},
+{id:'M0174',name:'Onaheze Paulina',addr:'',gender:'m',nmY:{},smY:{},nmOffY:{},smOffY:{}},
+{id:'M0175',name:'Onaheze Michael',addr:'',gender:'m',nmY:{},smY:{},nmOffY:{},smOffY:{}},
+{id:'M0176',name:'Onaheze Queen',addr:'',gender:'m',nmY:{},smY:{},nmOffY:{},smOffY:{}},
+{id:'M0177',name:'Onaheze Martins',addr:'',gender:'m',nmY:{},smY:{},nmOffY:{},smOffY:{}},
+{id:'M0178',name:'Onaheze Ijeoma',addr:'',gender:'m',nmY:{},smY:{},nmOffY:{},smOffY:{}},
+{id:'M0179',name:'Ugwuanyi Kelechi Agbaego',addr:'',gender:'m',nmY:{},smY:{},nmOffY:{},smOffY:{}},
+{id:'M0180',name:'Ugwuanyi Onyebuchi',addr:'',gender:'m',nmY:{},smY:{},nmOffY:{},smOffY:{}},
+{id:'M0181',name:'Ugwuanyi Chigozie',addr:'',gender:'m',nmY:{},smY:{},nmOffY:{},smOffY:{}},
+{id:'M0182',name:'Ugwuanyi Chioma',addr:'',gender:'m',nmY:{},smY:{},nmOffY:{},smOffY:{}},
+{id:'M0183',name:'Onaheze Chinwe',addr:'',gender:'m',nmY:{},smY:{},nmOffY:{},smOffY:{}},
+{id:'M0184',name:'Support by Orba CSO Elder Zuma',addr:'',gender:'m',nmY:{},smY:{},nmOffY:{},smOffY:{}},
+{id:'M0185',name:'Asogwa Ejike',addr:'',gender:'m',nmY:{},smY:{},nmOffY:{},smOffY:{}},
+{id:'M0186',name:'Asogwa Roseline',addr:'',gender:'m',nmY:{},smY:{},nmOffY:{},smOffY:{}},
+{id:'M0187',name:'Asogwa Scholastica Ngozi',addr:'',gender:'m',nmY:{},smY:{},nmOffY:{},smOffY:{}}
 ];
-var DEF_ADM=[{name:'Super Admin',email:'admin@okpuorba.com',password:'OkpuOrba2024!',role:'super'}];
-function ld(){try{var r=localStorage.getItem(KEY);if(r)return JSON.parse(r);}catch(e){}return{members:DEF.map(function(m){return{id:m.id,name:m.name,addr:m.addr,nm:m.nm.slice(),sm:m.sm.slice()};}),nid:58,offLog:[]};}
-function sv(){try{localStorage.setItem(KEY,JSON.stringify(state));}catch(e){}}
+
+var DEF_ADMINS=[{name:'Super Admin',email:'admin@okpuorba.com',password:'OkpuOrba2024!',role:'super'}];
+
+function ldS(){try{var r=localStorage.getItem(KEY);if(r){var d=JSON.parse(r);d.members.forEach(function(m){if(!m.nmOff)m.nmOff={};if(!m.smOff)m.smOff={};});return d;}}catch(e){}return{members:DEF_MEMBERS.map(function(m){return JSON.parse(JSON.stringify(m));}),nid:188};}
+function svS(){try{localStorage.setItem(KEY,JSON.stringify(state));}catch(e){}}
+function ldA(){try{var r=localStorage.getItem(AK);if(r)return JSON.parse(r);}catch(e){}return DEF_ADMINS.map(function(a){return JSON.parse(JSON.stringify(a));});}
+function svA(){try{localStorage.setItem(AK,JSON.stringify(admins));}catch(e){}}
 function ldN(){try{var r=localStorage.getItem(NK);if(r)return JSON.parse(r);}catch(e){}return[];}
 function svN(){try{localStorage.setItem(NK,JSON.stringify(news));}catch(e){}}
-function ldD(){try{var r=localStorage.getItem(DK);if(r)return JSON.parse(r);}catch(e){}return{total:0,entries:[]};}
+function ldD(){try{var r=localStorage.getItem(DK);if(r)return JSON.parse(r);}catch(e){}return{entries:[],total:0};}
 function svD(){try{localStorage.setItem(DK,JSON.stringify(dons));}catch(e){}}
-function ldA(){try{var r=localStorage.getItem(AK);if(r)return JSON.parse(r);}catch(e){}return DEF_ADM.slice();}
-function svA(){try{localStorage.setItem(AK,JSON.stringify(admins));}catch(e){}}
-var state=ld(),news=ldN(),dons=ldD(),admins=ldA();
+
+var state=ldS(),admins=ldA(),news=ldN(),dons=ldD();
 var curA=null,pendBtn=null,curId=null,curFil='all';
-var nSel=[],sSel=[],ofId=null,ofNS=[],ofSS=[],rType='n',rMth=new Date().getMonth();
-var buPend=[];
+var nSel=[],sSel=[],ofId=null,ofNS=[],ofSS=[],buPend=[];
+var rType='n',rMonth=new Date().getMonth(),selDAmt=0;
+
 function ini(n){return(n||'').split(' ').map(function(w){return w[0]||'';}).join('').toUpperCase().slice(0,2)||'?';}
 function fmt(n){return Number(n||0).toLocaleString();}
-function toast(m){var e=document.getElementById('tst');e.textContent=m;e.classList.add('sh');setTimeout(function(){e.classList.remove('sh');},2800);}
-function dc(a){if(!a||!a.length)return'u';if(a.length===12)return'p';return'x';}
-function swT(t,btn){
+function dc(a){if(!a||!a.length)return'unp';if(a.length===12)return'paid';return'part';}
+function toast(m){var e=document.getElementById('toast');if(!e)return;e.textContent=m;e.classList.add('show');setTimeout(function(){e.classList.remove('show');},2800);}
+function unique(a){return a.filter(function(v,i){return a.indexOf(v)===i;});}
+
+function swTab(t,btn){
   document.querySelectorAll('.pg').forEach(function(p){p.classList.remove('on');});
   document.querySelectorAll('.tab').forEach(function(b){b.classList.remove('on');});
   var pg=document.getElementById('pg-'+t);
   if(pg)pg.classList.add('on');
   if(btn)btn.classList.add('on');
-  if(t==='home'){renderSum();renderRec();renderNewsPrev();renderRMths();renderRep();}
+  if(t==='home'){renderSum();renderRec();renderNewsPrev();renderRMths();renderRep();renderVer();}
   if(t==='members')renderML('all');
   if(t==='news')renderNews();
   if(t==='donate')renderDon();
-  if(t==='admin'){renderSA();renderOfLog();}
+  if(t==='admin'){renderSA();renderOLog();}
 }
+
+// SUMMARY
 function renderSum(){
   var m=state.members,tot=m.length;
-  var np=m.filter(function(x){return x.nm&&x.nm.length>0;}).length;
-  var sp=m.filter(function(x){return x.sm&&x.sm.length>0;}).length;
+  var np=m.filter(function(x){return getNM(x,CY).length>0;}).length;
+  var sp=m.filter(function(x){return getSM(x,CY).length>0;}).length;
+  var maleCt=m.filter(function(x){return x.gender!=='f';}).length;
+  var femCt=m.filter(function(x){return x.gender==='f';}).length;
   var nP=tot?Math.round(np/tot*100):0,sP=tot?Math.round(sp/tot*100):0;
+  var el=document.getElementById('sumSec');
+  if(!el)return;
   var h='<div class="sg">';
-  h+='<div class="sc" onclick="showMod(\'np\')"><div class="sl">NEPA Paid</div><div class="sv">'+np+'</div><div class="ss">of '+tot+' members</div><div class="pb"><div class="pbi" style="width:'+nP+'%"></div></div><div class="pl">'+nP+'% paid</div><div class="tip">Tap to see names</div></div>';
-  h+='<div class="sc r" onclick="showMod(\'nu\')"><div class="sl">NEPA Unpaid</div><div class="sv">'+(tot-np)+'</div><div class="ss">not paid yet</div><div class="tip">Tap to see &amp; print</div></div>';
-  h+='<div class="sc" onclick="showMod(\'sp\')"><div class="sl">Security Paid</div><div class="sv">'+sp+'</div><div class="ss">of '+tot+' members</div><div class="pb"><div class="pbi" style="width:'+sP+'%"></div></div><div class="pl">'+sP+'% paid</div><div class="tip">Tap to see names</div></div>';
-  h+='<div class="sc r" onclick="showMod(\'su\')"><div class="sl">Security Unpaid</div><div class="sv">'+(tot-sp)+'</div><div class="ss">not paid yet</div><div class="tip">Tap to see &amp; print</div></div>';
+  h+='<div class="sc" onclick="showMod(\'np\')"><div class="scl">⚡ NEPA Paid</div><div class="scv">'+np+'</div><div class="scs">of '+tot+' members</div><div class="pbw"><div class="pb" style="width:'+nP+'%"></div></div><div class="scs">'+nP+'% paid · ₦3,000/mo</div><div class="tap">Tap to see names</div></div>';
+  h+='<div class="sc red" onclick="showMod(\'nu\')"><div class="scl">⚡ NEPA Unpaid</div><div class="scv">'+(tot-np)+'</div><div class="scs">not paid yet</div><div class="tap">Tap to see & print</div></div>';
+  h+='<div class="sc" onclick="showMod(\'sp\')"><div class="scl">🔒 Security Paid</div><div class="scv">'+sp+'</div><div class="scs">'+maleCt+' M·₦2k &nbsp; '+femCt+' F·₦1k</div><div class="pbw"><div class="pb" style="width:'+sP+'%"></div></div><div class="scs">'+sP+'% paid</div><div class="tap">Tap to see names</div></div>';
+  h+='<div class="sc red" onclick="showMod(\'su\')"><div class="scl">🔒 Security Unpaid</div><div class="scv">'+(tot-sp)+'</div><div class="scs">not paid yet</div><div class="tap">Tap to see & print</div></div>';
   h+='</div>';
-  document.getElementById('sumSec').innerHTML=h;
+  el.innerHTML=h;
 }
+
+// MODAL
 function showMod(type){
   var m=state.members,list,title,isUp=false;
-  if(type==='np'){list=m.filter(function(x){return x.nm&&x.nm.length>0;});title='NEPA Bill - Paid';}
-  else if(type==='nu'){list=m.filter(function(x){return!x.nm||x.nm.length===0;});title='NEPA Bill - Unpaid';isUp=true;}
-  else if(type==='sp'){list=m.filter(function(x){return x.sm&&x.sm.length>0;});title='Security - Paid';}
-  else{list=m.filter(function(x){return!x.sm||x.sm.length===0;});title='Security - Unpaid';isUp=true;}
+  if(type==='np'){list=m.filter(function(x){return x.nm&&x.nm.length>0;});title='NEPA Bill - Paid Members';}
+  else if(type==='nu'){list=m.filter(function(x){return !x.nm||x.nm.length===0;});title='NEPA Bill - Unpaid Members';isUp=true;}
+  else if(type==='sp'){list=m.filter(function(x){return x.sm&&x.sm.length>0;});title='Security - Paid Members';}
+  else{list=m.filter(function(x){return !x.sm||x.sm.length===0;});title='Security - Unpaid Members';isUp=true;}
+
   var rows='';
   for(var i=0;i<list.length;i++){
-    var mb=list[i];var arr=type==='np'||type==='nu'?mb.nm:mb.sm;
-    rows+='<div class="mmr"><div class="av" style="width:30px;height:30px;font-size:.72rem">'+ini(mb.name)+'</div><div style="flex:1"><div style="font-weight:600;font-size:.87rem">'+mb.name+'</div><div style="font-size:.69rem;color:var(--mu)">'+(mb.addr||'No address')+'</div></div>'+(isUp?'':'<div style="font-size:.69rem;font-weight:700;color:var(--g)">'+(arr?arr.length:0)+'/12</div>')+'</div>';
+    var mb=list[i];
+    var mths=type==='np'||type==='nu'?mb.nm:mb.sm;
+    rows+='<div class="mrow"><div class="av" style="width:30px;height:30px;font-size:.72rem">'+ini(mb.name)+'</div>';
+    rows+='<div style="flex:1"><div style="font-weight:600;font-size:.87rem">'+mb.name+'</div><div style="font-size:.7rem;color:var(--mu)">'+(mb.addr||'No address')+'</div></div>';
+    if(!isUp)rows+='<div style="font-size:.7rem;font-weight:700;color:var(--g)">'+(mths?mths.length:0)+'/12</div>';
+    rows+='</div>';
   }
-  if(!rows)rows='<div class="es">No members in this category</div>';
-  var pr='<div class="ph"><h2>Okpu Orba - '+title+'</h2><p>'+new Date().toLocaleDateString('en-GB',{day:'numeric',month:'long',year:'numeric'})+' - '+list.length+' member(s)</p></div><table class="pt"><thead><tr><th>#</th><th>Name</th><th>Address</th>'+(isUp?'':'<th>Months</th>')+'</tr></thead><tbody>';
-  for(var j=0;j<list.length;j++){var mb2=list[j];var arr2=type==='np'||type==='nu'?mb2.nm:mb2.sm;pr+='<tr><td>'+(j+1)+'</td><td>'+mb2.name+'</td><td>'+(mb2.addr||'-')+'</td>'+(isUp?'':'<td>'+(arr2?arr2.length:0)+'/12</td>')+'</tr>';}
-  pr+='</tbody></table><div class="pf">Okpu Orba Community Payment Tracker</div>';
-  document.getElementById('PA').innerHTML=pr;
-  var mo=document.createElement('div');mo.className='mov';mo.id='smod';mo.onclick=function(e){if(e.target===mo)closeMod();};
+  if(!list.length)rows='<div style="text-align:center;color:var(--mu);padding:20px 0;font-size:.84rem">No members in this category</div>';
+
+  var prows='';
+  for(var j=0;j<list.length;j++){
+    var mb2=list[j];var mths2=type==='np'||type==='nu'?mb2.nm:mb2.sm;
+    prows+='<tr><td>'+(j+1)+'</td><td>'+mb2.name+'</td><td>'+(mb2.addr||'-')+'</td>'+(isUp?'':'<td>'+(mths2?mths2.length:0)+'/12</td>')+'</tr>';
+  }
+  var hdr=isUp?'<th>#</th><th>Name</th><th>Address</th>':'<th>#</th><th>Name</th><th>Address</th><th>Months Paid</th>';
+  document.getElementById('PA').innerHTML='<div class="ph"><h2>Okpu Orba Community - '+title+'</h2><p>Total: '+list.length+' member(s)</p></div><table class="pt"><thead><tr>'+hdr+'</tr></thead><tbody>'+prows+'</tbody></table><div class="pf">Okpu Orba Community Payment Tracker</div>';
+
+  var mo=document.createElement('div');mo.className='mov';mo.id='curMod';
+  mo.onclick=function(e){if(e.target===mo)closeMod();};
   var ms=document.createElement('div');ms.className='msh';ms.onclick=function(e){e.stopPropagation();};
-  var mh=document.createElement('div');mh.className='mhd';mh.innerHTML='<div><div class="mti">'+title+'</div><div class="mco">'+list.length+' member(s)</div></div>';
-  var xb=document.createElement('button');xb.className='mcl';xb.textContent='X';xb.onclick=closeMod;mh.appendChild(xb);
+  var mh=document.createElement('div');mh.className='mhd';
+  mh.innerHTML='<div><div class="mtit">'+title+'</div><div style="font-size:.74rem;color:var(--mu)">'+list.length+' member(s)</div></div>';
+  var xb=document.createElement('button');xb.textContent='X';xb.onclick=closeMod;xb.style.cssText='background:#f0f5f2;border:none;border-radius:50%;width:30px;height:30px;cursor:pointer;font-size:.9rem';
+  mh.appendChild(xb);
   var mbd=document.createElement('div');mbd.className='mbd';mbd.innerHTML=rows;
-  var mft=document.createElement('div');mft.className='mft';var pb=document.createElement('button');pb.className='prb';pb.textContent='Print This List';pb.onclick=function(){var pa=document.getElementById('PA');pa.style.display='block';window.print();pa.style.display='none';};mft.appendChild(pb);
+  var mft=document.createElement('div');mft.className='mft';
+  var pb=document.createElement('button');pb.className='prb';pb.textContent='Print This List';
+  pb.onclick=function(){var pa=document.getElementById('PA');pa.style.display='block';window.print();setTimeout(function(){pa.style.display='none';},2000);};
+  var pdb=document.createElement('button');pdb.className='pdb';pdb.textContent='Save as PDF / Download';
+  pdb.onclick=function(){var pa=document.getElementById('PA');pa.style.display='block';window.print();setTimeout(function(){pa.style.display='none';},2000);};
+  mft.appendChild(pb);mft.appendChild(pdb);
   ms.appendChild(mh);ms.appendChild(mbd);ms.appendChild(mft);mo.appendChild(ms);document.body.appendChild(mo);
 }
-function closeMod(){var m=document.getElementById('smod');if(m)m.remove();}
+function closeMod(){var mo=document.getElementById('curMod');if(mo)mo.remove();}
+
+// RECENT
 function renderRec(){
-  var paid=state.members.filter(function(m){return(m.nm&&m.nm.length)||(m.sm&&m.sm.length);}).slice(-5).reverse();
+  var paid=state.members.filter(function(m){return (m.nm&&m.nm.length)||(m.sm&&m.sm.length);}).slice(-5).reverse();
   var el=document.getElementById('recL');if(!el)return;
-  if(!paid.length){el.innerHTML='<div class="es">No payments yet</div>';return;}
+  if(!paid.length){el.innerHTML='<div class="es">No payments recorded yet</div>';return;}
   var h='';
   paid.forEach(function(m){
-    h+='<div class="mr" onclick="openCard(\''+m.id+'\')">';
-    h+='<div class="av">'+ini(m.name)+'</div>';
-    h+='<div class="mri"><div class="mrn">'+m.name+'</div>';
-    h+='<div class="bd"><span class="dot '+dc(m.nm)+'"></span><span class="dl">NEPA '+(m.nm?m.nm.length:0)+'/12</span>&nbsp;<span class="dot '+dc(m.sm)+'"></span><span class="dl">Security '+(m.sm?m.sm.length:0)+'/12</span></div></div>';
-    h+='<span style="color:var(--mu)">›</span></div>';
+    h+='<div class="mr" onclick="openCard(\''+m.id+'\')"><div class="av">'+ini(m.name)+'</div><div class="mri"><div class="mrn">'+m.name+'</div><div class="bd"><span class="dot '+dc(m.nm)+'"></span><span class="dl">NEPA '+(m.nm?m.nm.length:0)+'/12</span>&nbsp;<span class="dot '+dc(m.sm)+'"></span><span class="dl">Security '+(m.sm?m.sm.length:0)+'/12</span></div></div><span style="color:var(--mu)">></span></div>';
   });
   el.innerHTML=h;
 }
+
+// SEARCH HOME
 function onS(){
   var q=document.getElementById('si').value.trim().toLowerCase();
   var el=document.getElementById('sr');if(!el)return;
   if(!q){el.classList.remove('vis');return;}
-  var ms=state.members.filter(function(m){return m.name.toLowerCase().indexOf(q)>-1;});
-  if(!ms.length){el.innerHTML='<div style="padding:12px 14px;color:var(--mu);font-size:.83rem">No member found</div>';el.classList.add('vis');return;}
+  var matches=state.members.filter(function(m){return m.name.toLowerCase().indexOf(q)>-1;});
+  if(!matches.length){el.innerHTML='<div style="padding:12px 14px;color:var(--mu);font-size:.83rem">No member found</div>';el.classList.add('vis');return;}
   var h='';
-  ms.slice(0,8).forEach(function(m){h+='<div class="ri" onclick="openCard(\''+m.id+'\')">';h+='<div class="av">'+ini(m.name)+'</div>';h+='<div><div style="font-weight:600;font-size:.86rem">'+m.name+'</div><div style="font-size:.7rem;color:var(--mu)">NEPA: '+(m.nm?m.nm.length:0)+'/12 · Security: '+(m.sm?m.sm.length:0)+'/12</div></div></div>';});
+  matches.slice(0,8).forEach(function(m){
+    h+='<div class="sri" onclick="openCard(\''+m.id+'\')"><div class="av">'+ini(m.name)+'</div><div><div style="font-weight:600;font-size:.86rem">'+m.name+'</div><div style="font-size:.7rem;color:var(--mu)">NEPA: '+(m.nm?m.nm.length:0)+'/12 · Security: '+(m.sm?m.sm.length:0)+'/12</div></div></div>';
+  });
   el.innerHTML=h;el.classList.add('vis');
 }
+
+// HEADER SEARCH
 function onHS(){
   var q=document.getElementById('hsi').value.trim().toLowerCase();
-  var el=document.getElementById('hdr');if(!el)return;
+  var el=document.getElementById('hsr');if(!el)return;
   if(!q){el.classList.remove('vis');return;}
-  var ms=state.members.filter(function(m){return m.name.toLowerCase().indexOf(q)>-1;});
-  if(!ms.length){el.innerHTML='<div style="padding:12px 14px;color:#333;font-size:.83rem">No member found</div>';el.classList.add('vis');return;}
+  var matches=state.members.filter(function(m){return m.name.toLowerCase().indexOf(q)>-1;});
+  if(!matches.length){el.innerHTML='<div style="padding:12px 14px;color:#555;font-size:.83rem">No member found</div>';el.classList.add('vis');return;}
   var h='';
-  ms.slice(0,8).forEach(function(m){h+='<div class="ri" onclick="hsPick(\''+m.id+'\')">';h+='<div class="av">'+ini(m.name)+'</div>';h+='<div><div style="font-weight:600;font-size:.86rem">'+m.name+'</div><div style="font-size:.7rem;color:#5a7a66">NEPA: '+(m.nm?m.nm.length:0)+'/12 · Security: '+(m.sm?m.sm.length:0)+'/12</div></div></div>';});
+  matches.slice(0,8).forEach(function(m){
+    h+='<div class="sri" style="color:#0d2b1a" onclick="hsPick(\''+m.id+'\')"><div class="av">'+ini(m.name)+'</div><div><div style="font-weight:600;font-size:.86rem">'+m.name+'</div><div style="font-size:.7rem;color:#5a7a66">NEPA: '+(m.nm?m.nm.length:0)+'/12 · Security: '+(m.sm?m.sm.length:0)+'/12</div></div></div>';
+  });
   el.innerHTML=h;el.classList.add('vis');
 }
 function hsPick(id){
-  document.getElementById('hdr').classList.remove('vis');
-  document.getElementById('hsi').value='';
-  document.querySelectorAll('.pg').forEach(function(p){p.classList.remove('on');});
-  document.querySelectorAll('.tab').forEach(function(b){b.classList.remove('on');});
-  document.getElementById('pg-home').classList.add('on');
-  document.querySelector('.tab').classList.add('on');
-  renderSum();renderRec();renderNewsPrev();renderRMths();renderRep();
+  var el=document.getElementById('hsr');if(el)el.classList.remove('vis');
+  var hi=document.getElementById('hsi');if(hi)hi.value='';
+  swTab('home',document.querySelector('.tab'));
   setTimeout(function(){openCard(id);},80);
 }
-document.addEventListener('click',function(e){var w=document.querySelector('.hsw');if(w&&!w.contains(e.target)){var el=document.getElementById('hdr');if(el)el.classList.remove('vis');}});
+document.addEventListener('click',function(e){
+  var w=document.querySelector('.hs');
+  if(w&&!w.contains(e.target)){var el=document.getElementById('hsr');if(el)el.classList.remove('vis');}
+  var sw=document.getElementById('sr');
+  if(sw&&!sw.contains(e.target)&&e.target.id!=='si')sw.classList.remove('vis');
+});
+
+// MEMBER CARD
 function openCard(id){
+  if(!curA){
+    // Show read-only mode notice
+    var notice = document.getElementById('memberNotice');
+    if(!notice){
+      var n = document.createElement('div');
+      n.id = 'memberNotice';
+      n.style.cssText = 'background:#e8f7ef;border-left:4px solid var(--g);border-radius:8px;padding:10px 13px;font-size:.78rem;color:var(--gd);margin-bottom:10px;line-height:1.5;';
+      n.innerHTML = '<strong>Viewing your payment record</strong><br>To make a payment, give cash to any community admin. They will record it here on your behalf.';
+      var mcw = document.getElementById('mcw');
+      if(mcw) mcw.insertBefore(n, mcw.firstChild);
+    }
+  }
   var m=state.members.find(function(x){return x.id===id;});if(!m)return;
   curId=id;nSel=[];sSel=[];
-  document.getElementById('sr').classList.remove('vis');
+  var sr=document.getElementById('sr');if(sr)sr.classList.remove('vis');
   document.getElementById('cav').textContent=ini(m.name);
   document.getElementById('cnm').textContent=m.name;
-  document.getElementById('cid').textContent=(m.addr||'')+' · '+m.id;
-  renderBills(m);
-  document.getElementById('mc').classList.add('vis');
-  document.getElementById('mc').scrollIntoView({behavior:'smooth',block:'nearest'});
+  document.getElementById('cid').textContent=(m.addr||'')+' - ID: '+m.id;
+  renderCardBills(m, selYr);
+  var mc=document.getElementById('mc');if(mc){mc.classList.add('vis');mc.scrollIntoView({behavior:'smooth',block:'nearest'});}
 }
-function renderBills(m){document.getElementById('cbills').innerHTML=bSec('n','NEPA Bill',NR,m.nm||[])+bSec('s','Security Levy',SR,m.sm||[]);}
-function bSec(t,title,rate,paid){
+function renderCardBills(m, yr){
+  yr = yr || CY;
+  selYr = yr;
+  var el=document.getElementById('cbills');if(!el)return;
+  var nm=getNM(m,yr);
+  var sm=getSM(m,yr);
+  var nmOff=getNMOff(m,yr);
+  var smOff=getSMOff(m,yr);
+  var mSR=getSR(m);
+
+  // Year selector row
+  var yrs=getYears();
+  var yrHtml='<div class="yr-row"><div class="yr-label">Year:</div>';
+  yrs.forEach(function(y){
+    yrHtml+='<button class="yr-btn'+(y===yr?' active':'')+'" onclick="renderCardBills(state.members.find(function(x){return x.id===curId;}),'+y+')">'+y+'</button>';
+  });
+  yrHtml+='</div>';
+
+  // Current year bills
+  var billsHtml = billSec('n','⚡ NEPA Bill',NR,nm,nmOff)+billSec('s','🔒 Security Levy ('+(m.gender==='f'?'Female':'Male')+')',mSR,sm,smOff);
+
+  // Payment history across all years
+  var histHtml='<div style="margin-top:14px"><div class="stit" style="margin-bottom:8px">📅 Full Payment History (All Years)</div>';
+  yrs.forEach(function(y){
+    var ynm=getNM(m,y);
+    var ysm=getSM(m,y);
+    var ynmOff=getNMOff(m,y);
+    var ysmOff=getSMOff(m,y);
+    if(!ynm.length && !ysm.length) return;
+    histHtml+='<div class="hcard"><div class="hyr">'+y+'</div>';
+    histHtml+='<div class="hbrow"><div class="hbn">⚡ NEPA</div><div class="hms">';
+    if(ynm.length){
+      ynm.forEach(function(i){
+        var off=ynmOff&&ynmOff[i];
+        histHtml+=off?'<span class="hoff">'+MO[i].slice(0,3)+' (Cash-'+off+')</span>':'<span class="hon">'+MO[i].slice(0,3)+'</span>';
+      });
+    } else { histHtml+='<span class="hnone">None</span>'; }
+    histHtml+='</div></div>';
+    histHtml+='<div class="hbrow"><div class="hbn">🔒 Security</div><div class="hms">';
+    if(ysm.length){
+      ysm.forEach(function(i){
+        var off=ysmOff&&ysmOff[i];
+        histHtml+=off?'<span class="hoff">'+MO[i].slice(0,3)+' (Cash-'+off+')</span>':'<span class="hon">'+MO[i].slice(0,3)+'</span>';
+      });
+    } else { histHtml+='<span class="hnone">None</span>'; }
+    histHtml+='</div></div></div>';
+  });
+  histHtml+='</div>';
+
+  el.innerHTML = yrHtml + billsHtml + histHtml;
+}
+function billSec(t,title,rate,paid,paidOff){
+  paidOff = paidOff || {};
+  var unpd=MO.map(function(_,i){return i;}).filter(function(i){return paid.indexOf(i)===-1;});
+  var allDone=unpd.length===0;
   var h='<div class="bs"><div class="bsh"><div class="bst">'+title+'</div><div class="bsr">N'+fmt(rate)+'/month</div></div>';
   h+='<div class="pmt">Months Paid ('+paid.length+'/12)</div><div class="pmc">';
-  if(paid.length){paid.forEach(function(i){h+='<span class="pmch">'+MO[i].slice(0,3)+'</span>';});}else{h+='<span class="nom">None yet</span>';}
+  if(paid.length){paid.forEach(function(i){h+='<span class="pch">'+MO[i].slice(0,3)+'</span>';});}
+  else{h+='<span class="nom">None yet</span>';}
   h+='</div>';
-  var allDone=(paid.length===12);
-  if(allDone){h+='<div style="text-align:center;color:var(--g);font-weight:700;font-size:.82rem;margin-top:9px">Fully Paid for the Year!</div>';}
+  if(allDone){h+='<div style="text-align:center;color:var(--g);font-weight:700;font-size:.83rem;margin-top:9px">Fully Paid for the Year!</div>';}
   else{
-    var unpd=MO.map(function(_,i){return i;}).filter(function(i){return paid.indexOf(i)===-1;});
-    h+='<div class="dv"></div><div class="sl2">Select months to pay:</div>';
+    // ONLY ADMINS CAN MARK PAYMENTS
+    if(!curA){
+      h+='<div style="background:#fff8e6;border-left:4px solid #e8a020;border-radius:8px;padding:11px 13px;font-size:.8rem;color:#6b4c00;margin-top:10px;line-height:1.5">';
+      h+='<strong>To record your payment:</strong><br>Pay your levy to any community admin who will record it on your behalf. Only admins can mark payments to prevent fraud.</div>';
+      h+='</div>';
+      return h;
+    }
+    h+='<div class="div"></div><div class="sl">Select months to pay (Admin only):</div>';
     h+='<button class="fyb" onclick="fy(\''+t+'\')">Select Full Year (All Remaining)</button>';
-    h+='<div class="sl2">Or select a range:</div>';
+    h+='<div class="sl">Or select a range:</div>';
     h+='<div class="rr"><select id="'+t+'-fr">';
     unpd.forEach(function(i){h+='<option value="'+i+'">'+MO[i]+'</option>';});
     h+='</select><span style="font-size:.74rem;color:var(--mu)">to</span><select id="'+t+'-to">';
     unpd.forEach(function(i){h+='<option value="'+i+'">'+MO[i]+'</option>';});
     h+='</select><button class="ra" onclick="apR(\''+t+'\')">Apply</button></div>';
-    h+='<div class="sl2">Or pick individual months:</div>';
-    h+='<div class="mg">';
+    h+='<div class="sl">Or pick months:</div><div class="mgr">';
     MO.forEach(function(mn,i){
-      if(paid.indexOf(i)>-1){h+='<div class="ch dn" id="'+t+'-c'+i+'" onclick="togM(\''+t+'\','+i+')">'+mn.slice(0,3)+'</div>';}
-      else{h+='<div class="ch" id="'+t+'-c'+i+'" onclick="togM(\''+t+'\','+i+')">'+mn.slice(0,3)+'</div>';}
+      if(paid.indexOf(i)>-1){h+='<div class="mch done" id="'+t+'-c'+i+'" onclick="togM(\''+t+'\','+i+')">'+mn.slice(0,3)+'</div>';}
+      else{h+='<div class="mch" id="'+t+'-c'+i+'" onclick="togM(\''+t+'\','+i+')">'+mn.slice(0,3)+'</div>';}
     });
-    h+='</div>';
-    h+='<div class="bt"><div class="btl">Selected: <b id="'+t+'-cnt">0</b> month(s)</div><div class="bta">N<span id="'+t+'-tot">0</span></div></div>';
+    h+='</div><div class="bt"><div class="btl">Selected: <b id="'+t+'-cnt">0</b> month(s)</div><div class="bta">N<span id="'+t+'-tot">0</span></div></div>';
     h+='<button class="cpb" id="'+t+'-pb" onclick="confPay(\''+t+'\')" disabled>Confirm Payment</button>';
   }
   h+='</div>';return h;
 }
-function togM(t,i){var arr=t==='n'?nSel:sSel;var pos=arr.indexOf(i);if(pos>-1)arr.splice(pos,1);else arr.push(i);syncCh(t);syncTot(t);}
+function togM(t,i){
+  if(!curA){toast('Only admins can mark payments');return;}var arr=t==='n'?nSel:sSel;var pos=arr.indexOf(i);if(pos>-1)arr.splice(pos,1);else arr.push(i);syncCh(t);syncTot(t);}
 function syncCh(t){var arr=t==='n'?nSel:sSel;MO.forEach(function(_,i){var c=document.getElementById(t+'-c'+i);if(c)c.classList.toggle('sel',arr.indexOf(i)>-1);});}
-function syncTot(t){var arr=t==='n'?nSel:sSel;var rate=t==='n'?NR:SR;var ce=document.getElementById(t+'-cnt');var te=document.getElementById(t+'-tot');var pb=document.getElementById(t+'-pb');if(ce)ce.textContent=arr.length;if(te)te.textContent=fmt(arr.length*rate);if(pb)pb.disabled=!arr.length;}
-function fy(t){var m=state.members.find(function(x){return x.id===curId;});if(!m)return;var paid=t==='n'?m.nm:m.sm;var unpd=MO.map(function(_,i){return i;}).filter(function(i){return paid.indexOf(i)===-1;});if(t==='n')nSel=unpd.slice();else sSel=unpd.slice();syncCh(t);syncTot(t);}
-function apR(t){var f=parseInt(document.getElementById(t+'-fr').value);var to=parseInt(document.getElementById(t+'-to').value);if(f>to){toast('From must be before To');return;}var m=state.members.find(function(x){return x.id===curId;});if(!m)return;var paid=t==='n'?m.nm:m.sm;var range=[];for(var i=f;i<=to;i++){if(paid.indexOf(i)===-1)range.push(i);}if(t==='n')nSel=uniq(nSel.concat(range));else sSel=uniq(sSel.concat(range));syncCh(t);syncTot(t);}
-function uniq(a){return a.filter(function(v,i){return a.indexOf(v)===i;});}
-function confPay(t){var m=state.members.find(function(x){return x.id===curId;});if(!m)return;var arr=t==='n'?nSel:sSel;var rate=t==='n'?NR:SR;var lbl=t==='n'?'NEPA':'Security';if(!arr.length)return;var dest=t==='n'?m.nm:m.sm;arr.forEach(function(i){if(dest.indexOf(i)===-1)dest.push(i);});dest.sort(function(a,b){return a-b;});var total=arr.length*rate;var names=arr.map(function(i){return MO[i].slice(0,3);}).join(', ');sv();if(t==='n')nSel=[];else sSel=[];toast(lbl+' paid for '+names+' - N'+fmt(total));openCard(m.id);renderSum();renderRec();renderML(curFil);renderRep();}
-function closeCard(){document.getElementById('mc').classList.remove('vis');curId=null;nSel=[];sSel=[];}
+function syncTot(t){var arr=t==='n'?nSel:sSel;var mObj=state.members.find(function(x){return x.id===curId;});
+  var rate=t==='n'?NR:getSR(mObj);var ce=document.getElementById(t+'-cnt');var te=document.getElementById(t+'-tot');var pb=document.getElementById(t+'-pb');if(ce)ce.textContent=arr.length;if(te)te.textContent=fmt(arr.length*rate);if(pb)pb.disabled=!arr.length;}
+function fy(t){
+  if(!curA){toast('Only admins can mark payments');return;}var m=state.members.find(function(x){return x.id===curId;});if(!m)return;var paid=t==='n'?m.nm:m.sm;var unpd=MO.map(function(_,i){return i;}).filter(function(i){return paid.indexOf(i)===-1;});if(t==='n')nSel=unpd.slice();else sSel=unpd.slice();syncCh(t);syncTot(t);}
+function apR(t){
+  if(!curA){toast('Only admins can mark payments');return;}var f=parseInt(document.getElementById(t+'-fr').value);var to=parseInt(document.getElementById(t+'-to').value);if(f>to){toast('From must be before To');return;}var m=state.members.find(function(x){return x.id===curId;});if(!m)return;var paid=t==='n'?m.nm:m.sm;var range=[];for(var i=f;i<=to;i++){if(paid.indexOf(i)===-1)range.push(i);}if(t==='n')nSel=unique(nSel.concat(range));else sSel=unique(sSel.concat(range));syncCh(t);syncTot(t);}
+function confPay(t){
+  if(!curA){toast('Only admins can mark payments');return;}
+  var m=state.members.find(function(x){return x.id===curId;});if(!m)return;
+  var arr=t==='n'?nSel:sSel;var mObj=state.members.find(function(x){return x.id===curId;});
+  var rate=t==='n'?NR:getSR(mObj);var lbl=t==='n'?'NEPA':'Security';
+  if(!arr.length)return;
+  var yr=selYr||CY;
+  var dest=t==='n'?getNM(m,yr):getSM(m,yr);
+  arr.forEach(function(i){if(dest.indexOf(i)===-1)dest.push(i);});
+  dest.sort(function(a,b){return a-b;});
+  if(t==='n'){setNM(m,yr,dest);}else{setSM(m,yr,dest);}
+  var total=arr.length*rate;var names=arr.map(function(i){return MO[i].slice(0,3);}).join(', ');
+  svS();if(t==='n')nSel=[];else sSel=[];
+  toast(lbl+' paid for '+names+' - N'+fmt(total));
+  openCard(m.id);renderSum();renderRec();renderRMths();renderRep();
+}
+function closeCard(){var mc=document.getElementById('mc');if(mc)mc.classList.remove('vis');curId=null;nSel=[];sSel=[];}
+
+// MEMBER LIST
 function filM(f,btn){curFil=f;document.querySelectorAll('.fb').forEach(function(b){b.classList.remove('on');});btn.classList.add('on');renderML(f);}
 function renderML(f){
   var list=state.members.slice();
-  if(f==='nu')list=list.filter(function(m){return!m.nm||m.nm.length<12;});
-  else if(f==='su')list=list.filter(function(m){return!m.sm||m.sm.length<12;});
+  if(f==='nu')list=list.filter(function(m){return !m.nm||m.nm.length<12;});
+  else if(f==='su')list=list.filter(function(m){return !m.sm||m.sm.length<12;});
   else if(f==='fp')list=list.filter(function(m){return m.nm&&m.nm.length===12&&m.sm&&m.sm.length===12;});
   var el=document.getElementById('mlist');if(!el)return;
   if(!list.length){el.innerHTML='<div class="es">No members in this category</div>';return;}
   var h='';
   list.forEach(function(m){
     var ok=m.nm&&m.nm.length===12&&m.sm&&m.sm.length===12;
-    h+='<div class="mr" onclick="goM(\''+m.id+'\')">';
-    h+='<div class="av">'+ini(m.name)+'</div>';
-    h+='<div class="mri"><div class="mrn">'+m.name+'</div><div style="font-size:.69rem;color:var(--mu)">'+(m.addr||'No address')+'</div>';
-    h+='<div class="bd"><span class="dot '+dc(m.nm)+'"></span><span class="dl">NEPA '+(m.nm?m.nm.length:0)+'/12</span>&nbsp;<span class="dot '+dc(m.sm)+'"></span><span class="dl">Security '+(m.sm?m.sm.length:0)+'/12</span></div></div>';
-    h+='<div style="font-size:.69rem;font-weight:700;color:'+(ok?'var(--g)':'var(--re)')+';">'+(ok?'Paid':'Pending')+'</div></div>';
+    h+='<div class="mr" onclick="goM(\''+m.id+'\')"><div class="av">'+ini(m.name)+'</div><div class="mri"><div class="mrn">'+m.name+'</div><div style="font-size:.69rem;color:var(--mu)">'+(m.addr||'No address')+'</div><div class="bd" style="margin-top:3px"><span class="dot '+dc(m.nm)+'"></span><span class="dl">NEPA '+(m.nm?m.nm.length:0)+'/12</span>&nbsp;<span class="dot '+dc(m.sm)+'"></span><span class="dl">Security '+(m.sm?m.sm.length:0)+'/12</span></div></div><div style="font-size:.69rem;font-weight:700;color:'+(ok?'var(--g)':'var(--red)')+'">'+( ok?'Paid':'Pending')+'</div></div>';
   });
   el.innerHTML=h;
 }
-function goM(id){hsPick(id);}
-function addOne(){var name=document.getElementById('newN').value.trim();var addr=document.getElementById('newA').value.trim();if(!name){toast('Please enter a name');return;}var id='M'+String(state.nid).padStart(4,'0');state.members.push({id:id,name:name,addr:addr,nm:[],sm:[]});state.nid++;sv();document.getElementById('newN').value='';document.getElementById('newA').value='';toast(name+' registered!');renderSum();}
-function buPaste(){var text=(document.getElementById('bpaste').value||'').trim();if(!text){toast('Please paste some names first');return;}var lines=text.split(/\r?\n/).filter(function(l){return l.trim();});var parsed=lines.map(function(l){var p=l.split(',');return{name:p[0].trim(),addr:(p[1]||'').trim()};}).filter(function(x){return x.name;});var ex=new Set(state.members.map(function(m){return m.name.toLowerCase().trim();}));var newOnes=parsed.filter(function(p){return!ex.has(p.name.toLowerCase().trim());});buPend=newOnes;var pv=document.getElementById('bprev');var pvt=document.getElementById('bprevT');var pvl=document.getElementById('bprevL');var bcb=document.getElementById('bcb');if(!newOnes.length){toast('No new names found');return;}pvt.textContent='Found '+newOnes.length+' new member(s)';pvl.innerHTML=newOnes.slice(0,30).map(function(p,i){return'<div style="padding:2px 0;border-bottom:1px solid #e0edea">'+(i+1)+'. '+p.name+'</div>';}).join('');pv.style.display='block';bcb.style.display='block';}
-function buConf(){if(!buPend.length)return;buPend.forEach(function(p){var id='M'+String(state.nid).padStart(4,'0');state.members.push({id:id,name:p.name,addr:p.addr,nm:[],sm:[]});state.nid++;});sv();toast(buPend.length+' members added!');buPend=[];document.getElementById('bprev').style.display='none';document.getElementById('bcb').style.display='none';document.getElementById('bpaste').value='';renderSum();}
-function buTmpl(){var csv='Name,Address (Optional)\nEmeka Okonkwo,No. 1 Main Street\nNgozi Adaeze,Block A Unit 3';var b=new Blob([csv],{type:'text/csv'});var u=URL.createObjectURL(b);var a=document.createElement('a');a.href=u;a.download='Okpu_Orba_Template.csv';a.click();URL.revokeObjectURL(u);}
+function goM(id){swTab('home',document.querySelector('.tab'));setTimeout(function(){openCard(id);},80);}
+
+// ADD SINGLE
+function addOne(){
+  var name=(document.getElementById('newN').value||'').trim();
+  var addr=(document.getElementById('newA').value||'').trim();
+  var gender=document.getElementById('newG')?document.getElementById('newG').value:'m';
+  if(!name){toast('Please enter a name');return;}
+  var id='M'+String(state.nid).padStart(4,'0');
+  state.members.push({id:id,name:name,addr:addr,gender:gender,nmY:{},smY:{},nmOffY:{},smOffY:{}});
+  state.nid++;svS();
+  document.getElementById('newN').value='';document.getElementById('newA').value='';
+  toast(name+' registered!');renderSum();
+}
+
+// MONTHLY REPORT
+function rSw(t,btn){rType=t;document.querySelectorAll('.rtab').forEach(function(b){b.classList.remove('on');});btn.classList.add('on');renderRep();}
+function selRepYr(yr,btn){
+  repYr=yr;
+  document.querySelectorAll('#repYrRow .yr-btn').forEach(function(b){b.classList.remove('active');});
+  if(btn)btn.classList.add('active');
+  renderRep();
+}
+
+function renderRMths(){
+  // Render year buttons for report
+  var yrRow=document.getElementById('repYrRow');
+  if(yrRow){
+    var yrs=getYears();
+    var h='<div class="yr-label">Year:</div>';
+    yrs.forEach(function(yr){
+      h+='<button class="yr-btn'+(yr===repYr?' active':'')+'" onclick="selRepYr('+yr+',this)">'+yr+'</button>';
+    });
+    yrRow.innerHTML=h;
+  }
+  var el=document.getElementById('rmts');if(!el)return;
+  var h='';
+  MO.forEach(function(mn,i){h+='<button class="rmt'+(i===rMonth?' on':'')+'" onclick="selRM('+i+',this)">'+mn.slice(0,3)+'</button>';});
+  el.innerHTML=h;
+}
+function selRM(i,btn){rMonth=i;document.querySelectorAll('.rmt').forEach(function(b){b.classList.remove('on');});btn.classList.add('on');renderRep();}
+function renderRep(){
+  var rsg=document.getElementById('rsg');var rlist=document.getElementById('rlist');if(!rsg||!rlist)return;
+  var m=state.members;var mName=MO[rMonth];
+  var paid=m.filter(function(mb){var a=rType==='n'?getNM(mb,repYr):getSM(mb,repYr);return a.indexOf(rMonth)>-1;});
+  var unpaid=m.length-paid.length;
+  rsg.innerHTML='<div class="rs ng"><div class="rsn">'+paid.length+'</div><div class="rsl">Paid '+mName+'</div></div><div class="rs rd"><div class="rsn">'+unpaid+'</div><div class="rsl">Unpaid '+mName+'</div></div>';
+  if(!paid.length){rlist.innerHTML='<div style="text-align:center;color:var(--mu);padding:18px 0;font-size:.82rem">Nobody paid '+(rType==='n'?'NEPA':'Security')+' for '+mName+' yet.</div>';return;}
+  var h='<div class="stit" style="margin-bottom:8px">'+paid.length+' members paid '+(rType==='n'?'NEPA':'Security')+' for '+mName+'</div>';
+  paid.forEach(function(mb,i){h+='<div class="rrow"><div class="av" style="width:30px;height:30px;font-size:.72rem">'+ini(mb.name)+'</div><div style="flex:1"><div style="font-weight:600;font-size:.85rem">'+mb.name+'</div><div style="font-size:.69rem;color:var(--mu)">'+(mb.addr||'No address')+'</div></div><div style="font-size:.69rem;font-weight:700;color:var(--g)">#'+(i+1)+'</div></div>';});
+  rlist.innerHTML=h;
+}
+
+// PAYMENT VERIFICATION
+function renderVer(){var el=document.getElementById('verR');if(el)el.innerHTML='<div class="es">Type a name above to verify</div>';}
+function onVer(){
+  var q=(document.getElementById('verI').value||'').trim().toLowerCase();
+  var el=document.getElementById('verR');if(!el)return;
+  if(q.length<2){el.innerHTML='<div class="es">Type at least 2 letters</div>';return;}
+  var matches=state.members.filter(function(m){return m.name.toLowerCase().indexOf(q)>-1;});
+  if(!matches.length){el.innerHTML='<div class="es">No member found</div>';return;}
+  var h='';
+  var yrs=getYears();
+  matches.slice(0,5).forEach(function(m){
+    h+='<div class="ver-card">';
+    h+='<div class="ver-name"><div class="av" style="width:32px;height:32px;font-size:.74rem">'+ini(m.name)+'</div>'+m.name+'</div>';
+    // Show all years
+    yrs.forEach(function(yr){
+      var nm=getNM(m,yr);var sm=getSM(m,yr);
+      var nmOff=getNMOff(m,yr);var smOff=getSMOff(m,yr);
+      if(!nm.length&&!sm.length)return;
+      h+='<div style="font-size:.72rem;font-weight:800;color:var(--gd);margin:6px 0 3px">'+yr+'</div>';
+      // NEPA
+      h+='<div class="ver-row"><div class="ver-bill">⚡ NEPA</div><div class="ver-months">';
+      if(nm.length){nm.forEach(function(i){var off=nmOff[i];h+=off?'<span class="ver-month-chip ver-offline">'+MO[i].slice(0,3)+' (Cash-'+off+')</span>':'<span class="ver-month-chip ver-online">'+MO[i].slice(0,3)+'</span>';});}
+      else{h+='<span class="ver-unpaid-msg">None</span>';}
+      h+='</div></div>';
+      // Security
+      h+='<div class="ver-row"><div class="ver-bill">🔒 Security</div><div class="ver-months">';
+      if(sm.length){sm.forEach(function(i){var off=smOff[i];h+=off?'<span class="ver-month-chip ver-offline">'+MO[i].slice(0,3)+' (Cash-'+off+')</span>':'<span class="ver-month-chip ver-online">'+MO[i].slice(0,3)+'</span>';});}
+      else{h+='<span class="ver-unpaid-msg">None</span>';}
+      h+='</div></div>';
+    });
+    // If no history at all
+    var hasAny=yrs.some(function(yr){return getNM(m,yr).length||getSM(m,yr).length;});
+    if(!hasAny){h+='<div style="color:var(--re);font-size:.8rem;padding:8px 0">No payments recorded yet</div>';}
+    h+='</div>';
+  });
+  el.innerHTML=h;
+}
+
+function renderNewsPrev(){
+  var el=document.getElementById('newsPrev');if(!el)return;
+  if(!news.length){el.innerHTML='';return;}
+  var h='<div class="stit" style="margin-top:4px;margin-bottom:8px">Latest News</div>';
+  news.slice(0,2).forEach(function(n){
+    h+='<div class="nc" onclick="swTab(\'news\',document.querySelectorAll(\'.tab\')[2])" style="cursor:pointer">';
+    if(n.img)h+='<img src="'+n.img+'" alt="news">';
+    h+='<div class="nt">'+n.title+'</div><div class="nb" style="max-height:40px;overflow:hidden">'+n.body+'</div>';
+    h+='<div class="nm"><span class="nbg">Admin</span><span>'+n.date+'</span><span style="margin-left:auto;color:var(--g);font-size:.7rem">Read more</span></div></div>';
+  });
+  el.innerHTML=h;
+}
 function renderNews(){
   var comp=document.getElementById('nCompose');var feed=document.getElementById('nFeed');if(!comp||!feed)return;
-  if(curA){comp.innerHTML='<div class="ow nform"><div class="stit" style="margin-bottom:8px">Post News</div><input type="text" id="ntitle" placeholder="News title..."><textarea id="nbody" placeholder="Write announcement..."></textarea><button class="npb" onclick="postNews()">Publish News</button></div>';}
-  else{comp.innerHTML='<div class="nlk">📰 Community News - Only admins can post. Everyone can read.</div>';}
-  if(!news.length){feed.innerHTML='<div class="es">No news yet. Check back soon!</div>';return;}
+  if(curA){
+    comp.innerHTML='<div class="card"><div class="stit" style="margin-bottom:8px">Post Community News</div><input type="text" id="ntitle" placeholder="News title..."><textarea id="nbody" placeholder="Write your announcement here..."></textarea><div style="margin-bottom:9px"><div style="font-size:.73rem;font-weight:700;color:#0f5233;margin-bottom:5px">Add Photo (optional)</div><input type="file" id="nimg" accept="image/*" style="width:100%;padding:8px;border:2px dashed var(--bo);border-radius:9px;font-size:.8rem;background:#f9fbfa" onchange="prevImg()"><div id="nimgPrev" style="margin-top:6px"></div></div><button class="gbtn" onclick="postNews()">Publish News</button></div>';
+  } else {
+    comp.innerHTML='<div class="nlock">Community News - Only admins can post. Everyone can read below.</div>';
+  }
+  if(!news.length){feed.innerHTML='<div class="es">No news posted yet.</div>';return;}
   var h='';
-  news.forEach(function(n,i){h+='<div class="nc"><div class="ntitle">'+n.title+'</div><div class="nbody">'+n.body.replace(/\n/g,'<br>')+'</div><div class="nmeta"><span class="nbadge">Admin</span><span>'+n.by+' - '+n.date+'</span>'+(curA?'<button onclick="delNews('+i+')" style="margin-left:auto;background:none;border:none;color:var(--re);font-size:.72rem;cursor:pointer">Delete</button>':'')+'</div></div>';});
+  news.forEach(function(n,i){
+    h+='<div class="nc">';
+    if(n.img)h+='<img src="'+n.img+'" alt="news">';
+    h+='<div class="nt">'+n.title+'</div><div class="nb">'+n.body.replace(/\n/g,'<br>')+'</div>';
+    h+='<div class="nm"><span class="nbg">Admin</span><span>'+n.by+' - '+n.date+'</span>';
+    if(curA)h+='<button onclick="delNews('+i+')" style="margin-left:auto;background:none;border:none;color:var(--red);font-size:.72rem;cursor:pointer">Delete</button>';
+    h+='</div></div>';
+  });
   feed.innerHTML=h;
 }
-function postNews(){var t=(document.getElementById('ntitle').value||'').trim();var b=(document.getElementById('nbody').value||'').trim();if(!t||!b){toast('Please enter title and content');return;}var now=new Date();news.unshift({title:t,body:b,by:curA.name||'Admin',date:now.toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'})});svN();toast('News posted!');renderNews();renderNewsPrev();}
-function delNews(i){if(!confirm('Delete this news?'))return;news.splice(i,1);svN();renderNews();renderNewsPrev();toast('Deleted');}
-function renderNewsPrev(){var el=document.getElementById('newsPrev');if(!el)return;if(!news.length){el.innerHTML='';return;}var h='<div class="stit" style="margin-bottom:8px">Latest News</div>';news.slice(0,2).forEach(function(n){h+='<div class="nc" style="cursor:pointer" onclick="goNews()"><div class="ntitle">'+n.title+'</div><div class="nbody" style="max-height:36px;overflow:hidden">'+n.body+'</div><div class="nmeta"><span class="nbadge">Admin</span><span>'+n.date+'</span><span style="margin-left:auto;color:var(--g);font-size:.7rem">Read more</span></div></div>';});el.innerHTML=h;}
-function goNews(){document.querySelectorAll('.pg').forEach(function(p){p.classList.remove('on');});document.querySelectorAll('.tab').forEach(function(b){b.classList.remove('on');});document.getElementById('pg-news').classList.add('on');var tabs=document.querySelectorAll('.tab');tabs.forEach(function(b){if(b.textContent.indexOf('News')>-1)b.classList.add('on');});renderNews();}
-var selAmt=0;
-function selA(amt,el){document.querySelectorAll('.da').forEach(function(d){d.classList.remove('on');});el.classList.add('on');selAmt=amt;var inp=document.getElementById('damt');if(amt===0){inp.value='';inp.focus();selAmt=0;}else{inp.value=amt;}document.getElementById('dbn').disabled=selAmt<1;}
-function onDA(){var v=parseInt(document.getElementById('damt').value)||0;selAmt=v;document.getElementById('dbn').disabled=v<1;document.querySelectorAll('.da').forEach(function(d){if(parseInt(d.textContent.replace(/[^0-9]/g,''))===v)d.classList.add('on');else d.classList.remove('on');});}
-function subDon(){if(selAmt<1)return;var now=new Date();dons.entries.unshift({amt:selAmt,date:now.toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'}),time:now.toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'}),ts:now.getTime()});dons.total=(dons.total||0)+selAmt;if(dons.entries.length>100)dons.entries=dons.entries.slice(0,100);svD();selAmt=0;document.getElementById('damt').value='';document.querySelectorAll('.da').forEach(function(d){d.classList.remove('on');});document.getElementById('dbn').disabled=true;var s=document.getElementById('dSucc');s.style.display='block';setTimeout(function(){s.style.display='none';},4000);renderDon();toast('Thank you! Donated anonymously!');}
-function renderDon(){var tv=document.getElementById('dtv');var tc=document.getElementById('dtc2');var dl=document.getElementById('dlog');if(tv)tv.textContent='N'+fmt(dons.total);if(tc)tc.textContent=(dons.entries.length)+' donation'+(dons.entries.length===1?'':'s');if(!dl)return;if(!dons.entries.length){dl.innerHTML='<div class="es">No donations yet - be the first!</div>';return;}var h='<div class="stit" style="margin-bottom:8px">Donation History (Anonymous)</div>';dons.entries.slice(0,20).forEach(function(e){h+='<div class="dle"><div class="dla">N'+fmt(e.amt)+'</div><div class="dlm">Anonymous - '+e.date+' at '+e.time+'</div></div>';});dl.innerHTML=h;}
-function onOFS(){var q=document.getElementById('ofsi').value.trim().toLowerCase();var el=document.getElementById('ofR');if(!el)return;if(!q){el.classList.remove('vis');return;}var ms=state.members.filter(function(m){return m.name.toLowerCase().indexOf(q)>-1;});if(!ms.length){el.innerHTML='<div style="padding:11px 12px;color:var(--mu);font-size:.82rem">No member found</div>';el.classList.add('vis');return;}var h='';ms.slice(0,8).forEach(function(m){h+='<div class="ori" onclick="ofPick(\''+m.id+'\')">';h+='<div class="av">'+ini(m.name)+'</div>';h+='<div><div style="font-weight:600;font-size:.84rem">'+m.name+'</div><div style="font-size:.69rem;color:var(--mu)">'+(m.addr||'')+'</div></div></div>';});el.innerHTML=h;el.classList.add('vis');}
-function ofPick(id){ofId=id;ofNS=[];ofSS=[];document.getElementById('ofR').classList.remove('vis');document.getElementById('ofsi').value='';var m=state.members.find(function(x){return x.id===id;});if(!m)return;var sb=document.getElementById('ofSB');sb.innerHTML='<div class="smb"><div class="av">'+ini(m.name)+'</div><div style="flex:1"><div class="smbn">'+m.name+'</div><div class="smbs">'+(m.addr||'')+' · NEPA: '+(m.nm?m.nm.length:0)+'/12 · Sec: '+(m.sm?m.sm.length:0)+'/12</div></div><button style="background:none;border:none;color:var(--mu);font-size:1rem;cursor:pointer" onclick="ofClr()">X</button></div>';ofGrid('n',m.nm||[]);ofGrid('s',m.sm||[]);document.getElementById('ofNB').style.display='block';document.getElementById('ofSBB').style.display='block';ofSyncBtn();}
-function ofGrid(t,paid){var gid=t==='n'?'ofNG':'ofSG';var g=document.getElementById(gid);if(!g)return;var h='';MO.forEach(function(mn,i){if(paid.indexOf(i)>-1){h+='<div class="omc od">'+mn.slice(0,3)+'</div>';}else{h+='<div class="omc" id="o'+t+i+'" onclick="ofTog(\''+t+'\','+i+')">'+mn.slice(0,3)+'</div>';}});g.innerHTML=h;}
-function ofTog(t,i){var arr=t==='n'?ofNS:ofSS;var pos=arr.indexOf(i);if(pos>-1)arr.splice(pos,1);else arr.push(i);var el=document.getElementById('o'+t+i);if(el)el.classList.toggle('os',arr.indexOf(i)>-1);ofSyncBtn();}
-function ofFY(t){var m=state.members.find(function(x){return x.id===ofId;});if(!m)return;var paid=t==='n'?(m.nm||[]):(m.sm||[]);var unpd=MO.map(function(_,i){return i;}).filter(function(i){return paid.indexOf(i)===-1;});if(t==='n')ofNS=unpd.slice();else ofSS=unpd.slice();ofGrid(t,paid);var arr=t==='n'?ofNS:ofSS;arr.forEach(function(i){var el=document.getElementById('o'+t+i);if(el)el.classList.add('os');});ofSyncBtn();}
-function ofSyncBtn(){document.getElementById('ofSub').disabled=(!ofNS.length&&!ofSS.length);}
-function recOff(){var m=state.members.find(function(x){return x.id===ofId;});if(!m||(!ofNS.length&&!ofSS.length))return;var lines=[];if(ofNS.length){ofNS.forEach(function(i){if((m.nm||[]).indexOf(i)===-1){if(!m.nm)m.nm=[];m.nm.push(i);}});m.nm.sort(function(a,b){return a-b;});lines.push('NEPA: '+ofNS.map(function(i){return MO[i].slice(0,3);}).join(', ')+' (N'+fmt(ofNS.length*NR)+')');}if(ofSS.length){ofSS.forEach(function(i){if((m.sm||[]).indexOf(i)===-1){if(!m.sm)m.sm=[];m.sm.push(i);}});m.sm.sort(function(a,b){return a-b;});lines.push('Security: '+ofSS.map(function(i){return MO[i].slice(0,3);}).join(', ')+' (N'+fmt(ofSS.length*SR)+')');}if(!state.offLog)state.offLog=[];state.offLog.unshift({name:m.name,detail:lines.join(' · '),date:new Date().toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'})});if(state.offLog.length>30)state.offLog=state.offLog.slice(0,30);sv();toast('Offline payment recorded for '+m.name+'!');renderSum();renderRec();renderRep();ofClr();renderOfLog();}
-function ofClr(){ofId=null;ofNS=[];ofSS=[];document.getElementById('ofSB').innerHTML='';document.getElementById('ofNB').style.display='none';document.getElementById('ofSBB').style.display='none';document.getElementById('ofsi').value='';document.getElementById('ofSub').disabled=true;}
-function renderOfLog(){var el=document.getElementById('ofLog');if(!el)return;var log=state.offLog||[];if(!log.length){el.innerHTML='';return;}var h='<div class="stit" style="margin-bottom:8px">Recent Offline Payments</div>';log.forEach(function(e){h+='<div class="ole"><div style="font-weight:700;font-size:.84rem">'+e.name+' <span style="background:var(--go);color:#fff;font-size:.6rem;font-weight:700;padding:1px 7px;border-radius:20px;vertical-align:middle;margin-left:4px">OFFLINE CASH</span></div><div style="font-size:.71rem;color:var(--mu);margin-top:2px">'+e.detail+' · '+e.date+'</div></div>';});el.innerHTML=h;}
-function rSwitch(t,btn){rType=t;document.querySelectorAll('.rtab').forEach(function(b){b.classList.remove('on');});btn.classList.add('on');renderRep();}
-function renderRMths(){var el=document.getElementById('rmts');if(!el)return;var h='';MO.forEach(function(mn,i){h+='<button class="rmt'+(i===rMth?' on':'')+'" onclick="selRM('+i+',this)">'+mn.slice(0,3)+'</button>';});el.innerHTML=h;}
-function selRM(i,btn){rMth=i;document.querySelectorAll('.rmt').forEach(function(b){b.classList.remove('on');});btn.classList.add('on');renderRep();}
-function renderRep(){var sg=document.getElementById('rsg');var rl=document.getElementById('rlist');if(!sg||!rl)return;var m=state.members;var mn=MO[rMth];var paid=m.filter(function(mb){var arr=rType==='n'?mb.nm:mb.sm;return arr&&arr.indexOf(rMth)>-1;});var unp=m.length-paid.length;var lbl=rType==='n'?'NEPA Bill':'Security Levy';sg.innerHTML='<div class="rst n"><div class="rsn">'+paid.length+'</div><div class="rsl">Paid '+mn+'</div></div><div class="rst s"><div class="rsn">'+unp+'</div><div class="rsl">Unpaid '+mn+'</div></div>';if(!paid.length){rl.innerHTML='<div class="es">Nobody paid '+lbl+' for '+mn+' yet.</div>';return;}var h='<div class="stit" style="margin-bottom:8px">Who paid '+lbl+' for '+mn+' ('+paid.length+')</div>';paid.forEach(function(mb,i){h+='<div class="mr"><div class="av">'+ini(mb.name)+'</div><div class="mri"><div class="mrn">'+mb.name+'</div><div style="font-size:.69rem;color:var(--mu)">'+(mb.addr||'No address')+'</div></div><div style="font-size:.69rem;font-weight:700;color:var(--g)">#'+(i+1)+'</div></div>';});rl.innerHTML=h;}
-function reqA(btn){if(curA){swT('admin',btn);return;}pendBtn=btn;document.getElementById('adminLock').style.display='flex';document.getElementById('aEmail').value='';document.getElementById('aPass').value='';document.getElementById('aerr').style.display='none';setTimeout(function(){document.getElementById('aEmail').focus();},100);}
-function doLogin(){var email=(document.getElementById('aEmail').value||'').trim().toLowerCase();var pass=(document.getElementById('aPass').value||'');var found=admins.find(function(a){return a.email.toLowerCase()===email&&a.password===pass;});if(found){curA=found;document.getElementById('adminLock').style.display='none';document.getElementById('abar').style.display='flex';document.getElementById('abarN').textContent=found.name;if(pendBtn){swT('admin',pendBtn);pendBtn=null;}toast('Welcome, '+found.name+'!');}else{document.getElementById('aerr').style.display='block';document.getElementById('aPass').value='';}}
-function cancelLogin(){document.getElementById('adminLock').style.display='none';pendBtn=null;}
-function doLogout(){curA=null;document.getElementById('abar').style.display='none';swT('home',document.querySelector('.tab'));toast('Logged out');}
-function renderSA(){var w=document.getElementById('saPanel');if(!w)return;if(!curA){w.innerHTML='';return;}var isSup=curA.role==='super';var h='<div class="stit" style="margin-bottom:8px">Admin Panel</div>';h+='<div style="background:#e8f7ef;border-radius:8px;padding:10px 12px;font-size:.8rem;color:var(--gd);margin-bottom:12px">Logged in: <strong>'+curA.name+'</strong> ('+curA.email+')</div>';if(isSup){h+='<div style="font-size:.78rem;font-weight:700;color:var(--gd);margin-bottom:8px">Admin Accounts</div>';admins.forEach(function(a,i){h+='<div class="sar"><div><div class="sarn">'+a.name+'</div><div class="sarr">'+a.email+' - '+a.role+'</div></div>'+(a.email.toLowerCase()!==curA.email.toLowerCase()?'<button class="sad" onclick="delAdm('+i+')">Remove</button>':'<span style="font-size:.7rem;color:var(--g);font-weight:700">You</span>')+'</div>';});h+='<div style="font-size:.78rem;font-weight:700;color:var(--gd);margin:12px 0 8px">Add New Admin</div>';h+='<div class="saf"><input type="text" id="saName" placeholder="Full Name"><input type="email" id="saEmail" placeholder="Email address"><input type="password" id="saPass" placeholder="Password"><select id="saRole"><option value="admin">Admin</option><option value="super">Super Admin</option></select><button class="sab" onclick="addAdm()">Add Admin</button></div>';h+='<div style="margin-top:12px;background:#fff8e6;border-left:4px solid var(--go);border-radius:8px;padding:10px 12px;font-size:.75rem;color:#6b4c00;line-height:1.6"><strong>How to share admin login:</strong><br>1. Add their name, email and password above.<br>2. Send them the link + email + password via WhatsApp.<br>3. They log in with those details.</div>';}else{h+='<div style="font-size:.82rem;color:var(--mu);padding:8px 0">You have standard admin access. Contact Super Admin to manage accounts.</div>';}w.innerHTML=h;}
-function delAdm(i){if(!confirm('Remove this admin?'))return;admins.splice(i,1);svA();renderSA();toast('Admin removed');}
-function addAdm(){var name=(document.getElementById('saName').value||'').trim();var email=(document.getElementById('saEmail').value||'').trim().toLowerCase();var pass=(document.getElementById('saPass').value||'');var role=document.getElementById('saRole').value;if(!name||!email||!pass){toast('Please fill all fields');return;}if(admins.find(function(a){return a.email.toLowerCase()===email;})){toast('Email already exists');return;}admins.push({name:name,email:email,password:pass,role:role});svA();renderSA();toast(name+' added as '+role+'!');}
+function prevImg(){var f=document.getElementById('nimg').files[0];if(!f)return;var r=new FileReader();r.onload=function(e){var pv=document.getElementById('nimgPrev');if(pv)pv.innerHTML='<img src="'+e.target.result+'" style="width:100%;border-radius:8px;max-height:160px;object-fit:cover">';};r.readAsDataURL(f);}
+function postNews(){
+  var t=(document.getElementById('ntitle').value||'').trim();
+  var b=(document.getElementById('nbody').value||'').trim();
+  if(!t||!b){toast('Please enter title and content');return;}
+  var now=new Date();
+  var entry={title:t,body:b,by:curA.name||'Admin',date:now.toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'})};
+  var imgF=document.getElementById('nimg');
+  if(imgF&&imgF.files&&imgF.files[0]){
+    var r=new FileReader();r.onload=function(e){entry.img=e.target.result;news.unshift(entry);svN();toast('News posted with photo!');renderNews();renderNewsPrev();};r.readAsDataURL(imgF.files[0]);
+  } else {news.unshift(entry);svN();toast('News posted!');renderNews();renderNewsPrev();}
+}
+function delNews(i){if(!confirm('Delete this news?'))return;news.splice(i,1);svN();renderNews();renderNewsPrev();toast('News deleted');}
+
+// DONATE
+function renderDon(){
+  var dtv=document.getElementById('dtv');var dtc2=document.getElementById('dtc2');var dlog=document.getElementById('dlog');
+  if(dtv)dtv.textContent='N'+fmt(dons.total);
+  if(dtc2)dtc2.textContent=dons.entries.length+' donation'+(dons.entries.length===1?'':'s');
+  if(!dlog)return;
+  if(!dons.entries.length){dlog.innerHTML='<div class="es">No donations yet. Be the first!</div>';return;}
+  var h='<div class="stit" style="margin-top:8px;margin-bottom:8px">Donation History</div>';
+  dons.entries.forEach(function(e){h+='<div class="de"><div class="dea">N'+fmt(e.amt)+'</div><div class="dem">Anonymous - '+e.date+' '+e.time+'</div></div>';});
+  dlog.innerHTML=h;
+}
+function selA(amt,el){document.querySelectorAll('.da').forEach(function(d){d.classList.remove('sel');});el.classList.add('sel');var inp=document.getElementById('dAmt');if(amt===0){selDAmt=0;inp.value='';inp.focus();}else{selDAmt=amt;inp.value=amt;}var pb=document.getElementById('dpbtn');if(pb)pb.disabled=selDAmt<1;}
+function onDI(){var v=parseInt(document.getElementById('dAmt').value)||0;selDAmt=v;var pb=document.getElementById('dpbtn');if(pb)pb.disabled=v<1;document.querySelectorAll('.da').forEach(function(d){d.classList.toggle('sel',parseInt(d.textContent.replace(/,/g,''))===v);});}
+function selA(amt,el){
+  document.querySelectorAll('.da').forEach(function(d){d.classList.remove('daSel');});
+  if(el)el.classList.add('daSel');
+  var inp=document.getElementById('dAmt');
+  if(amt===0){selDAmt=0;if(inp){inp.value='';inp.focus();}}
+  else{selDAmt=amt;if(inp)inp.value=amt;}
+  var btn=document.getElementById('dpbtn');
+  if(btn)btn.disabled=selDAmt<1;
+}
+
+function onDonInputAlias(){
+  var v=parseInt((document.getElementById('damt').value)||'0')||0;
+  selDAmt=v;
+  document.querySelectorAll('.da').forEach(function(d){d.classList.remove('daSel');});
+  var btn=document.getElementById('dpbtn');
+  if(btn)btn.disabled=v<1;
+}
+
+function submitD(){
+  if(selDAmt<1)return;
+  var now=new Date();
+  var entry={amt:selDAmt,date:now.toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'}),time:now.toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'}),ts:now.getTime()};
+  dons.entries.unshift(entry);dons.total=(dons.total||0)+selDAmt;
+  if(dons.entries.length>100)dons.entries=dons.entries.slice(0,100);
+  svD();selDAmt=0;
+  var dAmt=document.getElementById('dAmt');if(dAmt)dAmt.value='';
+  document.querySelectorAll('.da').forEach(function(d){d.classList.remove('sel');});
+  var pb=document.getElementById('dpbtn');if(pb)pb.disabled=true;
+  var ds=document.getElementById('dSucc');if(ds){ds.style.display='block';setTimeout(function(){ds.style.display='none';},3500);}
+  renderDon();toast('Thank you! N'+fmt(entry.amt)+' donated!');
+}
+
+// ADMIN AUTH
+function reqAdmin(btn){
+  if(curA){swTab('admin',btn);return;}
+  pendBtn=btn;
+  var al=document.getElementById('alock');if(al)al.style.display='flex';
+  var ae=document.getElementById('aEmail');if(ae)ae.value='';
+  var ap=document.getElementById('aPass');if(ap)ap.value='';
+  var err=document.getElementById('aerr');if(err)err.style.display='none';
+}
+function doLogin(){
+  var u=(document.getElementById('aEmail').value||'').trim().toLowerCase();
+  var p=(document.getElementById('aPass').value||'');
+  var found=admins.find(function(a){return a.email.toLowerCase()===u&&a.password===p;});
+  if(found){
+    curA=found;
+    var al=document.getElementById('alock');if(al)al.style.display='none';
+    var ab=document.getElementById('abar');if(ab)ab.style.display='flex';
+    var an=document.getElementById('abarN');if(an)an.textContent=found.name;
+    if(pendBtn){swTab('admin',pendBtn);pendBtn=null;}
+    toast('Welcome, '+found.name+'!');
+  } else {
+    var err=document.getElementById('aerr');if(err)err.style.display='block';
+  }
+}
+function cancelLogin(){var al=document.getElementById('alock');if(al)al.style.display='none';pendBtn=null;}
+function doLogout(){curA=null;var ab=document.getElementById('abar');if(ab)ab.style.display='none';swTab('home',document.querySelector('.tab'));toast('Logged out');}
+document.addEventListener('keydown',function(e){if(e.key==='Enter'&&document.getElementById('alock')&&document.getElementById('alock').style.display!=='none')doLogin();});
+
+// SUPER ADMIN PANEL
+function renderSA(){
+  var el=document.getElementById('saPanel');if(!el)return;
+  if(!curA||curA.role!=='super'){el.innerHTML='';return;}
+  var h='<div class="card"><div class="stit" style="margin-bottom:10px">Manage Admin Accounts</div>';
+  admins.forEach(function(a,i){
+    h+='<div class="sarow"><div><div style="font-weight:600;font-size:.86rem">'+a.name+'</div><div style="font-size:.7rem;color:var(--mu)">'+a.email+' - '+a.role+'</div></div>';
+    if(a.email!==curA.email)h+='<button class="sadel" onclick="delAdmin('+i+')">Remove</button>';
+    else h+='<span style="font-size:.7rem;color:var(--g);font-weight:700">You</span>';
+    h+='</div>';
+  });
+  h+='<div style="margin-top:12px;font-size:.78rem;font-weight:700;color:#0f5233;margin-bottom:8px">Add New Admin</div>';
+  h+='<input type="text" id="saName" placeholder="Full Name" style="width:100%;padding:10px 12px;border:2px solid var(--bo);border-radius:9px;font-size:.84rem;background:#f9fbfa;outline:none;margin-bottom:8px">';
+  h+='<input type="email" id="saEmail" placeholder="Email address" style="width:100%;padding:10px 12px;border:2px solid var(--bo);border-radius:9px;font-size:.84rem;background:#f9fbfa;outline:none;margin-bottom:8px">';
+  h+='<input type="password" id="saPass" placeholder="Set password" style="width:100%;padding:10px 12px;border:2px solid var(--bo);border-radius:9px;font-size:.84rem;background:#f9fbfa;outline:none;margin-bottom:8px">';
+  h+='<select id="saRole" style="width:100%;padding:10px 12px;border:2px solid var(--bo);border-radius:9px;font-size:.84rem;background:#f9fbfa;outline:none;margin-bottom:8px"><option value="admin">Admin</option><option value="super">Super Admin</option></select>';
+  h+='<button class="gbtn" onclick="addAdmin()">Add Admin Account</button>';
+  h+='<div style="margin-top:10px;background:#fff8e6;border-left:4px solid var(--gold);border-radius:8px;padding:10px;font-size:.74rem;color:#6b4c00;line-height:1.6">To share login: send them the website link + their email + password via WhatsApp. Tell them to change password after first login.</div>';
+  h+='</div>';
+  el.innerHTML=h;
+}
+function delAdmin(i){if(!confirm('Remove this admin?'))return;admins.splice(i,1);svA();renderSA();toast('Admin removed');}
+function addAdmin(){
+  var name=(document.getElementById('saName').value||'').trim();
+  var email=(document.getElementById('saEmail').value||'').trim().toLowerCase();
+  var pass=(document.getElementById('saPass').value||'');
+  var role=document.getElementById('saRole').value;
+  if(!name||!email||!pass){toast('Please fill all fields');return;}
+  if(admins.find(function(a){return a.email===email;})){toast('Email already exists');return;}
+  admins.push({name:name,email:email,password:pass,role:role});svA();renderSA();
+  toast(name+' added as '+role+'!');
+}
+
+// OFFLINE PAYMENT
+function onOfS(){
+  var q=(document.getElementById('ofSI').value||'').trim().toLowerCase();
+  var el=document.getElementById('ofR');if(!el)return;
+  if(!q){el.classList.remove('vis');return;}
+  var matches=state.members.filter(function(m){return m.name.toLowerCase().indexOf(q)>-1;});
+  if(!matches.length){el.innerHTML='<div style="padding:11px 12px;color:var(--mu);font-size:.82rem">No member found</div>';el.classList.add('vis');return;}
+  var h='';
+  matches.slice(0,8).forEach(function(m){h+='<div class="sri" onclick="ofPick(\''+m.id+'\')"><div class="av">'+ini(m.name)+'</div><div><div style="font-weight:600;font-size:.85rem">'+m.name+'</div><div style="font-size:.69rem;color:var(--mu)">'+(m.addr||'')+'</div></div></div>';});
+  el.innerHTML=h;el.classList.add('vis');
+}
+function selOffYr(yr,btn){
+  selYr=yr;
+  document.querySelectorAll('#ofYrRow .yr-btn').forEach(function(b){b.classList.remove('active');});
+  if(btn)btn.classList.add('active');
+  var m=state.members.find(function(x){return x.id===ofId;});
+  if(m){ofNS=[];ofSS=[];ofGrid('n',getNM(m,yr));ofGrid('s',getSM(m,yr));}
+}
+
+function ofPick(id){
+  ofId=id;ofNS=[];ofSS=[];
+  var el=document.getElementById('ofR');if(el)el.classList.remove('vis');
+  var si=document.getElementById('ofSI');if(si)si.value='';
+  var m=state.members.find(function(x){return x.id===id;});if(!m)return;
+  var sb=document.getElementById('ofSelB');
+  if(sb)sb.innerHTML='<div class="osmb"><div class="av">'+ini(m.name)+'</div><div style="flex:1"><div style="font-weight:700;font-size:.88rem">'+m.name+'</div><div style="font-size:.7rem;color:var(--mu)">'+(m.addr||'')+' - NEPA:'+(m.nm?m.nm.length:0)+'/12 Sec:'+(m.sm?m.sm.length:0)+'/12</div></div><button onclick="ofClr()" style="background:none;border:none;font-size:.9rem;cursor:pointer;color:var(--mu)">X</button></div>';
+  var yrRow=document.getElementById('ofYrRow');
+  if(yrRow){
+    var yrs=getYears();
+    var yh='<div class="yr-label">Year:</div>';
+    yrs.forEach(function(yr){
+      yh+='<button class="yr-btn'+(yr===selYr?' active':'')+'" onclick="selOffYr('+yr+',this)">'+yr+'</button>';
+    });
+    yrRow.innerHTML=yh;
+  }
+  ofGrid('n',getNM(m,selYr));ofGrid('s',getSM(m,selYr));
+  var nb=document.getElementById('ofNB');if(nb)nb.style.display='block';
+  var yrRow2=document.getElementById('ofYrRow');
+  if(yrRow2){
+    yrRow2.style.display='flex';
+    var yrs2=getYears();
+    var yh2='<div class="yr-label">Year:</div>';
+    yrs2.forEach(function(yr){
+      yh2+='<button class="yr-btn'+(yr===selYr?' active':'')+'" onclick="selOffYr('+yr+',this)">'+yr+'</button>';
+    });
+    yrRow2.innerHTML=yh2;
+  }
+  var sb2=document.getElementById('ofSB');if(sb2)sb2.style.display='block';
+  ofSyncBtn();
+}
+function ofGrid(t,paid){
+  var gid=t==='n'?'ofNG':'ofSG';var g=document.getElementById(gid);if(!g)return;
+  var h='';
+  MO.forEach(function(mn,i){
+    if(paid.indexOf(i)>-1)h+='<div class="omc done" id="of'+t+i+'" onclick="ofTog(\''+t+'\','+i+')">'+mn.slice(0,3)+'</div>';
+    else h+='<div class="omc" id="of'+t+i+'" onclick="ofTog(\''+t+'\','+i+')">'+mn.slice(0,3)+'</div>';
+  });
+  g.innerHTML=h;
+}
+function ofTog(t,i){var arr=t==='n'?ofNS:ofSS;var pos=arr.indexOf(i);if(pos>-1)arr.splice(pos,1);else arr.push(i);var el=document.getElementById('of'+t+i);if(el)el.classList.toggle('sel',arr.indexOf(i)>-1);ofSyncBtn();}
+function ofFY(t){var m=state.members.find(function(x){return x.id===ofId;});if(!m)return;var paid=t==='n'?(m.nm||[]):(m.sm||[]);var unpd=MO.map(function(_,i){return i;}).filter(function(i){return paid.indexOf(i)===-1;});if(t==='n')ofNS=unpd.slice();else ofSS=unpd.slice();ofGrid(t,paid);var arr=t==='n'?ofNS:ofSS;arr.forEach(function(i){var el=document.getElementById('of'+t+i);if(el)el.classList.add('sel');});ofSyncBtn();}
+function ofSyncBtn(){var sb=document.getElementById('ofSub');if(sb)sb.disabled=!ofNS.length&&!ofSS.length;}
+function recOff(){if(!curA){toast('Only admins can record payments');return;}
+  var m=state.members.find(function(x){return x.id===ofId;});if(!m||(!ofNS.length&&!ofSS.length))return;
+  var adminName=curA?curA.name:'Admin';var lines=[];
+  var yrOff=selYr||CY;
+  if(ofNS.length){
+    var nmA=getNM(m,yrOff);var nmO=getNMOff(m,yrOff);
+    ofNS.forEach(function(i){if(nmA.indexOf(i)===-1)nmA.push(i);nmO[i]=adminName;});
+    nmA.sort(function(a,b){return a-b;});setNM(m,yrOff,nmA);setNMOff(m,yrOff,nmO);
+    lines.push('NEPA: '+ofNS.map(function(i){return MO[i].slice(0,3);}).join(', ')+' (N'+fmt(ofNS.length*NR)+')');
+  }
+  if(ofSS.length){
+    var smA=getSM(m,yrOff);var smO=getSMOff(m,yrOff);
+    ofSS.forEach(function(i){if(smA.indexOf(i)===-1)smA.push(i);smO[i]=adminName;});
+    smA.sort(function(a,b){return a-b;});setSM(m,yrOff,smA);setSMOff(m,yrOff,smO);
+    lines.push('Security: '+ofSS.map(function(i){return MO[i].slice(0,3);}).join(', ')+' (N'+fmt(ofSS.length*getSR(m))+')');
+  }
+  if(!state.offLog)state.offLog=[];
+  state.offLog.unshift({name:m.name,detail:lines.join(' - '),admin:adminName,date:new Date().toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'})});
+  if(state.offLog.length>30)state.offLog=state.offLog.slice(0,30);
+  svS();toast('Offline payment recorded for '+m.name+'!');
+  renderSum();renderRec();ofClr();renderOLog();
+}
+function ofClr(){
+  ofId=null;ofNS=[];ofSS=[];
+  var sb=document.getElementById('ofSelB');if(sb)sb.innerHTML='';
+  var nb=document.getElementById('ofNB');if(nb)nb.style.display='none';
+  var sb2=document.getElementById('ofSB');if(sb2)sb2.style.display='none';
+  var si=document.getElementById('ofSI');if(si)si.value='';
+  var osb=document.getElementById('ofSub');if(osb)osb.disabled=true;
+}
+function renderOLog(){
+  var el=document.getElementById('oLog');if(!el)return;
+  var log=state.offLog||[];
+  if(!log.length){el.innerHTML='';return;}
+  var h='<div class="stit" style="margin-top:12px;margin-bottom:8px">Recent Offline Payments</div>';
+  log.forEach(function(e){h+='<div class="ole"><div class="oln">'+e.name+'<span class="olb">OFFLINE CASH</span></div><div style="font-size:.71rem;color:var(--mu)">'+e.detail+' - Approved by: <strong>'+e.admin+'</strong> - '+e.date+'</div></div>';});
+  el.innerHTML=h;
+}
+
+// BULK UPLOAD
+var buPend=[];
+function swBT(t,btn){
+  document.getElementById('buFS').style.display=t==='file'?'block':'none';
+  document.getElementById('buPS').style.display=t==='paste'?'block':'none';
+  var bf=document.getElementById('btF');var bp=document.getElementById('btP');
+  if(bf){bf.style.background=t==='file'?'#1a7a4a':'#fff';bf.style.color=t==='file'?'#fff':'var(--mu)';}
+  if(bp){bp.style.background=t==='paste'?'#1a7a4a':'#fff';bp.style.color=t==='paste'?'#fff':'var(--mu)';}
+  buClrPV();
+}
+function buFile(f){if(!f)return;var n=f.name.toLowerCase();if(n.endsWith('.csv')){var r=new FileReader();r.onload=function(e){buCSV(e.target.result);};r.readAsText(f);}else if(n.endsWith('.xlsx')||n.endsWith('.xls')){if(typeof XLSX==='undefined'){var s=document.createElement('script');s.src='https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js';s.onload=function(){buXLS(f);};document.head.appendChild(s);}else{buXLS(f);}}else{toast('Please upload .csv or .xlsx file');}}
+function buXLS(f){var r=new FileReader();r.onload=function(e){var wb=XLSX.read(new Uint8Array(e.target.result),{type:'array'});var ws=wb.Sheets[wb.SheetNames[0]];var rows=XLSX.utils.sheet_to_json(ws,{header:1,defval:''});var parsed=[];rows.forEach(function(row,i){var name=(row[0]||'').toString().trim();var addr=(row[1]||'').toString().trim();if(i===0&&name.toLowerCase()==='name')return;if(name)parsed.push({name:name,addr:addr});});buShowPV(parsed);};r.readAsArrayBuffer(f);}
+function buCSV(text){var lines=text.split(/\r?\n/).filter(function(l){return l.trim();});var parsed=[];lines.forEach(function(line,i){var parts=line.split(',');var name=(parts[0]||'').trim().replace(/^"|"$/g,'');var addr=(parts[1]||'').trim().replace(/^"|"$/g,'');if(i===0&&name.toLowerCase()==='name')return;if(name)parsed.push({name:name,addr:addr});});buShowPV(parsed);}
+function buPaste(){var text=(document.getElementById('buPA').value||'').trim();if(!text){toast('Please paste some names first');return;}var lines=text.split(/\r?\n/).filter(function(l){return l.trim();});var parsed=lines.map(function(l){var p=l.split(',');return{name:p[0].trim(),addr:(p[1]||'').trim()};}).filter(function(x){return x.name;});buShowPV(parsed);}
+function buShowPV(parsed){if(!parsed.length){toast('No names found');return;}var ex=new Set(state.members.map(function(m){return m.name.toLowerCase().trim();}));var newOnes=parsed.filter(function(p){return!ex.has(p.name.toLowerCase().trim());});var dupes=parsed.length-newOnes.length;buPend=newOnes;var pv=document.getElementById('buPV');if(!pv)return;document.getElementById('buPVT').textContent='Found '+newOnes.length+' new member(s)'+(dupes?' ('+dupes+' already exist, skipped)':'');var show=newOnes.slice(0,50);var h='';show.forEach(function(p,i){h+='<div class="bupvr">'+(i+1)+'. '+p.name+(p.addr?' - '+p.addr:'')+'</div>';});document.getElementById('buPVL').innerHTML=h;document.getElementById('buMore').textContent=newOnes.length>50?'...and '+(newOnes.length-50)+' more':'';pv.style.display='block';var cb=document.getElementById('buCB');if(cb)cb.style.display=newOnes.length?'block':'none';}
+function buClrPV(){buPend=[];var pv=document.getElementById('buPV');if(pv)pv.style.display='none';var cb=document.getElementById('buCB');if(cb)cb.style.display='none';}
+function buConfirm(){if(!buPend.length)return;var added=0;buPend.forEach(function(p){var id='M'+String(state.nid).padStart(4,'0');state.members.push({id:id,name:p.name,addr:p.addr,gender:p.gender||'m',nmY:{},smY:{},nmOffY:{},smOffY:{}});state.nid++;added++;});svS();toast(added+' members added!');buClrPV();var pa=document.getElementById('buPA');if(pa)pa.value='';renderSum();}
+function buTpl(){var csv='Name,Address (Optional)\nEmeka Okonkwo,No. 1 Main Street\nNgozi Adaeze,Block A Unit 3';var b=new Blob([csv],{type:'text/csv'});var u=URL.createObjectURL(b);var a=document.createElement('a');a.href=u;a.download='Okpu_Orba_Template.csv';a.click();URL.revokeObjectURL(u);}
+
+// INIT
+
+// ── GENDER RATE HELPERS ──────────────────────────────────────────────────────
+function getSR(m){
+  // Security rate: men=2000, women=1000
+  return (m&&m.gender==='f') ? 1000 : 2000;
+}
+
+// ── YEAR HELPERS ──────────────────────────────────────────────────────────────
+function getNM(m,yr){return(m.nmY&&m.nmY[yr])||[];}
+function getSM(m,yr){return(m.smY&&m.smY[yr])||[];}
+function getNMOff(m,yr){return(m.nmOffY&&m.nmOffY[yr])||{};}
+function getSMOff(m,yr){return(m.smOffY&&m.smOffY[yr])||{};}
+
+function setNM(m,yr,arr){if(!m.nmY)m.nmY={};m.nmY[yr]=arr;}
+function setSM(m,yr,arr){if(!m.smY)m.smY={};m.smY[yr]=arr;}
+function setNMOff(m,yr,obj){if(!m.nmOffY)m.nmOffY={};m.nmOffY[yr]=obj;}
+function setSMOff(m,yr,obj){if(!m.smOffY)m.smOffY={};m.smOffY[yr]=obj;}
+
+function getYears(){
+  // Always include 2024, 2025, 2026 and current year
+  var yrs=new Set();
+  yrs.add(2024);
+  yrs.add(2025);
+  yrs.add(2026);
+  yrs.add(CY);
+  // Also add any year that has actual payment data
+  state.members.forEach(function(m){
+    if(m.nmY)Object.keys(m.nmY).forEach(function(y){yrs.add(parseInt(y));});
+    if(m.smY)Object.keys(m.smY).forEach(function(y){yrs.add(parseInt(y));});
+  });
+  return Array.from(yrs).sort(function(a,b){return b-a;});
+}
+
+function renderYearBtns(containerId, activeYr, onClickFn){
+  var el=document.getElementById(containerId);
+  if(!el)return;
+  var yrs=getYears();
+  var h='<div class="yr-label">Year:</div>';
+  yrs.forEach(function(yr){
+    h+='<button class="yr-btn'+(yr===activeYr?' active':'')+'" onclick="'+onClickFn+'('+yr+',this)">'+yr+'</button>';
+  });
+  el.innerHTML=h;
+}
+
 function init(){
   renderSum();
   renderRec();
   renderNewsPrev();
   renderRMths();
   renderRep();
-  document.getElementById('aPass').addEventListener('keydown',function(e){if(e.key==='Enter')doLogin();});
+  renderVer();
 }
+
 if(document.readyState==='loading'){document.addEventListener('DOMContentLoaded',init);}else{init();}
+</script>
+<!-- PWA INSTALL BANNER -->
+<div class="pwa-banner" id="pwaBanner">
+  <div class="pwa-banner-icon">🌳</div>
+  <div class="pwa-banner-text">
+    <div class="pwa-banner-title">Install Okpu Orba App</div>
+    <div class="pwa-banner-sub">Add to home screen for quick access</div>
+  </div>
+  <button class="pwa-install-btn" id="pwaInstallBtn">Install</button>
+  <button class="pwa-dismiss" onclick="dismissPWA()">✕</button>
+</div>
+
+<!-- SERVICE WORKER REGISTRATION -->
+<script>
+// PWA Install Logic
+var deferredPrompt = null;
+window.addEventListener('beforeinstallprompt', function(e){
+  e.preventDefault();
+  deferredPrompt = e;
+  setTimeout(function(){
+    var banner = document.getElementById('pwaBanner');
+    if(banner) banner.classList.add('show');
+  }, 3000);
+});
+
+document.getElementById('pwaInstallBtn') && document.getElementById('pwaInstallBtn').addEventListener('click', function(){
+  var banner = document.getElementById('pwaBanner');
+  if(banner) banner.classList.remove('show');
+  if(deferredPrompt){
+    deferredPrompt.prompt();
+    deferredPrompt.userChoice.then(function(result){
+      if(result.outcome === 'accepted'){
+        console.log('PWA installed');
+      }
+      deferredPrompt = null;
+    });
+  }
+});
+
+function dismissPWA(){
+  var banner = document.getElementById('pwaBanner');
+  if(banner) banner.classList.remove('show');
+  localStorage.setItem('pwaDismissed','1');
+}
+
+// Check if already dismissed
+if(localStorage.getItem('pwaDismissed')){
+  // Don't show banner
+} 
+
+// iOS Safari install hint
+var isIOS = /iphone|ipad|ipod/.test(window.navigator.userAgent.toLowerCase());
+var isInStandalone = window.navigator.standalone;
+if(isIOS && !isInStandalone && !localStorage.getItem('iosDismissed')){
+  setTimeout(function(){
+    var banner = document.getElementById('pwaBanner');
+    if(banner){
+      document.querySelector('.pwa-banner-sub').textContent = 'Tap Share ↑ then "Add to Home Screen"';
+      banner.classList.add('show');
+    }
+  }, 3000);
+}
+
+// Register service worker for offline support
+if('serviceWorker' in navigator){
+  window.addEventListener('load', function(){
+    navigator.serviceWorker.register('/sw.js').catch(function(e){
+      console.log('SW registration failed:', e);
+    });
+  });
+}
+
+window.addEventListener('appinstalled', function(){
+  var banner = document.getElementById('pwaBanner');
+  if(banner) banner.classList.remove('show');
+  console.log('App installed successfully');
+});
 </script>
 </body>
 </html>
