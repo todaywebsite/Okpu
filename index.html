@@ -1,0 +1,671 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Okpu Orba – Community Payment Tracker</title>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700;800&family=DM+Sans:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{--g:#1a7a4a;--gl:#26a86a;--gd:#0f5233;--go:#e8a020;--re:#d03030;--bg:#f2f7f4;--ca:#fff;--tx:#0d2b1a;--mu:#5a7a66;--bo:#c6dece;}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--tx);min-height:100vh;}
+header{background:linear-gradient(135deg,var(--gd),var(--g) 60%,var(--gl));color:#fff;padding:22px 18px 16px;text-align:center;}
+.hbadge{display:inline-block;background:var(--go);color:#fff;font-family:'Sora',sans-serif;font-size:.68rem;font-weight:700;letter-spacing:1px;text-transform:uppercase;padding:3px 12px;border-radius:20px;margin-bottom:7px;}
+header h1{font-family:'Sora',sans-serif;font-size:1.65rem;font-weight:800;}
+header p{font-size:.8rem;opacity:.8;margin-top:3px;}
+.hlbl{font-size:.68rem;color:rgba(255,255,255,.75);margin:12px 0 5px;text-transform:uppercase;letter-spacing:.8px;font-weight:600;}
+.hsw{position:relative;max-width:420px;margin:0 auto;}
+.hsw input{width:100%;padding:11px 42px 11px 15px;border:2px solid rgba(255,255,255,.5);border-radius:30px;font-size:.9rem;font-family:'DM Sans',sans-serif;background:rgba(255,255,255,.15);color:#fff;outline:none;}
+.hsw input::placeholder{color:rgba(255,255,255,.7);}
+.hsw input:focus{background:rgba(255,255,255,.25);border-color:#fff;}
+.hsi{position:absolute;right:13px;top:50%;transform:translateY(-50%);font-size:.95rem;opacity:.8;pointer-events:none;}
+.hdr{background:#fff;border-radius:14px;max-height:220px;overflow-y:auto;margin-top:6px;box-shadow:0 8px 24px rgba(0,0,0,.15);display:none;text-align:left;}
+.hdr.vis{display:block;}
+.tabs{display:flex;background:var(--gd);}
+.tab{flex:1;padding:11px 3px;background:none;border:none;color:rgba(255,255,255,.55);font-family:'Sora',sans-serif;font-size:.72rem;font-weight:600;cursor:pointer;transition:all .2s;}
+.tab.on{color:#fff;background:var(--g);border-bottom:3px solid var(--go);}
+main{padding:14px 12px 60px;max-width:700px;margin:0 auto;}
+.pg{display:none;}
+.pg.on{display:block;}
+/* SUMMARY */
+.sg{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-bottom:14px;}
+.sc{background:var(--ca);border-radius:13px;padding:13px 11px;box-shadow:0 3px 16px rgba(26,122,74,.1);border-left:4px solid var(--gl);cursor:pointer;transition:all .18s;}
+.sc:hover{transform:translateY(-2px);box-shadow:0 6px 20px rgba(26,122,74,.18);}
+.sc.r{border-left-color:var(--re);}
+.sl{font-size:.66rem;color:var(--mu);text-transform:uppercase;letter-spacing:.8px;font-weight:600;}
+.sv{font-family:'Sora',sans-serif;font-size:1.4rem;font-weight:800;color:var(--g);}
+.sc.r .sv{color:var(--re);}
+.ss{font-size:.71rem;color:var(--mu);}
+.pb{margin-top:4px;background:#e0ede6;border-radius:6px;height:6px;overflow:hidden;}
+.pbi{height:100%;border-radius:6px;background:linear-gradient(90deg,var(--g),var(--gl));}
+.pl{font-size:.65rem;color:var(--mu);margin-top:2px;}
+.tip{font-size:.6rem;color:var(--mu);margin-top:4px;opacity:.75;}
+/* SEARCH */
+.sw{position:relative;margin-bottom:12px;}
+.sw input{width:100%;padding:12px 42px 12px 14px;border:2px solid var(--bo);border-radius:12px;font-size:.9rem;font-family:'DM Sans',sans-serif;background:#fff;color:var(--tx);outline:none;}
+.sw input:focus{border-color:var(--gl);}
+.si{position:absolute;right:12px;top:50%;transform:translateY(-50%);color:var(--mu);pointer-events:none;}
+.sr{background:#fff;border:2px solid var(--bo);border-radius:12px;max-height:220px;overflow-y:auto;margin-top:-7px;margin-bottom:10px;box-shadow:0 4px 16px rgba(0,0,0,.08);display:none;}
+.sr.vis{display:block;}
+.ri{padding:10px 14px;cursor:pointer;border-bottom:1px solid #f0f5f2;display:flex;align-items:center;gap:9px;}
+.ri:last-child{border-bottom:none;}
+.ri:hover{background:#f0faf5;}
+.av{width:33px;height:33px;border-radius:50%;background:linear-gradient(135deg,var(--g),var(--gl));color:#fff;font-family:'Sora',sans-serif;font-weight:700;font-size:.78rem;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+/* MEMBER CARD */
+.mc{background:var(--ca);border-radius:16px;padding:15px;box-shadow:0 4px 20px rgba(26,122,74,.1);margin-bottom:14px;display:none;}
+.mc.vis{display:block;}
+.mct{display:flex;align-items:center;gap:11px;margin-bottom:13px;}
+.avl{width:46px;height:46px;border-radius:50%;background:linear-gradient(135deg,var(--gd),var(--gl));color:#fff;font-family:'Sora',sans-serif;font-weight:800;font-size:1rem;display:flex;align-items:center;justify-content:center;}
+.mn{font-family:'Sora',sans-serif;font-weight:700;font-size:1rem;}
+.mi{font-size:.7rem;color:var(--mu);}
+.bs{background:#f4faf7;border-radius:12px;padding:12px;margin-bottom:10px;}
+.bsh{display:flex;justify-content:space-between;align-items:center;margin-bottom:9px;}
+.bst{font-weight:700;font-size:.86rem;}
+.bsr{font-size:.72rem;color:var(--mu);}
+.pmt{font-size:.68rem;color:var(--mu);font-weight:600;text-transform:uppercase;margin-bottom:5px;}
+.pmc{display:flex;flex-wrap:wrap;gap:4px;}
+.pmch{background:#d4f0e3;color:#157a45;padding:3px 8px;border-radius:20px;font-size:.65rem;font-weight:700;}
+.nom{font-size:.75rem;color:var(--re);font-weight:600;}
+.dv{height:1px;background:#d8ecdf;margin:9px 0;}
+.sl2{font-size:.68rem;color:var(--mu);font-weight:600;text-transform:uppercase;margin-bottom:5px;}
+.mg{display:grid;grid-template-columns:repeat(4,1fr);gap:5px;margin-bottom:8px;}
+.ch{padding:7px 2px;text-align:center;border-radius:8px;font-size:.69rem;font-weight:600;cursor:pointer;border:1.5px solid var(--bo);background:#fff;color:var(--mu);transition:all .15s;user-select:none;}
+.ch.sel{background:var(--g);color:#fff;border-color:var(--g);}
+.ch.dn{background:#d4f0e3;color:#157a45;border-color:#a8dfc4;font-weight:700;}
+.rr{display:flex;gap:5px;align-items:center;margin-bottom:8px;flex-wrap:wrap;}
+.rr select{flex:1;min-width:90px;padding:7px;border:1.5px solid var(--bo);border-radius:8px;font-size:.76rem;font-family:'DM Sans',sans-serif;background:#fff;color:var(--tx);outline:none;}
+.ra{padding:7px 11px;background:var(--gd);color:#fff;border:none;border-radius:8px;font-size:.74rem;font-weight:700;cursor:pointer;font-family:'Sora',sans-serif;white-space:nowrap;}
+.fyb{width:100%;padding:8px;background:#fff3dc;color:#9a6200;border:1.5px solid #f5c048;border-radius:8px;font-size:.77rem;font-weight:700;cursor:pointer;font-family:'Sora',sans-serif;margin-bottom:8px;}
+.bt{display:flex;justify-content:space-between;align-items:center;background:#fff;border-radius:8px;padding:10px 11px;margin-bottom:8px;border:1.5px solid var(--bo);}
+.btl{font-size:.77rem;color:var(--mu);}
+.bta{font-family:'Sora',sans-serif;font-weight:800;font-size:1.05rem;color:var(--g);}
+.cpb{width:100%;padding:11px;background:var(--g);color:#fff;border:none;border-radius:10px;font-family:'Sora',sans-serif;font-weight:700;font-size:.86rem;cursor:pointer;}
+.cpb:disabled{background:#b0cfc0;cursor:not-allowed;}
+.clb{background:none;border:1px solid var(--bo);color:var(--mu);padding:7px 15px;border-radius:20px;font-size:.74rem;cursor:pointer;margin-top:7px;}
+/* MEMBER LIST */
+.stit{font-family:'Sora',sans-serif;font-weight:700;font-size:.88rem;margin-bottom:8px;color:var(--gd);}
+.fr{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px;}
+.fb{padding:5px 11px;border-radius:20px;border:1.5px solid var(--bo);background:#fff;font-size:.72rem;font-weight:600;cursor:pointer;color:var(--mu);}
+.fb.on{background:var(--g);color:#fff;border-color:var(--g);}
+.ml{display:flex;flex-direction:column;gap:7px;}
+.mr{background:var(--ca);border-radius:12px;padding:11px 13px;display:flex;align-items:center;gap:10px;box-shadow:0 2px 8px rgba(0,0,0,.05);cursor:pointer;}
+.mr:hover{box-shadow:0 4px 16px rgba(26,122,74,.13);transform:translateY(-1px);}
+.mri{flex:1;}
+.mrn{font-weight:600;font-size:.86rem;}
+.bd{display:flex;gap:4px;margin-top:3px;align-items:center;}
+.dot{width:9px;height:9px;border-radius:50%;display:inline-block;}
+.dot.p{background:var(--gl);}
+.dot.x{background:#e8a020;}
+.dot.u{background:#ddd;}
+.dl{font-size:.63rem;color:var(--mu);}
+/* NEWS */
+.nc{background:#fff;border-radius:14px;padding:14px;box-shadow:0 3px 16px rgba(26,122,74,.1);margin-bottom:12px;}
+.ntitle{font-family:'Sora',sans-serif;font-weight:800;font-size:.95rem;color:var(--gd);margin-bottom:5px;}
+.nbody{font-size:.82rem;color:var(--tx);line-height:1.6;margin-bottom:8px;}
+.nmeta{font-size:.69rem;color:var(--mu);display:flex;align-items:center;gap:6px;}
+.nbadge{background:#e8f7ef;color:var(--g);font-size:.62rem;font-weight:700;padding:2px 8px;border-radius:20px;}
+.nform input,.nform textarea{width:100%;padding:10px 12px;border:2px solid var(--bo);border-radius:9px;font-size:.85rem;font-family:'DM Sans',sans-serif;background:#f9fbfa;color:var(--tx);outline:none;margin-bottom:8px;}
+.nform textarea{min-height:90px;resize:vertical;}
+.nform input:focus,.nform textarea:focus{border-color:var(--gl);}
+.npb{width:100%;padding:11px;background:var(--g);color:#fff;border:none;border-radius:10px;font-family:'Sora',sans-serif;font-weight:700;font-size:.86rem;cursor:pointer;}
+.nlk{background:#fff8e6;border-left:4px solid var(--go);border-radius:10px;padding:12px;font-size:.79rem;color:#6b4c00;margin-bottom:12px;}
+/* DONATE */
+.dc{background:#fff;border-radius:14px;padding:16px;box-shadow:0 3px 16px rgba(124,58,237,.1);margin-bottom:12px;}
+.dag{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:12px;}
+.da{padding:11px 4px;text-align:center;border-radius:10px;border:2px solid #e9d5ff;background:#faf5ff;cursor:pointer;font-family:'Sora',sans-serif;font-weight:700;font-size:.86rem;color:#6d28d9;transition:all .15s;}
+.da:hover,.da.on{background:#7c3aed;color:#fff;border-color:#7c3aed;}
+.dinw{position:relative;margin-bottom:12px;}
+.dinw input{width:100%;padding:12px 14px 12px 26px;border:2px solid #e9d5ff;border-radius:11px;font-size:.93rem;font-family:'Sora',sans-serif;font-weight:700;background:#faf5ff;color:#5b21b6;outline:none;}
+.dinw input:focus{border-color:#7c3aed;}
+.dpfx{position:absolute;left:10px;top:50%;transform:translateY(-50%);font-weight:800;color:#7c3aed;font-size:.93rem;}
+.danb{background:#f3e8ff;border-radius:10px;padding:10px 12px;font-size:.76rem;color:#6d28d9;margin-bottom:12px;line-height:1.6;}
+.dbn{width:100%;padding:13px;background:linear-gradient(135deg,#7c3aed,#a855f7);color:#fff;border:none;border-radius:13px;font-family:'Sora',sans-serif;font-weight:800;font-size:.95rem;cursor:pointer;}
+.dbn:disabled{background:#ccc;cursor:not-allowed;}
+.dtc{background:linear-gradient(135deg,#5b21b6,#7c3aed);border-radius:14px;padding:16px;color:#fff;text-align:center;margin-bottom:12px;}
+.dtl{font-size:.72rem;opacity:.8;text-transform:uppercase;letter-spacing:.8px;margin-bottom:4px;}
+.dtv{font-family:'Sora',sans-serif;font-weight:800;font-size:2rem;}
+.dle{background:#faf5ff;border-left:3px solid #a855f7;border-radius:0 8px 8px 0;padding:9px 12px;margin-bottom:7px;}
+.dla{font-family:'Sora',sans-serif;font-weight:800;font-size:.93rem;color:#6d28d9;}
+.dlm{font-size:.7rem;color:var(--mu);margin-top:2px;}
+/* OFFLINE */
+.ow{background:var(--ca);border-radius:14px;padding:14px;box-shadow:0 3px 16px rgba(26,122,74,.1);margin-bottom:12px;}
+.oi{background:#fff8e6;border-left:4px solid var(--go);border-radius:8px;padding:9px 12px;font-size:.76rem;color:#6b4c00;margin-bottom:11px;line-height:1.5;}
+.or{background:#fff;border:1.5px solid var(--bo);border-radius:10px;max-height:200px;overflow-y:auto;margin-bottom:8px;display:none;}
+.or.vis{display:block;}
+.ori{padding:9px 13px;cursor:pointer;border-bottom:1px solid #f0f5f2;display:flex;align-items:center;gap:9px;}
+.ori:last-child{border-bottom:none;}
+.ori:hover{background:#f0faf5;}
+.smb{background:#e8f7ef;border-radius:10px;padding:10px 12px;margin-bottom:10px;display:flex;align-items:center;gap:10px;}
+.smbn{font-weight:700;font-size:.86rem;}
+.smbs{font-size:.71rem;color:var(--mu);}
+.obb{background:#f9fbfa;border:1.5px solid var(--bo);border-radius:10px;padding:11px;margin-bottom:9px;}
+.obbt{font-weight:700;font-size:.82rem;margin-bottom:7px;}
+.omg{display:grid;grid-template-columns:repeat(4,1fr);gap:4px;margin-bottom:7px;}
+.omc{padding:6px 2px;text-align:center;border-radius:7px;font-size:.68rem;font-weight:600;cursor:pointer;border:1.5px solid var(--bo);background:#fff;color:var(--mu);transition:all .15s;user-select:none;}
+.omc.os{background:var(--go);color:#fff;border-color:var(--go);}
+.omc.od{background:#d4f0e3;color:#157a45;border-color:#a8dfc4;cursor:default;}
+.ofy{width:100%;padding:7px;background:#fff3dc;color:#9a6200;border:1.5px solid #f5c048;border-radius:7px;font-size:.75rem;font-weight:700;cursor:pointer;font-family:'Sora',sans-serif;margin-bottom:7px;}
+.osb{width:100%;padding:11px;background:var(--go);color:#fff;border:none;border-radius:11px;font-family:'Sora',sans-serif;font-weight:700;font-size:.86rem;cursor:pointer;}
+.osb:disabled{background:#ccc;cursor:not-allowed;}
+.ole{background:#fff8e6;border-left:4px solid var(--go);border-radius:8px;padding:8px 11px;margin-bottom:6px;font-size:.78rem;}
+/* BULK */
+.bw{background:var(--ca);border-radius:14px;padding:14px;box-shadow:0 3px 16px rgba(26,122,74,.1);margin-bottom:12px;}
+.bdz{border:2.5px dashed var(--bo);border-radius:12px;padding:24px 14px;text-align:center;cursor:pointer;background:#f9fbfa;margin-bottom:10px;}
+.bdz:hover{border-color:var(--gl);background:#f0faf5;}
+.bpa{width:100%;min-height:100px;padding:10px 12px;border:2px solid var(--bo);border-radius:10px;font-size:.83rem;font-family:'DM Sans',sans-serif;background:#f9fbfa;color:var(--tx);outline:none;resize:vertical;margin-bottom:8px;}
+.bpa:focus{border-color:var(--gl);}
+.bpb{width:100%;padding:11px;background:var(--gd);color:#fff;border:none;border-radius:10px;font-family:'Sora',sans-serif;font-weight:700;font-size:.85rem;cursor:pointer;margin-bottom:6px;}
+.bcb{width:100%;padding:12px;background:var(--g);color:#fff;border:none;border-radius:12px;font-family:'Sora',sans-serif;font-weight:700;font-size:.88rem;cursor:pointer;display:none;margin-bottom:6px;}
+.btmpl{width:100%;padding:9px;background:#fff;color:var(--gd);border:1.5px solid var(--bo);border-radius:10px;font-family:'Sora',sans-serif;font-weight:700;font-size:.78rem;cursor:pointer;}
+/* ADD */
+.aw{background:var(--ca);border-radius:14px;padding:14px;box-shadow:0 3px 16px rgba(26,122,74,.1);margin-bottom:12px;}
+.aw input{width:100%;padding:11px 12px;border:2px solid var(--bo);border-radius:10px;font-size:.86rem;font-family:'DM Sans',sans-serif;background:#f9fbfa;color:var(--tx);outline:none;margin-bottom:9px;}
+.aw input:focus{border-color:var(--gl);}
+.ab{width:100%;padding:12px;background:var(--g);color:#fff;border:none;border-radius:12px;font-family:'Sora',sans-serif;font-weight:700;font-size:.88rem;cursor:pointer;}
+/* ADMIN */
+.al{position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:200;display:flex;align-items:center;justify-content:center;padding:20px;}
+.alb{background:#fff;border-radius:20px;padding:26px 20px;width:100%;max-width:380px;}
+.ali{width:100%;padding:11px 13px;border:2px solid var(--bo);border-radius:10px;font-size:.9rem;font-family:'DM Sans',sans-serif;background:#f9fbfa;color:var(--tx);outline:none;margin-bottom:9px;}
+.ali:focus{border-color:var(--gl);}
+.albt{width:100%;padding:12px;background:var(--g);color:#fff;border:none;border-radius:12px;font-family:'Sora',sans-serif;font-weight:700;font-size:.9rem;cursor:pointer;margin-bottom:8px;}
+.alc{width:100%;padding:10px;background:none;border:1.5px solid var(--bo);border-radius:12px;font-family:'Sora',sans-serif;font-weight:600;font-size:.84rem;cursor:pointer;color:var(--mu);}
+.abar{background:var(--gd);color:#fff;padding:7px 13px;display:flex;align-items:center;justify-content:space-between;font-size:.74rem;}
+.abarn{font-weight:700;font-family:'Sora',sans-serif;}
+.alo{background:rgba(255,255,255,.15);border:none;color:#fff;padding:5px 12px;border-radius:20px;font-size:.7rem;font-weight:700;cursor:pointer;font-family:'Sora',sans-serif;}
+.aerr{background:#ffeaea;color:var(--re);border-radius:8px;padding:8px 11px;font-size:.78rem;font-weight:600;margin-bottom:9px;display:none;}
+/* REPORT */
+.rep{background:var(--ca);border-radius:14px;padding:14px;box-shadow:0 3px 16px rgba(26,122,74,.1);margin-top:16px;}
+.rtabs{display:flex;border:1.5px solid var(--bo);border-radius:10px;overflow:hidden;margin-bottom:11px;}
+.rtab{flex:1;padding:9px 4px;text-align:center;font-size:.74rem;font-weight:700;font-family:'Sora',sans-serif;cursor:pointer;background:#fff;color:var(--mu);border:none;}
+.rtab.on{background:var(--g);color:#fff;}
+.rmts{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:12px;}
+.rmt{padding:6px 10px;border-radius:20px;border:1.5px solid var(--bo);background:#fff;font-size:.71rem;font-weight:700;cursor:pointer;color:var(--mu);font-family:'Sora',sans-serif;}
+.rmt.on{background:var(--g);color:#fff;border-color:var(--g);}
+.rsg{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-bottom:12px;}
+.rst{border-radius:12px;padding:13px 11px;text-align:center;}
+.rst.n{background:linear-gradient(135deg,#1a7a4a,#26a86a);color:#fff;}
+.rst.s{background:linear-gradient(135deg,#0f5233,#1a7a4a);color:#fff;}
+.rsn{font-family:'Sora',sans-serif;font-weight:800;font-size:1.55rem;}
+.rsl{font-size:.67rem;opacity:.85;text-transform:uppercase;letter-spacing:.5px;margin-top:2px;}
+/* MODAL */
+.mov{position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:200;display:flex;align-items:flex-end;justify-content:center;}
+.msh{background:#fff;border-radius:20px 20px 0 0;width:100%;max-width:700px;max-height:80vh;display:flex;flex-direction:column;}
+.mhd{padding:14px 16px 10px;border-bottom:1px solid var(--bo);display:flex;align-items:center;justify-content:space-between;flex-shrink:0;}
+.mti{font-family:'Sora',sans-serif;font-weight:800;font-size:.95rem;}
+.mco{font-size:.73rem;color:var(--mu);margin-top:2px;}
+.mcl{background:#f0f5f2;border:none;border-radius:50%;width:30px;height:30px;font-size:.9rem;cursor:pointer;}
+.mbd{overflow-y:auto;padding:12px 16px 6px;flex:1;}
+.mmr{display:flex;align-items:center;gap:10px;padding:9px 0;border-bottom:1px solid #f0f5f2;}
+.mmr:last-child{border-bottom:none;}
+.mft{padding:11px 16px 18px;flex-shrink:0;border-top:1px solid var(--bo);}
+.prb{width:100%;padding:12px;background:var(--gd);color:#fff;border:none;border-radius:12px;font-family:'Sora',sans-serif;font-weight:700;font-size:.87rem;cursor:pointer;}
+.sa{background:var(--ca);border-radius:14px;padding:14px;box-shadow:0 3px 16px rgba(26,122,74,.1);margin-bottom:12px;}
+.sar{display:flex;align-items:center;justify-content:space-between;padding:9px 0;border-bottom:1px solid var(--bo);}
+.sar:last-child{border-bottom:none;}
+.sarn{font-weight:600;font-size:.85rem;}
+.sarr{font-size:.7rem;color:var(--mu);}
+.sad{background:#ffeaea;color:var(--re);border:none;padding:5px 11px;border-radius:20px;font-size:.7rem;font-weight:700;cursor:pointer;}
+.saf{display:flex;flex-direction:column;gap:8px;margin-top:12px;}
+.saf input,.saf select{padding:10px 12px;border:2px solid var(--bo);border-radius:9px;font-size:.84rem;font-family:'DM Sans',sans-serif;background:#f9fbfa;outline:none;}
+.saf input:focus,.saf select:focus{border-color:var(--gl);}
+.sab{padding:11px;background:var(--g);color:#fff;border:none;border-radius:10px;font-family:'Sora',sans-serif;font-weight:700;font-size:.85rem;cursor:pointer;}
+.es{text-align:center;color:var(--mu);font-size:.83rem;padding:24px 0;}
+.toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:var(--gd);color:#fff;padding:11px 20px;border-radius:50px;font-size:.82rem;font-weight:600;box-shadow:0 6px 20px rgba(0,0,0,.2);opacity:0;pointer-events:none;transition:opacity .3s;z-index:999;white-space:nowrap;}
+.toast.sh{opacity:1;}
+@media print{
+body *{visibility:hidden;}
+#PA,#PA *{visibility:visible;}
+#PA{position:fixed;inset:0;background:#fff;padding:26px;font-family:Arial,sans-serif;}
+.ph{text-align:center;margin-bottom:16px;}
+.ph h2{font-size:1.2rem;font-weight:bold;}
+.ph p{font-size:.8rem;color:#555;margin-top:3px;}
+.pt{width:100%;border-collapse:collapse;margin-top:10px;}
+.pt th{background:#0f5233;color:#fff;padding:8px 10px;text-align:left;font-size:.8rem;}
+.pt td{padding:7px 10px;border-bottom:1px solid #ddd;font-size:.79rem;}
+.pt tr:nth-child(even) td{background:#f5faf7;}
+.pf{margin-top:12px;font-size:.7rem;color:#888;text-align:center;}
+}
+</style>
+</head>
+<body>
+<div id="abar" class="abar" style="display:none">
+  <div class="abarn" id="abarN">Admin</div>
+  <button class="alo" onclick="doLogout()">Logout</button>
+</div>
+<header>
+  <div class="hbadge">Okpu Orba</div>
+  <h1>🌳 Community Payment Tracker</h1>
+  <p>Transparency · Trust · Unity</p>
+  <div class="hlbl">Find yourself &amp; make payment</div>
+  <div class="hsw">
+    <input type="text" id="hsi" placeholder="Type your name here..." oninput="onHS()" autocomplete="off">
+    <span class="hsi">🔍</span>
+    <div class="hdr" id="hdr"></div>
+  </div>
+</header>
+<div class="tabs">
+  <button class="tab on" onclick="swT('home',this)">🏠 Home</button>
+  <button class="tab" onclick="swT('members',this)">👥 Members</button>
+  <button class="tab" onclick="swT('news',this)">📰 News</button>
+  <button class="tab" onclick="swT('donate',this)">💜 Donate</button>
+  <button class="tab" onclick="reqA(this)">📵 Admin</button>
+</div>
+<main>
+  <div class="pg on" id="pg-home">
+    <div id="sumSec"></div>
+    <div class="sw"><input type="text" id="si" placeholder="Type your name to find yourself..." oninput="onS()" autocomplete="off"><span class="si">🔍</span></div>
+    <div class="sr" id="sr"></div>
+    <div class="mc" id="mc">
+      <div class="mct"><div class="avl" id="cav"></div><div><div class="mn" id="cnm"></div><div class="mi" id="cid"></div></div></div>
+      <div id="cbills"></div>
+      <button class="clb" onclick="closeCard()">✕ Close</button>
+    </div>
+    <div id="newsPrev"></div>
+    <div class="stit" style="margin-bottom:8px">📋 Recent Payments</div>
+    <div class="ml" id="recL"></div>
+    <div class="rep">
+      <div class="stit" style="margin-bottom:8px">📊 Monthly Payment Report</div>
+      <p style="font-size:.77rem;color:var(--mu);margin-bottom:10px">Select a month to see who paid.</p>
+      <div class="rtabs"><button class="rtab on" onclick="rSwitch('n',this)">⚡ NEPA Bill</button><button class="rtab" onclick="rSwitch('s',this)">🔒 Security Levy</button></div>
+      <div class="rmts" id="rmts"></div>
+      <div class="rsg" id="rsg"></div>
+      <div id="rlist"></div>
+    </div>
+  </div>
+  <div class="pg" id="pg-members">
+    <div class="fr">
+      <button class="fb on" onclick="filM('all',this)">All</button>
+      <button class="fb" onclick="filM('nu',this)">NEPA Owing</button>
+      <button class="fb" onclick="filM('su',this)">Security Owing</button>
+      <button class="fb" onclick="filM('fp',this)">Fully Paid ✅</button>
+    </div>
+    <div class="stit">👥 All Members</div>
+    <div class="ml" id="mlist"></div>
+  </div>
+  <div class="pg" id="pg-news">
+    <div id="nCompose"></div>
+    <div class="stit" style="margin-bottom:8px">📰 Community News</div>
+    <div id="nFeed"></div>
+  </div>
+  <div class="pg" id="pg-donate">
+    <div class="dc">
+      <div style="text-align:center;margin-bottom:14px">
+        <div style="font-size:2.2rem;margin-bottom:6px">💜</div>
+        <div style="font-family:'Sora',sans-serif;font-weight:800;font-size:1.05rem;color:#5b21b6">Free-Will Donation</div>
+        <div style="font-size:.79rem;color:var(--mu);margin-top:4px">Support Okpu Orba community anonymously</div>
+        <div style="display:inline-block;background:#f3e8ff;color:#7c3aed;font-size:.67rem;font-weight:700;padding:3px 10px;border-radius:20px;margin-top:6px">🔒 100% Anonymous</div>
+      </div>
+      <div class="dtc"><div class="dtl">Total Donations Raised</div><div class="dtv" id="dtv">₦0</div><div style="font-size:.71rem;opacity:.75;margin-top:3px" id="dtc2">0 donations</div></div>
+      <div id="dSucc" style="display:none;background:#f3e8ff;border-radius:12px;padding:16px;text-align:center;margin-bottom:12px"><div style="font-size:2rem;margin-bottom:5px">🙏</div><div style="font-family:'Sora',sans-serif;font-weight:700;font-size:.93rem;color:#5b21b6">Thank you for donating!</div><div style="font-size:.77rem;color:var(--mu);margin-top:3px">Recorded anonymously</div></div>
+      <div class="danb">🔒 Your identity is completely hidden. Only the amount and time is recorded.</div>
+      <div style="font-family:'Sora',sans-serif;font-weight:700;font-size:.78rem;color:#5b21b6;margin-bottom:8px;text-transform:uppercase;letter-spacing:.5px">Choose amount:</div>
+      <div class="dag">
+        <div class="da" onclick="selA(500,this)">₦500</div>
+        <div class="da" onclick="selA(1000,this)">₦1,000</div>
+        <div class="da" onclick="selA(2000,this)">₦2,000</div>
+        <div class="da" onclick="selA(5000,this)">₦5,000</div>
+        <div class="da" onclick="selA(10000,this)">₦10,000</div>
+        <div class="da" onclick="selA(0,this)">Custom</div>
+      </div>
+      <div class="dinw"><span class="dpfx">₦</span><input type="number" id="damt" placeholder="Enter amount" min="1" oninput="onDA()" inputmode="numeric"></div>
+      <button class="dbn" id="dbn" onclick="subDon()" disabled>💜 Donate Anonymously</button>
+      <div id="dlog" style="margin-top:12px"></div>
+    </div>
+  </div>
+  <div class="pg" id="pg-admin">
+    <div class="sa" id="saPanel"></div>
+    <div class="ow">
+      <div class="stit" style="margin-bottom:8px">📵 Record Offline Payment</div>
+      <div class="oi">👴 For elders without smartphones — search their name, pick months paid in cash, then record.</div>
+      <div class="sw"><input type="text" id="ofsi" placeholder="Search member name..." oninput="onOFS()" autocomplete="off"></div>
+      <div class="or" id="ofR"></div>
+      <div id="ofSB"></div>
+      <div id="ofNB" style="display:none" class="obb">
+        <div class="obbt">⚡ NEPA Bill — months paid in cash:</div>
+        <button class="ofy" onclick="ofFY('n')">⭐ All Remaining</button>
+        <div class="omg" id="ofNG"></div>
+      </div>
+      <div id="ofSBB" style="display:none" class="obb">
+        <div class="obbt">🔒 Security Levy — months paid in cash:</div>
+        <button class="ofy" onclick="ofFY('s')">⭐ All Remaining</button>
+        <div class="omg" id="ofSG"></div>
+      </div>
+      <button class="osb" id="ofSub" onclick="recOff()" disabled>📝 Record Offline Payment</button>
+      <div id="ofLog" style="margin-top:12px"></div>
+    </div>
+    <div class="bw">
+      <div class="stit" style="margin-bottom:8px">📋 Bulk Add Members</div>
+      <div class="bpa" id="bpaste" placeholder="Paste names here, one per line:&#10;&#10;Emeka Okonkwo&#10;Ngozi Adaeze&#10;..."></div>
+      <button class="bpb" onclick="buPaste()">➕ Preview Names</button>
+      <div id="bprev" style="display:none;background:#f4faf7;border-radius:10px;padding:11px;margin-bottom:9px">
+        <div id="bprevT" style="font-weight:700;font-size:.82rem;margin-bottom:5px"></div>
+        <div id="bprevL" style="max-height:140px;overflow-y:auto;font-size:.77rem"></div>
+      </div>
+      <button class="bcb" id="bcb" onclick="buConf()">✅ Add All Members</button>
+      <button class="btmpl" onclick="buTmpl()">⬇️ Download CSV Template</button>
+    </div>
+    <div class="aw">
+      <div class="stit" style="margin-bottom:8px">➕ Add Single Member</div>
+      <input type="text" id="newN" placeholder="Full Name">
+      <input type="text" id="newA" placeholder="Address (optional)">
+      <button class="ab" onclick="addOne()">Register Member</button>
+    </div>
+    <div class="aw">
+      <div class="stit" style="margin-bottom:8px">💰 Monthly Bill Rates</div>
+      <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--bo)"><span style="font-size:.85rem;font-weight:600">⚡ NEPA Bill / month</span><span style="font-family:'Sora',sans-serif;font-weight:800;color:var(--g)">₦2,000</span></div>
+      <div style="display:flex;justify-content:space-between;padding:8px 0"><span style="font-size:.85rem;font-weight:600">🔒 Security Levy / month</span><span style="font-family:'Sora',sans-serif;font-weight:800;color:var(--g)">₦1,500</span></div>
+    </div>
+  </div>
+</main>
+<div class="toast" id="tst"></div>
+<div id="PA" style="display:none"></div>
+<div class="al" id="adminLock" style="display:none">
+  <div class="alb">
+    <div style="text-align:center;margin-bottom:16px"><div style="font-size:2rem;margin-bottom:5px">🔐</div><div style="font-family:'Sora',sans-serif;font-weight:800;font-size:1.05rem;color:var(--gd)">Admin Login</div><div style="font-size:.77rem;color:var(--mu);margin-top:3px">Okpu Orba Community</div></div>
+    <div class="aerr" id="aerr">Incorrect email or password</div>
+    <label style="font-size:.74rem;font-weight:700;color:var(--gd);display:block;margin-bottom:5px;text-transform:uppercase;letter-spacing:.5px">Email</label>
+    <input class="ali" type="email" id="aEmail" placeholder="Admin email" autocomplete="off">
+    <label style="font-size:.74rem;font-weight:700;color:var(--gd);display:block;margin-bottom:5px;text-transform:uppercase;letter-spacing:.5px">Password</label>
+    <input class="ali" type="password" id="aPass" placeholder="Password">
+    <button class="albt" onclick="doLogin()">🔓 Login</button>
+    <button class="alc" onclick="cancelLogin()">Cancel</button>
+  </div>
+</div>
+<script>
+var MO=['January','February','March','April','May','June','July','August','September','October','November','December'];
+var NR=2000,SR=1500,KEY='okpu_v6',NK='okpu_news',DK='okpu_don',AK='okpu_adm';
+var DEF=[
+{id:'M001',name:'Adeyemi Bello',addr:'No.1 Palm Street',nm:[0,1,2],sm:[0,1]},
+{id:'M002',name:'Fatimah Adesola',addr:'No.3 River Road',nm:[0,1,2,3,4,5,6,7,8,9,10,11],sm:[0,1,2,3,4,5,6,7,8,9,10,11]},
+{id:'M003',name:'Chukwuemeka Obi',addr:'No.7 Central Ave',nm:[0,1,2,3],sm:[]},
+{id:'M004',name:'Amina Garba',addr:'Block B Unit 2',nm:[],sm:[0,1,2]},
+{id:'M005',name:'Taiwo Olawale',addr:'No.12 Market Lane',nm:[],sm:[]},
+{id:'M006',name:'Blessing Nwosu',addr:'House 5 East End',nm:[0,1,2,3,4],sm:[0,1,2,3,4]},
+{id:'M0007',name:'Asogwa Ekene',addr:'',nm:[],sm:[]},
+{id:'M0008',name:'Odo Chibuzo',addr:'',nm:[],sm:[]},
+{id:'M0009',name:'Ugwuanyi Ogechukwu',addr:'',nm:[],sm:[]},
+{id:'M0010',name:'Christian Ejiofor Ugwueze',addr:'',nm:[],sm:[]},
+{id:'M0011',name:'Eze Benjamin C.',addr:'',nm:[],sm:[]},
+{id:'M0012',name:'Barr. Peter Mba',addr:'',nm:[],sm:[]},
+{id:'M0013',name:'Mba Amos Freedom',addr:'',nm:[],sm:[]},
+{id:'M0014',name:'Ugwuaba Stephen Osita',addr:'',nm:[],sm:[]},
+{id:'M0015',name:'Abonyi Kenneth O.',addr:'',nm:[],sm:[]},
+{id:'M0016',name:'Dr. Valentine Ogochukwu Ogbu',addr:'',nm:[],sm:[]},
+{id:'M0017',name:'Rev. Engr. Ejike Asogwa',addr:'',nm:[],sm:[]},
+{id:'M0018',name:'Emeka Eze (Protocol)',addr:'',nm:[],sm:[]},
+{id:'M0019',name:'Ojobor Christian',addr:'',nm:[],sm:[]},
+{id:'M0020',name:'Odo Amos Nwabueze (Emeodi)',addr:'',nm:[],sm:[]},
+{id:'M0021',name:'Mbaeze Ikenna',addr:'',nm:[],sm:[]},
+{id:'M0022',name:'Abonyi Christian Adimoramma',addr:'',nm:[],sm:[]},
+{id:'M0023',name:'Odo Ugochukwu (FineBoy)',addr:'',nm:[],sm:[]},
+{id:'M0024',name:'Asogwa Chijioke',addr:'',nm:[],sm:[]},
+{id:'M0025',name:'Ndubuisi Asogwa',addr:'',nm:[],sm:[]},
+{id:'M0026',name:'Odoh Daniel Chukwuemeka',addr:'',nm:[],sm:[]},
+{id:'M0027',name:'Dr. Frank Chukwuemeka Odo',addr:'',nm:[],sm:[]},
+{id:'M0028',name:'Mkpozi Chidi',addr:'',nm:[],sm:[]},
+{id:'M0029',name:'Okolie Samson',addr:'',nm:[],sm:[]},
+{id:'M0030',name:'Ekwueme Jude',addr:'',nm:[],sm:[]},
+{id:'M0031',name:'Ezeumuokorobia',addr:'',nm:[],sm:[]},
+{id:'M0032',name:'Ugwuoke Okwudili',addr:'',nm:[],sm:[]},
+{id:'M0033',name:'Ugwu Sunday',addr:'',nm:[],sm:[]},
+{id:'M0034',name:'Agbo Uchenna (Urchman)',addr:'',nm:[],sm:[]},
+{id:'M0035',name:'Ekwueme Fimba',addr:'',nm:[],sm:[]},
+{id:'M0036',name:'Nnadi Sopulu',addr:'',nm:[],sm:[]},
+{id:'M0037',name:'Ugwu Kingsley',addr:'',nm:[],sm:[]},
+{id:'M0038',name:'Odoh Desmond Iyke',addr:'',nm:[],sm:[]},
+{id:'M0039',name:'Odoh Chidi',addr:'',nm:[],sm:[]},
+{id:'M0040',name:'Asogwa Victor',addr:'',nm:[],sm:[]},
+{id:'M0041',name:'Ezugwu Sunday',addr:'',nm:[],sm:[]},
+{id:'M0042',name:'Chinedu',addr:'',nm:[],sm:[]},
+{id:'M0043',name:'Onu Chukwuebuka',addr:'',nm:[],sm:[]},
+{id:'M0044',name:'Ogbu Casmir Chika',addr:'',nm:[],sm:[]},
+{id:'M0045',name:'Eze Udoka',addr:'',nm:[],sm:[]},
+{id:'M0046',name:'Odumba',addr:'',nm:[],sm:[]},
+{id:'M0047',name:'Elochukwu James Okwor',addr:'',nm:[],sm:[]},
+{id:'M0048',name:'Ebuka Franklin Okwor',addr:'',nm:[],sm:[]},
+{id:'M0049',name:'Ugwu Friday Amaechi',addr:'',nm:[],sm:[]},
+{id:'M0050',name:'Obeta Remigius (Onwa)',addr:'',nm:[],sm:[]},
+{id:'M0051',name:'Eze Kingsley Ejike (Ololoeze)',addr:'',nm:[],sm:[]},
+{id:'M0052',name:'Nwodo Chidera',addr:'',nm:[],sm:[]},
+{id:'M0053',name:'Nnadi Romanus',addr:'',nm:[],sm:[]},
+{id:'M0054',name:'Eze Chinedu (Pope)',addr:'',nm:[],sm:[]},
+{id:'M0055',name:'Ezugwu Abel Chinonso',addr:'',nm:[],sm:[]},
+{id:'M0056',name:'Eneje Kelechi',addr:'',nm:[],sm:[]},
+{id:'M0057',name:'Ugwuagbo Kenneth',addr:'',nm:[],sm:[]}
+];
+var DEF_ADM=[{name:'Super Admin',email:'admin@okpuorba.com',password:'OkpuOrba2024!',role:'super'}];
+function ld(){try{var r=localStorage.getItem(KEY);if(r)return JSON.parse(r);}catch(e){}return{members:DEF.map(function(m){return{id:m.id,name:m.name,addr:m.addr,nm:m.nm.slice(),sm:m.sm.slice()};}),nid:58,offLog:[]};}
+function sv(){try{localStorage.setItem(KEY,JSON.stringify(state));}catch(e){}}
+function ldN(){try{var r=localStorage.getItem(NK);if(r)return JSON.parse(r);}catch(e){}return[];}
+function svN(){try{localStorage.setItem(NK,JSON.stringify(news));}catch(e){}}
+function ldD(){try{var r=localStorage.getItem(DK);if(r)return JSON.parse(r);}catch(e){}return{total:0,entries:[]};}
+function svD(){try{localStorage.setItem(DK,JSON.stringify(dons));}catch(e){}}
+function ldA(){try{var r=localStorage.getItem(AK);if(r)return JSON.parse(r);}catch(e){}return DEF_ADM.slice();}
+function svA(){try{localStorage.setItem(AK,JSON.stringify(admins));}catch(e){}}
+var state=ld(),news=ldN(),dons=ldD(),admins=ldA();
+var curA=null,pendBtn=null,curId=null,curFil='all';
+var nSel=[],sSel=[],ofId=null,ofNS=[],ofSS=[],rType='n',rMth=new Date().getMonth();
+var buPend=[];
+function ini(n){return(n||'').split(' ').map(function(w){return w[0]||'';}).join('').toUpperCase().slice(0,2)||'?';}
+function fmt(n){return Number(n||0).toLocaleString();}
+function toast(m){var e=document.getElementById('tst');e.textContent=m;e.classList.add('sh');setTimeout(function(){e.classList.remove('sh');},2800);}
+function dc(a){if(!a||!a.length)return'u';if(a.length===12)return'p';return'x';}
+function swT(t,btn){
+  document.querySelectorAll('.pg').forEach(function(p){p.classList.remove('on');});
+  document.querySelectorAll('.tab').forEach(function(b){b.classList.remove('on');});
+  var pg=document.getElementById('pg-'+t);
+  if(pg)pg.classList.add('on');
+  if(btn)btn.classList.add('on');
+  if(t==='home'){renderSum();renderRec();renderNewsPrev();renderRMths();renderRep();}
+  if(t==='members')renderML('all');
+  if(t==='news')renderNews();
+  if(t==='donate')renderDon();
+  if(t==='admin'){renderSA();renderOfLog();}
+}
+function renderSum(){
+  var m=state.members,tot=m.length;
+  var np=m.filter(function(x){return x.nm&&x.nm.length>0;}).length;
+  var sp=m.filter(function(x){return x.sm&&x.sm.length>0;}).length;
+  var nP=tot?Math.round(np/tot*100):0,sP=tot?Math.round(sp/tot*100):0;
+  var h='<div class="sg">';
+  h+='<div class="sc" onclick="showMod(\'np\')"><div class="sl">NEPA Paid</div><div class="sv">'+np+'</div><div class="ss">of '+tot+' members</div><div class="pb"><div class="pbi" style="width:'+nP+'%"></div></div><div class="pl">'+nP+'% paid</div><div class="tip">Tap to see names</div></div>';
+  h+='<div class="sc r" onclick="showMod(\'nu\')"><div class="sl">NEPA Unpaid</div><div class="sv">'+(tot-np)+'</div><div class="ss">not paid yet</div><div class="tip">Tap to see &amp; print</div></div>';
+  h+='<div class="sc" onclick="showMod(\'sp\')"><div class="sl">Security Paid</div><div class="sv">'+sp+'</div><div class="ss">of '+tot+' members</div><div class="pb"><div class="pbi" style="width:'+sP+'%"></div></div><div class="pl">'+sP+'% paid</div><div class="tip">Tap to see names</div></div>';
+  h+='<div class="sc r" onclick="showMod(\'su\')"><div class="sl">Security Unpaid</div><div class="sv">'+(tot-sp)+'</div><div class="ss">not paid yet</div><div class="tip">Tap to see &amp; print</div></div>';
+  h+='</div>';
+  document.getElementById('sumSec').innerHTML=h;
+}
+function showMod(type){
+  var m=state.members,list,title,isUp=false;
+  if(type==='np'){list=m.filter(function(x){return x.nm&&x.nm.length>0;});title='NEPA Bill - Paid';}
+  else if(type==='nu'){list=m.filter(function(x){return!x.nm||x.nm.length===0;});title='NEPA Bill - Unpaid';isUp=true;}
+  else if(type==='sp'){list=m.filter(function(x){return x.sm&&x.sm.length>0;});title='Security - Paid';}
+  else{list=m.filter(function(x){return!x.sm||x.sm.length===0;});title='Security - Unpaid';isUp=true;}
+  var rows='';
+  for(var i=0;i<list.length;i++){
+    var mb=list[i];var arr=type==='np'||type==='nu'?mb.nm:mb.sm;
+    rows+='<div class="mmr"><div class="av" style="width:30px;height:30px;font-size:.72rem">'+ini(mb.name)+'</div><div style="flex:1"><div style="font-weight:600;font-size:.87rem">'+mb.name+'</div><div style="font-size:.69rem;color:var(--mu)">'+(mb.addr||'No address')+'</div></div>'+(isUp?'':'<div style="font-size:.69rem;font-weight:700;color:var(--g)">'+(arr?arr.length:0)+'/12</div>')+'</div>';
+  }
+  if(!rows)rows='<div class="es">No members in this category</div>';
+  var pr='<div class="ph"><h2>Okpu Orba - '+title+'</h2><p>'+new Date().toLocaleDateString('en-GB',{day:'numeric',month:'long',year:'numeric'})+' - '+list.length+' member(s)</p></div><table class="pt"><thead><tr><th>#</th><th>Name</th><th>Address</th>'+(isUp?'':'<th>Months</th>')+'</tr></thead><tbody>';
+  for(var j=0;j<list.length;j++){var mb2=list[j];var arr2=type==='np'||type==='nu'?mb2.nm:mb2.sm;pr+='<tr><td>'+(j+1)+'</td><td>'+mb2.name+'</td><td>'+(mb2.addr||'-')+'</td>'+(isUp?'':'<td>'+(arr2?arr2.length:0)+'/12</td>')+'</tr>';}
+  pr+='</tbody></table><div class="pf">Okpu Orba Community Payment Tracker</div>';
+  document.getElementById('PA').innerHTML=pr;
+  var mo=document.createElement('div');mo.className='mov';mo.id='smod';mo.onclick=function(e){if(e.target===mo)closeMod();};
+  var ms=document.createElement('div');ms.className='msh';ms.onclick=function(e){e.stopPropagation();};
+  var mh=document.createElement('div');mh.className='mhd';mh.innerHTML='<div><div class="mti">'+title+'</div><div class="mco">'+list.length+' member(s)</div></div>';
+  var xb=document.createElement('button');xb.className='mcl';xb.textContent='X';xb.onclick=closeMod;mh.appendChild(xb);
+  var mbd=document.createElement('div');mbd.className='mbd';mbd.innerHTML=rows;
+  var mft=document.createElement('div');mft.className='mft';var pb=document.createElement('button');pb.className='prb';pb.textContent='Print This List';pb.onclick=function(){var pa=document.getElementById('PA');pa.style.display='block';window.print();pa.style.display='none';};mft.appendChild(pb);
+  ms.appendChild(mh);ms.appendChild(mbd);ms.appendChild(mft);mo.appendChild(ms);document.body.appendChild(mo);
+}
+function closeMod(){var m=document.getElementById('smod');if(m)m.remove();}
+function renderRec(){
+  var paid=state.members.filter(function(m){return(m.nm&&m.nm.length)||(m.sm&&m.sm.length);}).slice(-5).reverse();
+  var el=document.getElementById('recL');if(!el)return;
+  if(!paid.length){el.innerHTML='<div class="es">No payments yet</div>';return;}
+  var h='';
+  paid.forEach(function(m){
+    h+='<div class="mr" onclick="openCard(\''+m.id+'\')">';
+    h+='<div class="av">'+ini(m.name)+'</div>';
+    h+='<div class="mri"><div class="mrn">'+m.name+'</div>';
+    h+='<div class="bd"><span class="dot '+dc(m.nm)+'"></span><span class="dl">NEPA '+(m.nm?m.nm.length:0)+'/12</span>&nbsp;<span class="dot '+dc(m.sm)+'"></span><span class="dl">Security '+(m.sm?m.sm.length:0)+'/12</span></div></div>';
+    h+='<span style="color:var(--mu)">›</span></div>';
+  });
+  el.innerHTML=h;
+}
+function onS(){
+  var q=document.getElementById('si').value.trim().toLowerCase();
+  var el=document.getElementById('sr');if(!el)return;
+  if(!q){el.classList.remove('vis');return;}
+  var ms=state.members.filter(function(m){return m.name.toLowerCase().indexOf(q)>-1;});
+  if(!ms.length){el.innerHTML='<div style="padding:12px 14px;color:var(--mu);font-size:.83rem">No member found</div>';el.classList.add('vis');return;}
+  var h='';
+  ms.slice(0,8).forEach(function(m){h+='<div class="ri" onclick="openCard(\''+m.id+'\')">';h+='<div class="av">'+ini(m.name)+'</div>';h+='<div><div style="font-weight:600;font-size:.86rem">'+m.name+'</div><div style="font-size:.7rem;color:var(--mu)">NEPA: '+(m.nm?m.nm.length:0)+'/12 · Security: '+(m.sm?m.sm.length:0)+'/12</div></div></div>';});
+  el.innerHTML=h;el.classList.add('vis');
+}
+function onHS(){
+  var q=document.getElementById('hsi').value.trim().toLowerCase();
+  var el=document.getElementById('hdr');if(!el)return;
+  if(!q){el.classList.remove('vis');return;}
+  var ms=state.members.filter(function(m){return m.name.toLowerCase().indexOf(q)>-1;});
+  if(!ms.length){el.innerHTML='<div style="padding:12px 14px;color:#333;font-size:.83rem">No member found</div>';el.classList.add('vis');return;}
+  var h='';
+  ms.slice(0,8).forEach(function(m){h+='<div class="ri" onclick="hsPick(\''+m.id+'\')">';h+='<div class="av">'+ini(m.name)+'</div>';h+='<div><div style="font-weight:600;font-size:.86rem">'+m.name+'</div><div style="font-size:.7rem;color:#5a7a66">NEPA: '+(m.nm?m.nm.length:0)+'/12 · Security: '+(m.sm?m.sm.length:0)+'/12</div></div></div>';});
+  el.innerHTML=h;el.classList.add('vis');
+}
+function hsPick(id){
+  document.getElementById('hdr').classList.remove('vis');
+  document.getElementById('hsi').value='';
+  document.querySelectorAll('.pg').forEach(function(p){p.classList.remove('on');});
+  document.querySelectorAll('.tab').forEach(function(b){b.classList.remove('on');});
+  document.getElementById('pg-home').classList.add('on');
+  document.querySelector('.tab').classList.add('on');
+  renderSum();renderRec();renderNewsPrev();renderRMths();renderRep();
+  setTimeout(function(){openCard(id);},80);
+}
+document.addEventListener('click',function(e){var w=document.querySelector('.hsw');if(w&&!w.contains(e.target)){var el=document.getElementById('hdr');if(el)el.classList.remove('vis');}});
+function openCard(id){
+  var m=state.members.find(function(x){return x.id===id;});if(!m)return;
+  curId=id;nSel=[];sSel=[];
+  document.getElementById('sr').classList.remove('vis');
+  document.getElementById('cav').textContent=ini(m.name);
+  document.getElementById('cnm').textContent=m.name;
+  document.getElementById('cid').textContent=(m.addr||'')+' · '+m.id;
+  renderBills(m);
+  document.getElementById('mc').classList.add('vis');
+  document.getElementById('mc').scrollIntoView({behavior:'smooth',block:'nearest'});
+}
+function renderBills(m){document.getElementById('cbills').innerHTML=bSec('n','NEPA Bill',NR,m.nm||[])+bSec('s','Security Levy',SR,m.sm||[]);}
+function bSec(t,title,rate,paid){
+  var h='<div class="bs"><div class="bsh"><div class="bst">'+title+'</div><div class="bsr">N'+fmt(rate)+'/month</div></div>';
+  h+='<div class="pmt">Months Paid ('+paid.length+'/12)</div><div class="pmc">';
+  if(paid.length){paid.forEach(function(i){h+='<span class="pmch">'+MO[i].slice(0,3)+'</span>';});}else{h+='<span class="nom">None yet</span>';}
+  h+='</div>';
+  var allDone=(paid.length===12);
+  if(allDone){h+='<div style="text-align:center;color:var(--g);font-weight:700;font-size:.82rem;margin-top:9px">Fully Paid for the Year!</div>';}
+  else{
+    var unpd=MO.map(function(_,i){return i;}).filter(function(i){return paid.indexOf(i)===-1;});
+    h+='<div class="dv"></div><div class="sl2">Select months to pay:</div>';
+    h+='<button class="fyb" onclick="fy(\''+t+'\')">Select Full Year (All Remaining)</button>';
+    h+='<div class="sl2">Or select a range:</div>';
+    h+='<div class="rr"><select id="'+t+'-fr">';
+    unpd.forEach(function(i){h+='<option value="'+i+'">'+MO[i]+'</option>';});
+    h+='</select><span style="font-size:.74rem;color:var(--mu)">to</span><select id="'+t+'-to">';
+    unpd.forEach(function(i){h+='<option value="'+i+'">'+MO[i]+'</option>';});
+    h+='</select><button class="ra" onclick="apR(\''+t+'\')">Apply</button></div>';
+    h+='<div class="sl2">Or pick individual months:</div>';
+    h+='<div class="mg">';
+    MO.forEach(function(mn,i){
+      if(paid.indexOf(i)>-1){h+='<div class="ch dn" id="'+t+'-c'+i+'" onclick="togM(\''+t+'\','+i+')">'+mn.slice(0,3)+'</div>';}
+      else{h+='<div class="ch" id="'+t+'-c'+i+'" onclick="togM(\''+t+'\','+i+')">'+mn.slice(0,3)+'</div>';}
+    });
+    h+='</div>';
+    h+='<div class="bt"><div class="btl">Selected: <b id="'+t+'-cnt">0</b> month(s)</div><div class="bta">N<span id="'+t+'-tot">0</span></div></div>';
+    h+='<button class="cpb" id="'+t+'-pb" onclick="confPay(\''+t+'\')" disabled>Confirm Payment</button>';
+  }
+  h+='</div>';return h;
+}
+function togM(t,i){var arr=t==='n'?nSel:sSel;var pos=arr.indexOf(i);if(pos>-1)arr.splice(pos,1);else arr.push(i);syncCh(t);syncTot(t);}
+function syncCh(t){var arr=t==='n'?nSel:sSel;MO.forEach(function(_,i){var c=document.getElementById(t+'-c'+i);if(c)c.classList.toggle('sel',arr.indexOf(i)>-1);});}
+function syncTot(t){var arr=t==='n'?nSel:sSel;var rate=t==='n'?NR:SR;var ce=document.getElementById(t+'-cnt');var te=document.getElementById(t+'-tot');var pb=document.getElementById(t+'-pb');if(ce)ce.textContent=arr.length;if(te)te.textContent=fmt(arr.length*rate);if(pb)pb.disabled=!arr.length;}
+function fy(t){var m=state.members.find(function(x){return x.id===curId;});if(!m)return;var paid=t==='n'?m.nm:m.sm;var unpd=MO.map(function(_,i){return i;}).filter(function(i){return paid.indexOf(i)===-1;});if(t==='n')nSel=unpd.slice();else sSel=unpd.slice();syncCh(t);syncTot(t);}
+function apR(t){var f=parseInt(document.getElementById(t+'-fr').value);var to=parseInt(document.getElementById(t+'-to').value);if(f>to){toast('From must be before To');return;}var m=state.members.find(function(x){return x.id===curId;});if(!m)return;var paid=t==='n'?m.nm:m.sm;var range=[];for(var i=f;i<=to;i++){if(paid.indexOf(i)===-1)range.push(i);}if(t==='n')nSel=uniq(nSel.concat(range));else sSel=uniq(sSel.concat(range));syncCh(t);syncTot(t);}
+function uniq(a){return a.filter(function(v,i){return a.indexOf(v)===i;});}
+function confPay(t){var m=state.members.find(function(x){return x.id===curId;});if(!m)return;var arr=t==='n'?nSel:sSel;var rate=t==='n'?NR:SR;var lbl=t==='n'?'NEPA':'Security';if(!arr.length)return;var dest=t==='n'?m.nm:m.sm;arr.forEach(function(i){if(dest.indexOf(i)===-1)dest.push(i);});dest.sort(function(a,b){return a-b;});var total=arr.length*rate;var names=arr.map(function(i){return MO[i].slice(0,3);}).join(', ');sv();if(t==='n')nSel=[];else sSel=[];toast(lbl+' paid for '+names+' - N'+fmt(total));openCard(m.id);renderSum();renderRec();renderML(curFil);renderRep();}
+function closeCard(){document.getElementById('mc').classList.remove('vis');curId=null;nSel=[];sSel=[];}
+function filM(f,btn){curFil=f;document.querySelectorAll('.fb').forEach(function(b){b.classList.remove('on');});btn.classList.add('on');renderML(f);}
+function renderML(f){
+  var list=state.members.slice();
+  if(f==='nu')list=list.filter(function(m){return!m.nm||m.nm.length<12;});
+  else if(f==='su')list=list.filter(function(m){return!m.sm||m.sm.length<12;});
+  else if(f==='fp')list=list.filter(function(m){return m.nm&&m.nm.length===12&&m.sm&&m.sm.length===12;});
+  var el=document.getElementById('mlist');if(!el)return;
+  if(!list.length){el.innerHTML='<div class="es">No members in this category</div>';return;}
+  var h='';
+  list.forEach(function(m){
+    var ok=m.nm&&m.nm.length===12&&m.sm&&m.sm.length===12;
+    h+='<div class="mr" onclick="goM(\''+m.id+'\')">';
+    h+='<div class="av">'+ini(m.name)+'</div>';
+    h+='<div class="mri"><div class="mrn">'+m.name+'</div><div style="font-size:.69rem;color:var(--mu)">'+(m.addr||'No address')+'</div>';
+    h+='<div class="bd"><span class="dot '+dc(m.nm)+'"></span><span class="dl">NEPA '+(m.nm?m.nm.length:0)+'/12</span>&nbsp;<span class="dot '+dc(m.sm)+'"></span><span class="dl">Security '+(m.sm?m.sm.length:0)+'/12</span></div></div>';
+    h+='<div style="font-size:.69rem;font-weight:700;color:'+(ok?'var(--g)':'var(--re)')+';">'+(ok?'Paid':'Pending')+'</div></div>';
+  });
+  el.innerHTML=h;
+}
+function goM(id){hsPick(id);}
+function addOne(){var name=document.getElementById('newN').value.trim();var addr=document.getElementById('newA').value.trim();if(!name){toast('Please enter a name');return;}var id='M'+String(state.nid).padStart(4,'0');state.members.push({id:id,name:name,addr:addr,nm:[],sm:[]});state.nid++;sv();document.getElementById('newN').value='';document.getElementById('newA').value='';toast(name+' registered!');renderSum();}
+function buPaste(){var text=(document.getElementById('bpaste').value||'').trim();if(!text){toast('Please paste some names first');return;}var lines=text.split(/\r?\n/).filter(function(l){return l.trim();});var parsed=lines.map(function(l){var p=l.split(',');return{name:p[0].trim(),addr:(p[1]||'').trim()};}).filter(function(x){return x.name;});var ex=new Set(state.members.map(function(m){return m.name.toLowerCase().trim();}));var newOnes=parsed.filter(function(p){return!ex.has(p.name.toLowerCase().trim());});buPend=newOnes;var pv=document.getElementById('bprev');var pvt=document.getElementById('bprevT');var pvl=document.getElementById('bprevL');var bcb=document.getElementById('bcb');if(!newOnes.length){toast('No new names found');return;}pvt.textContent='Found '+newOnes.length+' new member(s)';pvl.innerHTML=newOnes.slice(0,30).map(function(p,i){return'<div style="padding:2px 0;border-bottom:1px solid #e0edea">'+(i+1)+'. '+p.name+'</div>';}).join('');pv.style.display='block';bcb.style.display='block';}
+function buConf(){if(!buPend.length)return;buPend.forEach(function(p){var id='M'+String(state.nid).padStart(4,'0');state.members.push({id:id,name:p.name,addr:p.addr,nm:[],sm:[]});state.nid++;});sv();toast(buPend.length+' members added!');buPend=[];document.getElementById('bprev').style.display='none';document.getElementById('bcb').style.display='none';document.getElementById('bpaste').value='';renderSum();}
+function buTmpl(){var csv='Name,Address (Optional)\nEmeka Okonkwo,No. 1 Main Street\nNgozi Adaeze,Block A Unit 3';var b=new Blob([csv],{type:'text/csv'});var u=URL.createObjectURL(b);var a=document.createElement('a');a.href=u;a.download='Okpu_Orba_Template.csv';a.click();URL.revokeObjectURL(u);}
+function renderNews(){
+  var comp=document.getElementById('nCompose');var feed=document.getElementById('nFeed');if(!comp||!feed)return;
+  if(curA){comp.innerHTML='<div class="ow nform"><div class="stit" style="margin-bottom:8px">Post News</div><input type="text" id="ntitle" placeholder="News title..."><textarea id="nbody" placeholder="Write announcement..."></textarea><button class="npb" onclick="postNews()">Publish News</button></div>';}
+  else{comp.innerHTML='<div class="nlk">📰 Community News - Only admins can post. Everyone can read.</div>';}
+  if(!news.length){feed.innerHTML='<div class="es">No news yet. Check back soon!</div>';return;}
+  var h='';
+  news.forEach(function(n,i){h+='<div class="nc"><div class="ntitle">'+n.title+'</div><div class="nbody">'+n.body.replace(/\n/g,'<br>')+'</div><div class="nmeta"><span class="nbadge">Admin</span><span>'+n.by+' - '+n.date+'</span>'+(curA?'<button onclick="delNews('+i+')" style="margin-left:auto;background:none;border:none;color:var(--re);font-size:.72rem;cursor:pointer">Delete</button>':'')+'</div></div>';});
+  feed.innerHTML=h;
+}
+function postNews(){var t=(document.getElementById('ntitle').value||'').trim();var b=(document.getElementById('nbody').value||'').trim();if(!t||!b){toast('Please enter title and content');return;}var now=new Date();news.unshift({title:t,body:b,by:curA.name||'Admin',date:now.toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'})});svN();toast('News posted!');renderNews();renderNewsPrev();}
+function delNews(i){if(!confirm('Delete this news?'))return;news.splice(i,1);svN();renderNews();renderNewsPrev();toast('Deleted');}
+function renderNewsPrev(){var el=document.getElementById('newsPrev');if(!el)return;if(!news.length){el.innerHTML='';return;}var h='<div class="stit" style="margin-bottom:8px">Latest News</div>';news.slice(0,2).forEach(function(n){h+='<div class="nc" style="cursor:pointer" onclick="goNews()"><div class="ntitle">'+n.title+'</div><div class="nbody" style="max-height:36px;overflow:hidden">'+n.body+'</div><div class="nmeta"><span class="nbadge">Admin</span><span>'+n.date+'</span><span style="margin-left:auto;color:var(--g);font-size:.7rem">Read more</span></div></div>';});el.innerHTML=h;}
+function goNews(){document.querySelectorAll('.pg').forEach(function(p){p.classList.remove('on');});document.querySelectorAll('.tab').forEach(function(b){b.classList.remove('on');});document.getElementById('pg-news').classList.add('on');var tabs=document.querySelectorAll('.tab');tabs.forEach(function(b){if(b.textContent.indexOf('News')>-1)b.classList.add('on');});renderNews();}
+var selAmt=0;
+function selA(amt,el){document.querySelectorAll('.da').forEach(function(d){d.classList.remove('on');});el.classList.add('on');selAmt=amt;var inp=document.getElementById('damt');if(amt===0){inp.value='';inp.focus();selAmt=0;}else{inp.value=amt;}document.getElementById('dbn').disabled=selAmt<1;}
+function onDA(){var v=parseInt(document.getElementById('damt').value)||0;selAmt=v;document.getElementById('dbn').disabled=v<1;document.querySelectorAll('.da').forEach(function(d){if(parseInt(d.textContent.replace(/[^0-9]/g,''))===v)d.classList.add('on');else d.classList.remove('on');});}
+function subDon(){if(selAmt<1)return;var now=new Date();dons.entries.unshift({amt:selAmt,date:now.toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'}),time:now.toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'}),ts:now.getTime()});dons.total=(dons.total||0)+selAmt;if(dons.entries.length>100)dons.entries=dons.entries.slice(0,100);svD();selAmt=0;document.getElementById('damt').value='';document.querySelectorAll('.da').forEach(function(d){d.classList.remove('on');});document.getElementById('dbn').disabled=true;var s=document.getElementById('dSucc');s.style.display='block';setTimeout(function(){s.style.display='none';},4000);renderDon();toast('Thank you! Donated anonymously!');}
+function renderDon(){var tv=document.getElementById('dtv');var tc=document.getElementById('dtc2');var dl=document.getElementById('dlog');if(tv)tv.textContent='N'+fmt(dons.total);if(tc)tc.textContent=(dons.entries.length)+' donation'+(dons.entries.length===1?'':'s');if(!dl)return;if(!dons.entries.length){dl.innerHTML='<div class="es">No donations yet - be the first!</div>';return;}var h='<div class="stit" style="margin-bottom:8px">Donation History (Anonymous)</div>';dons.entries.slice(0,20).forEach(function(e){h+='<div class="dle"><div class="dla">N'+fmt(e.amt)+'</div><div class="dlm">Anonymous - '+e.date+' at '+e.time+'</div></div>';});dl.innerHTML=h;}
+function onOFS(){var q=document.getElementById('ofsi').value.trim().toLowerCase();var el=document.getElementById('ofR');if(!el)return;if(!q){el.classList.remove('vis');return;}var ms=state.members.filter(function(m){return m.name.toLowerCase().indexOf(q)>-1;});if(!ms.length){el.innerHTML='<div style="padding:11px 12px;color:var(--mu);font-size:.82rem">No member found</div>';el.classList.add('vis');return;}var h='';ms.slice(0,8).forEach(function(m){h+='<div class="ori" onclick="ofPick(\''+m.id+'\')">';h+='<div class="av">'+ini(m.name)+'</div>';h+='<div><div style="font-weight:600;font-size:.84rem">'+m.name+'</div><div style="font-size:.69rem;color:var(--mu)">'+(m.addr||'')+'</div></div></div>';});el.innerHTML=h;el.classList.add('vis');}
+function ofPick(id){ofId=id;ofNS=[];ofSS=[];document.getElementById('ofR').classList.remove('vis');document.getElementById('ofsi').value='';var m=state.members.find(function(x){return x.id===id;});if(!m)return;var sb=document.getElementById('ofSB');sb.innerHTML='<div class="smb"><div class="av">'+ini(m.name)+'</div><div style="flex:1"><div class="smbn">'+m.name+'</div><div class="smbs">'+(m.addr||'')+' · NEPA: '+(m.nm?m.nm.length:0)+'/12 · Sec: '+(m.sm?m.sm.length:0)+'/12</div></div><button style="background:none;border:none;color:var(--mu);font-size:1rem;cursor:pointer" onclick="ofClr()">X</button></div>';ofGrid('n',m.nm||[]);ofGrid('s',m.sm||[]);document.getElementById('ofNB').style.display='block';document.getElementById('ofSBB').style.display='block';ofSyncBtn();}
+function ofGrid(t,paid){var gid=t==='n'?'ofNG':'ofSG';var g=document.getElementById(gid);if(!g)return;var h='';MO.forEach(function(mn,i){if(paid.indexOf(i)>-1){h+='<div class="omc od">'+mn.slice(0,3)+'</div>';}else{h+='<div class="omc" id="o'+t+i+'" onclick="ofTog(\''+t+'\','+i+')">'+mn.slice(0,3)+'</div>';}});g.innerHTML=h;}
+function ofTog(t,i){var arr=t==='n'?ofNS:ofSS;var pos=arr.indexOf(i);if(pos>-1)arr.splice(pos,1);else arr.push(i);var el=document.getElementById('o'+t+i);if(el)el.classList.toggle('os',arr.indexOf(i)>-1);ofSyncBtn();}
+function ofFY(t){var m=state.members.find(function(x){return x.id===ofId;});if(!m)return;var paid=t==='n'?(m.nm||[]):(m.sm||[]);var unpd=MO.map(function(_,i){return i;}).filter(function(i){return paid.indexOf(i)===-1;});if(t==='n')ofNS=unpd.slice();else ofSS=unpd.slice();ofGrid(t,paid);var arr=t==='n'?ofNS:ofSS;arr.forEach(function(i){var el=document.getElementById('o'+t+i);if(el)el.classList.add('os');});ofSyncBtn();}
+function ofSyncBtn(){document.getElementById('ofSub').disabled=(!ofNS.length&&!ofSS.length);}
+function recOff(){var m=state.members.find(function(x){return x.id===ofId;});if(!m||(!ofNS.length&&!ofSS.length))return;var lines=[];if(ofNS.length){ofNS.forEach(function(i){if((m.nm||[]).indexOf(i)===-1){if(!m.nm)m.nm=[];m.nm.push(i);}});m.nm.sort(function(a,b){return a-b;});lines.push('NEPA: '+ofNS.map(function(i){return MO[i].slice(0,3);}).join(', ')+' (N'+fmt(ofNS.length*NR)+')');}if(ofSS.length){ofSS.forEach(function(i){if((m.sm||[]).indexOf(i)===-1){if(!m.sm)m.sm=[];m.sm.push(i);}});m.sm.sort(function(a,b){return a-b;});lines.push('Security: '+ofSS.map(function(i){return MO[i].slice(0,3);}).join(', ')+' (N'+fmt(ofSS.length*SR)+')');}if(!state.offLog)state.offLog=[];state.offLog.unshift({name:m.name,detail:lines.join(' · '),date:new Date().toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'})});if(state.offLog.length>30)state.offLog=state.offLog.slice(0,30);sv();toast('Offline payment recorded for '+m.name+'!');renderSum();renderRec();renderRep();ofClr();renderOfLog();}
+function ofClr(){ofId=null;ofNS=[];ofSS=[];document.getElementById('ofSB').innerHTML='';document.getElementById('ofNB').style.display='none';document.getElementById('ofSBB').style.display='none';document.getElementById('ofsi').value='';document.getElementById('ofSub').disabled=true;}
+function renderOfLog(){var el=document.getElementById('ofLog');if(!el)return;var log=state.offLog||[];if(!log.length){el.innerHTML='';return;}var h='<div class="stit" style="margin-bottom:8px">Recent Offline Payments</div>';log.forEach(function(e){h+='<div class="ole"><div style="font-weight:700;font-size:.84rem">'+e.name+' <span style="background:var(--go);color:#fff;font-size:.6rem;font-weight:700;padding:1px 7px;border-radius:20px;vertical-align:middle;margin-left:4px">OFFLINE CASH</span></div><div style="font-size:.71rem;color:var(--mu);margin-top:2px">'+e.detail+' · '+e.date+'</div></div>';});el.innerHTML=h;}
+function rSwitch(t,btn){rType=t;document.querySelectorAll('.rtab').forEach(function(b){b.classList.remove('on');});btn.classList.add('on');renderRep();}
+function renderRMths(){var el=document.getElementById('rmts');if(!el)return;var h='';MO.forEach(function(mn,i){h+='<button class="rmt'+(i===rMth?' on':'')+'" onclick="selRM('+i+',this)">'+mn.slice(0,3)+'</button>';});el.innerHTML=h;}
+function selRM(i,btn){rMth=i;document.querySelectorAll('.rmt').forEach(function(b){b.classList.remove('on');});btn.classList.add('on');renderRep();}
+function renderRep(){var sg=document.getElementById('rsg');var rl=document.getElementById('rlist');if(!sg||!rl)return;var m=state.members;var mn=MO[rMth];var paid=m.filter(function(mb){var arr=rType==='n'?mb.nm:mb.sm;return arr&&arr.indexOf(rMth)>-1;});var unp=m.length-paid.length;var lbl=rType==='n'?'NEPA Bill':'Security Levy';sg.innerHTML='<div class="rst n"><div class="rsn">'+paid.length+'</div><div class="rsl">Paid '+mn+'</div></div><div class="rst s"><div class="rsn">'+unp+'</div><div class="rsl">Unpaid '+mn+'</div></div>';if(!paid.length){rl.innerHTML='<div class="es">Nobody paid '+lbl+' for '+mn+' yet.</div>';return;}var h='<div class="stit" style="margin-bottom:8px">Who paid '+lbl+' for '+mn+' ('+paid.length+')</div>';paid.forEach(function(mb,i){h+='<div class="mr"><div class="av">'+ini(mb.name)+'</div><div class="mri"><div class="mrn">'+mb.name+'</div><div style="font-size:.69rem;color:var(--mu)">'+(mb.addr||'No address')+'</div></div><div style="font-size:.69rem;font-weight:700;color:var(--g)">#'+(i+1)+'</div></div>';});rl.innerHTML=h;}
+function reqA(btn){if(curA){swT('admin',btn);return;}pendBtn=btn;document.getElementById('adminLock').style.display='flex';document.getElementById('aEmail').value='';document.getElementById('aPass').value='';document.getElementById('aerr').style.display='none';setTimeout(function(){document.getElementById('aEmail').focus();},100);}
+function doLogin(){var email=(document.getElementById('aEmail').value||'').trim().toLowerCase();var pass=(document.getElementById('aPass').value||'');var found=admins.find(function(a){return a.email.toLowerCase()===email&&a.password===pass;});if(found){curA=found;document.getElementById('adminLock').style.display='none';document.getElementById('abar').style.display='flex';document.getElementById('abarN').textContent=found.name;if(pendBtn){swT('admin',pendBtn);pendBtn=null;}toast('Welcome, '+found.name+'!');}else{document.getElementById('aerr').style.display='block';document.getElementById('aPass').value='';}}
+function cancelLogin(){document.getElementById('adminLock').style.display='none';pendBtn=null;}
+function doLogout(){curA=null;document.getElementById('abar').style.display='none';swT('home',document.querySelector('.tab'));toast('Logged out');}
+function renderSA(){var w=document.getElementById('saPanel');if(!w)return;if(!curA){w.innerHTML='';return;}var isSup=curA.role==='super';var h='<div class="stit" style="margin-bottom:8px">Admin Panel</div>';h+='<div style="background:#e8f7ef;border-radius:8px;padding:10px 12px;font-size:.8rem;color:var(--gd);margin-bottom:12px">Logged in: <strong>'+curA.name+'</strong> ('+curA.email+')</div>';if(isSup){h+='<div style="font-size:.78rem;font-weight:700;color:var(--gd);margin-bottom:8px">Admin Accounts</div>';admins.forEach(function(a,i){h+='<div class="sar"><div><div class="sarn">'+a.name+'</div><div class="sarr">'+a.email+' - '+a.role+'</div></div>'+(a.email.toLowerCase()!==curA.email.toLowerCase()?'<button class="sad" onclick="delAdm('+i+')">Remove</button>':'<span style="font-size:.7rem;color:var(--g);font-weight:700">You</span>')+'</div>';});h+='<div style="font-size:.78rem;font-weight:700;color:var(--gd);margin:12px 0 8px">Add New Admin</div>';h+='<div class="saf"><input type="text" id="saName" placeholder="Full Name"><input type="email" id="saEmail" placeholder="Email address"><input type="password" id="saPass" placeholder="Password"><select id="saRole"><option value="admin">Admin</option><option value="super">Super Admin</option></select><button class="sab" onclick="addAdm()">Add Admin</button></div>';h+='<div style="margin-top:12px;background:#fff8e6;border-left:4px solid var(--go);border-radius:8px;padding:10px 12px;font-size:.75rem;color:#6b4c00;line-height:1.6"><strong>How to share admin login:</strong><br>1. Add their name, email and password above.<br>2. Send them the link + email + password via WhatsApp.<br>3. They log in with those details.</div>';}else{h+='<div style="font-size:.82rem;color:var(--mu);padding:8px 0">You have standard admin access. Contact Super Admin to manage accounts.</div>';}w.innerHTML=h;}
+function delAdm(i){if(!confirm('Remove this admin?'))return;admins.splice(i,1);svA();renderSA();toast('Admin removed');}
+function addAdm(){var name=(document.getElementById('saName').value||'').trim();var email=(document.getElementById('saEmail').value||'').trim().toLowerCase();var pass=(document.getElementById('saPass').value||'');var role=document.getElementById('saRole').value;if(!name||!email||!pass){toast('Please fill all fields');return;}if(admins.find(function(a){return a.email.toLowerCase()===email;})){toast('Email already exists');return;}admins.push({name:name,email:email,password:pass,role:role});svA();renderSA();toast(name+' added as '+role+'!');}
+function init(){
+  renderSum();
+  renderRec();
+  renderNewsPrev();
+  renderRMths();
+  renderRep();
+  document.getElementById('aPass').addEventListener('keydown',function(e){if(e.key==='Enter')doLogin();});
+}
+if(document.readyState==='loading'){document.addEventListener('DOMContentLoaded',init);}else{init();}
+</script>
+</body>
+</html>
