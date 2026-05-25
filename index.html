@@ -10,6 +10,10 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="Okpu Orba">
+<link rel="manifest" href="manifest.json">
+<link rel="apple-touch-icon" sizes="192x192" href="icon-192.png">
+<link rel="icon" type="image/svg+xml" href="icon.svg">
+<link rel="icon" type="image/png" sizes="192x192" href="icon-192.png">
 <link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700;800&family=DM+Sans:wght@400;500&display=swap" rel="stylesheet">
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
@@ -1434,12 +1438,14 @@ if(document.readyState==='loading'){document.addEventListener('DOMContentLoaded'
 // PWA Install Logic
 var deferredPrompt = null;
 window.addEventListener('beforeinstallprompt', function(e){
+  console.log('beforeinstallprompt fired!');
   e.preventDefault();
   deferredPrompt = e;
-  setTimeout(function(){
-    var banner = document.getElementById('pwaBanner');
-    if(banner) banner.classList.add('show');
-  }, 3000);
+  // Show banner immediately on Android
+  var banner = document.getElementById('pwaBanner');
+  if(banner && !localStorage.getItem('pwaDismissed')){
+    banner.classList.add('show');
+  }
 });
 
 document.getElementById('pwaInstallBtn') && document.getElementById('pwaInstallBtn').addEventListener('click', function(){
@@ -1469,15 +1475,20 @@ if(localStorage.getItem('pwaDismissed')){
 
 // iOS Safari install hint
 var isIOS = /iphone|ipad|ipod/.test(window.navigator.userAgent.toLowerCase());
-var isInStandalone = window.navigator.standalone;
-if(isIOS && !isInStandalone && !localStorage.getItem('iosDismissed')){
-  setTimeout(function(){
-    var banner = document.getElementById('pwaBanner');
-    if(banner){
-      document.querySelector('.pwa-banner-sub').textContent = 'Tap Share ↑ then "Add to Home Screen"';
-      banner.classList.add('show');
-    }
-  }, 3000);
+var isAndroid = /android/.test(window.navigator.userAgent.toLowerCase());
+var isInStandalone = window.navigator.standalone || window.matchMedia('(display-mode: standalone)').matches;
+
+if(!isInStandalone && !localStorage.getItem('pwaDismissed')){
+  if(isIOS){
+    setTimeout(function(){
+      var banner = document.getElementById('pwaBanner');
+      var sub = document.querySelector('.pwa-banner-sub');
+      if(banner && sub){
+        sub.textContent = 'Tap Share ↑ then "Add to Home Screen"';
+        banner.classList.add('show');
+      }
+    }, 2000);
+  }
 }
 
 // Register service worker for offline support
